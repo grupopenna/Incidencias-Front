@@ -16,7 +16,7 @@ const App = () => {
           <Route exact path="/" element={<Home />} />
           <Route exact path="/createIssue" element={<NewRequirements />} />
           <Route exact path="/board/:key" element={<IncidentTable />} />
-          <Route exact path="/createIssue/form/:key" element={<NotifyIncidentForm />} />
+          <Route exact path="/createIssue/form/:key/:issueId" element={<NotifyIncidentForm />} />
         </Routes>
       </div>
     </BrowserRouter>
