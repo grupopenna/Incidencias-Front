@@ -24,12 +24,12 @@ const Tablero = () => {
     getIssue()
   }, [])
 
-  /*  useEffect(() => {
-     if (reload) {
-       getIssue()
-       setReload
-     }
-   }, [reload]) */
+  useEffect(() => {
+    if (reload) {
+      getIssue()
+      setReload
+    }
+  }, [reload])
 
   const getList = (list) => {
     let filterList = incidents.filter((incident) => incident.fields.status.name == list)
@@ -72,7 +72,6 @@ const Tablero = () => {
 
   const handleReload = () => {
     setReload(true)
-    window.location.reload(true)
   }
 
   return (
