@@ -4,6 +4,8 @@ export const POST_ISSUE = "POST_ISSUE";
 
 export const GET_ISSUES = "GET_ISSUES";
 
+export const GET_All_ISSUES = "GET_All_ISSUES";
+
 export const GET_PROJECTS = "GET_PROJECTS";
 
 export const GET_BOARD = "GET_BOARD";
