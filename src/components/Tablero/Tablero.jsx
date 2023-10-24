@@ -86,19 +86,21 @@ const Tablero = () => {
       </div>
       <div className="grid grid-cols-3 gap-3 mx-2">
         {
-          transitions.map((transition) => <div droppable="true" key={transition.id} onDragOver={(evt => draggingOver(evt))} onDrop={(evt => onDrop(evt, transition))} className="border rounded-2xl px-8 py-5 min-h-full">
-            <h1>{transition.to.name}</h1>
+          transitions.map((transition) => <div droppable="true" key={transition.id} onDragOver={(evt => draggingOver(evt))} onDrop={(evt => onDrop(evt, transition))} className="border rounded-2xl px-3 py-5 min-h-full">
+            <h1 className="text-white text-lg mb-10">{transition.to.name}</h1>
             {getList(transition.to.name).map((item, i) => (
               <div key={item.id} draggable onDragStart={(evt) => startDrag(evt, item)}>
                 <Incident
-                  key={item.fields.key}
+                  keyId={item.key}
                   id={item.id}
                   img={item.image}
                   title={item.fields.summary}
                   description={item.fields.description}
                   state={item.fields.status.name}
                   coments={item.fields.comment.comments}
-                  responsable={item.fields?.assignee}
+                  created={item.fields.created}
+                  // assignee={item.fields.assignee?.displayName}
+                  // responsable={item.fields.reporter.displayName}
                   hsConsumidas={item.fields.timetracking.timeSpent}
                   hsEstimadas={item.fields.timetracking.remainingEstimate}
                   progress={item.process}
