@@ -13,7 +13,8 @@ export default {
         font: "#FFFFFF",
         fontPlaceholder: "#929DAE",
         inoutRing: "#6789B9",
-        hoverButton: "#1D4ED8"
+        hoverButton: "#1D4ED8",
+        bgModal: "rgba(130, 128, 127, 0.4);"
       },
       titilliumWeb: "'Titillium Web', 'sans-serif'",
       roboto: "'Roboto', 'sans-serif';"

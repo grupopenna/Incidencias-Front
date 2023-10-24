@@ -5,9 +5,12 @@ import { useEffect, useState } from "react";
 import { postTransition } from "../../redux/actions/transitions/postTransition";
 import { getIssue } from "../../redux/actions/issue/getIssue";
 import { useLocation, useNavigate } from "react-router-dom";
+import Modal from "../Modal/Modal";
 
 const Tablero = () => {
   const dispatch = useDispatch();
+  const [modalShow, setModalShow] = useState(false)
+  const [itemSelect, setItemSelect] = useState({})
   const incidents = useSelector((state) => state.incients);
   const transitions = useSelector((state) => state.transitions);
   const [incident, setIncident] = useState(incidents);
@@ -76,6 +79,7 @@ const Tablero = () => {
 
   return (
     <div className="flex justify-center flex-col mx-20 mt-10">
+      {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} />}
       <div className="flex justify-around my-5">
         <button onClick={() => { handleNotify() }} className="bg-buttonBg w-44 h-10 rounded-md">Notificar Incidencias</button>
         <button onClick={() => { handleReload() }} className="">
@@ -90,23 +94,25 @@ const Tablero = () => {
             <h1 className="text-white text-lg mb-10">{transition.to.name}</h1>
             {getList(transition.to.name).map((item, i) => (
               <div key={item.id} draggable onDragStart={(evt) => startDrag(evt, item)}>
-                <Incident
-                  keyId={item.key}
-                  id={item.id}
-                  img={item.image}
-                  title={item.fields.summary}
-                  description={item.fields.description}
-                  state={item.fields.status.name}
-                  coments={item.fields.comment.comments}
-                  created={item.fields.created}
-                  // assignee={item.fields.assignee?.displayName}
-                  // responsable={item.fields.reporter.displayName}
-                  hsConsumidas={item.fields.timetracking.timeSpent}
-                  hsEstimadas={item.fields.timetracking.remainingEstimate}
-                  progress={item.process}
-                  adjs={item.adjs}
-                  priority={item[i]}
-                />
+                <button onClick={() => { setModalShow(true), setItemSelect(item) }}>
+                  <Incident
+                    keyId={item.key}
+                    id={item.id}
+                    img={item.image}
+                    title={item.fields.summary}
+                    description={item.fields.description}
+                    state={item.fields.status.name}
+                    coments={item.fields.comment.comments}
+                    created={item.fields.created}
+                    // assignee={item.fields.assignee?.displayName}
+                    // responsable={item.fields.reporter.displayName}
+                    hsConsumidas={item.fields.timetracking.timeSpent}
+                    hsEstimadas={item.fields.timetracking.remainingEstimate}
+                    progress={item.process}
+                    adjs={item.adjs}
+                    priority={item[i]}
+                  />
+                </button>
               </div>
             ))}
           </div>)
