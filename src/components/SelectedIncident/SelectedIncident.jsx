@@ -10,11 +10,11 @@ const SelectedIncident = ({ projects }) =>{
   const navigate = useNavigate();
 
   const handleRedirect = async (key) => {
-    await getBoard(key)(dispatch).then((response) =>{ 
+    await getBoard(key)(dispatch).then((response) =>{
       return console.log('response SelectedIncident getBoard', response);
     }).catch((error) => {throw error});
 
-    await getIssue(key)(dispatch).then((response) =>{ 
+    await getIssue(key)(dispatch).then((response) =>{
       if (response){
         searchTransition(response[0].key);
       }
