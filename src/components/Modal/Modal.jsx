@@ -12,10 +12,12 @@ const Modal = ({ setModalShow, itemSelect }) => {
   const [item, setItem] = useState(null)
   const [openEditor, setOpenEditor] = useState(false)
   const [descripcion, setDescripcion] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     setItem(itemSelect)
     setComentarios(AllComments.reverse())
+    setTimeout(() => { setLoading(false) }, 2000)
   }, [item, AllComments.length])
 
 
@@ -40,6 +42,9 @@ const Modal = ({ setModalShow, itemSelect }) => {
   }
 
   const sendNewComment = (key) => {
+    setLoading(true)
+    setOpenEditor(false)
+    setTimeout(() => { setLoading(false) }, 2500)
     setDescripcion('')
     dispatch(postComments(descripcion, key))
   }
@@ -70,11 +75,11 @@ const Modal = ({ setModalShow, itemSelect }) => {
                   <>
                     <EditorText setDescripcion={setDescripcion} descripcion={descripcion} />
                     <div className='mt-2'>
-                      <buton onClick={() => sendNewComment(item.key)} className="bg-buttonBg p-1 rounded text-white">Guardar</buton>
+                      <button onClick={() => sendNewComment(item.key)} className="bg-buttonBg p-1 rounded text-white">Guardar</button>
                     </div>
                   </>
                   :
-                  <button onClick={() => setOpenEditor(true)} className='border px-3 py-2 text-sm rounded-sm cursor-text ml-2'>
+                  <button onClick={() => setOpenEditor(true)} className='border px-3 py-2 text-sm w-96 rounded-sm cursor-text text-left ml-2'>
                     <span className='text-fontPlaceholder'>Agregue detalles o comentarios</span>
                   </button>
                 }
@@ -95,7 +100,11 @@ const Modal = ({ setModalShow, itemSelect }) => {
                   </div>
                 ))
                 :
-                null
+                loading && (
+                  <main className='bg-white flex justify-center items-center'>
+                    <div className='w-8 h-8 border-2 border-background rounded-full animate-spin border-r-transparent' />
+                  </main>
+                )
               }
             </div>
             {/*-------seccion--2-------- */}

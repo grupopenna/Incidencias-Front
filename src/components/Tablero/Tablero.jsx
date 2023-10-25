@@ -3,11 +3,11 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getIssue } from "../../redux/actions/issue/getIssue";
 import Modal from "../Modal/Modal";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd"; 
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import Incident from "../Incident/Incident";
 
 const Tablero = () => {
-  
+
   const [modalShow, setModalShow] = useState(false)
   const [itemSelect, setItemSelect] = useState({})
   const incidents = useSelector((state) => state.incients);
@@ -32,7 +32,7 @@ const Tablero = () => {
     return filterList
   }
 
-  const [state, setState] = useState([ getList("Priorizado"), getList("En Proceso"), getList("Validar"), getList("Validado") ]);
+  const [state, setState] = useState([getList("Priorizado"), getList("En Proceso"), getList("Validar"), getList("Validado")]);
 
   function onDragEnd(result) {
     const { source, destination } = result;
@@ -110,21 +110,21 @@ const Tablero = () => {
                   {getList(transition.to.name).map((item, index) => (
                     <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full">
                       <Draggable key={item.id} draggableId={item.id} index={index}>
-                          {(provided, snapshot) => (
-                              <div ref={provided.innerRef} {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  style={getItemStyle(
-                                      snapshot.isDragging,
-                                      provided.draggableProps.style
-                                  )}
-                              >
-                                  <div className="flex flex-col w-full">
-                                    {<Incident item={item}/>}
-                                    {/* <p>{item.fields.summary}</p>
+                        {(provided, snapshot) => (
+                          <div ref={provided.innerRef} {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={getItemStyle(
+                              snapshot.isDragging,
+                              provided.draggableProps.style
+                            )}
+                          >
+                            <div className="flex flex-col w-full">
+                              {<Incident item={item} />}
+                              {/* <p>{item.fields.summary}</p>
                                     <p>{item.key}</p> */}
-                                  </div>
-                              </div>
-                          )}
+                            </div>
+                          </div>
+                        )}
                       </Draggable>
                     </button>
                   ))}
