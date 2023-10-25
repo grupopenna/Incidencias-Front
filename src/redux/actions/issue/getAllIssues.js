@@ -13,9 +13,12 @@ export const getAllIssues = () => {
     try {
       const response = (await axios.post(`${BASE_URL}/incident/searchAll`, bodyData)).data;
 
-      dispatch({type: GET_All_ISSUES, payload: response})
+   
+      const filteredData = response?.filter((item) => item?.fields.project.projectCategory.name === 'notificacionesIncidencias')
 
-      return response
+      dispatch({type: GET_All_ISSUES, payload: filteredData})
+
+      return filteredData
     } catch (error) {
       console.log('Error al realizar la solicitud getAllIssues');
 

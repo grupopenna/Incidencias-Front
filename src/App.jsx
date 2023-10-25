@@ -4,6 +4,7 @@ import Home from './view/Home';
 import NotifyIncidentForm from './components/NotifyIncidentForm/NotifyIncidentForm';
 import NewRequirements from './view/IncidentTable/IncidentTable';
 import IncidentTable from './view/IncidentTable/IncidentTable';
+import ViewAllIndicent from './components/viewAllIndicent';
 // import { useSelector } from 'react-redux';
 
 const App = () => {
@@ -17,6 +18,7 @@ const App = () => {
           <Route exact path="/createIssue" element={<NewRequirements />} />
           <Route exact path="/board/:key" element={<IncidentTable />} />
           <Route exact path="/createIssue/form/:key/:issueId" element={<NotifyIncidentForm />} />
+          <Route exac path="/view-all-incidents/:jiraAccountId" element={<ViewAllIndicent />} />
         </Routes>
       </div>
     </BrowserRouter>

@@ -46,7 +46,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
   }
 
   return (
-    <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-5px] h-screen w-full bg-bgModal flex justify-center items-center">
+    <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-10px]  bg-bgModal flex justify-center items-center">
       <div className="bg-white h-4/5 w-4/5 rounded-lg p-3">
         <div className='flex justify-end'>
           <button onClick={() => { dispatch(clearAllCommentState()); setModalShow(false) }}><span className="p-1 rounded-full">X</span></button>
@@ -71,17 +71,26 @@ const Modal = ({ setModalShow, itemSelect }) => {
                   <>
                     <EditorText setDescripcion={setDescripcion} descripcion={descripcion} />
                     <div className='mt-2'>
+<<<<<<< HEAD
                       <buton onClick={() => sendNewComment(item.key)} className="bg-buttonBg p-1 rounded text-white">Guardar</buton>
+=======
+                      <button onClick={() => sendNewComment} className="bg-buttonBg p-1 rounded text-white">Guardar</button>
+>>>>>>> c69f11579f44655f6547477c4414a6408900e5cf
                     </div>
                   </>
                   :
-                  <button onClick={() => setOpenEditor(true)} className='border-2 px-3 ml-2'>
+                  <button onClick={() => setOpenEditor(true)} className='border px-3 py-2 text-sm rounded-sm cursor-text ml-2'>
                     <span className='text-fontPlaceholder'>Agregue detalles o comentarios</span>
                   </button>
                 }
               </div>
+<<<<<<< HEAD
               {comentarios.length > 0 ?
                 comentarios.map((cm, i) => (
+=======
+              {item.fields?.comment?.comments.length > 0 ?
+                item.fields?.comment?.comments.reverse().map((cm, i) => (
+>>>>>>> c69f11579f44655f6547477c4414a6408900e5cf
                   <div key={i} className='flex pt-2 mb-3' >
                     <div className='mr-4'>
                       <span className="border-2 p-1 rounded-full">{cm.updateAuthor.displayName.match(upString)}</span>
