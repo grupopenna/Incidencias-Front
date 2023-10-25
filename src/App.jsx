@@ -18,7 +18,7 @@ const App = () => {
           <Route exact path="/createIssue" element={<NewRequirements />} />
           <Route exact path="/board/:key" element={<IncidentTable />} />
           <Route exact path="/createIssue/form/:key/:issueId" element={<NotifyIncidentForm />} />
-          <Route exac path="/view-all-incidents" element={<ViewAllIndicent />} />
+          <Route exac path="/view-all-incidents/:jiraAccountId" element={<ViewAllIndicent />} />
         </Routes>
       </div>
     </BrowserRouter>
