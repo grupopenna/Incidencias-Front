@@ -3,8 +3,8 @@
 
 
 const Incident = ({ item }) => {
-  console.log('item.fields', item.fields)
-  console.log('item.fields.responsable', item.fields.assignee?.displayName == null)
+  //console.log('item.fields', item.fields)
+  //console.log('item.fields.responsable', item.fields.assignee?.displayName == null)
 
   return (
     <div className="h-full w-full rounded-md bg-bgIncident mb-3 flex flex-col p-1 text-font">

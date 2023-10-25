@@ -9,7 +9,7 @@ import Modal from "../Modal/Modal";
 
 
 const Tablero = () => {
-  // const dispatch = useDispatch();
+  //const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false)
   const [itemSelect, setItemSelect] = useState({})
   const incidents = useSelector((state) => state.incients);
@@ -80,7 +80,7 @@ const Tablero = () => {
 
 
   return (
-    <div className="flex justify-center flex-col mx-20 mt-10">
+    <div className="flex justify-center flex-col w-full mx-4">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} />}
       <div className="flex justify-around my-5">
         <button onClick={() => { handleNotify() }} className="bg-buttonBg w-44 h-10 rounded-md">Notificar Incidencias</button>
@@ -90,57 +90,12 @@ const Tablero = () => {
           </svg>
         </button>
       </div>
-      <div className="grid grid-cols-3 gap-3 mx-2">
-        {
-          transitions.map((transition) => <div droppable="true" key={transition.id} onDragOver={(evt => draggingOver(evt))} onDrop={(evt => onDrop(evt, transition))} className="border rounded-2xl px-3 py-5 min-h-full">
-            <h1 className="text-white text-lg mb-10">{transition.to.name}</h1>
-            {getList(transition.to.name).map((item, i) => (
-              <div key={item.id} draggable onDragStart={(evt) => startDrag(evt, item)}>
-                <button onClick={() => { setModalShow(true), setItemSelect(item) }}>
-                  <Incident
-                    keyId={item.key}
-                    id={item.id}
-                    img={item.image}
-                    title={item.fields.summary}
-                    description={item.fields.description}
-                    state={item.fields.status.name}
-                    coments={item.fields.comment.comments}
-                    created={item.fields.created}
-                    // assignee={item.fields.assignee?.displayName}
-                    // responsable={item.fields.reporter.displayName}
-                    hsConsumidas={item.fields.timetracking.timeSpent}
-                    hsEstimadas={item.fields.timetracking.remainingEstimate}
-                    progress={item.process}
-                    adjs={item.adjs}
-                    priority={item[i]}
-                  />
-                </button>
-              </div>
-            ))}
-          </div>)
-        }
-        {/* <div >
-            <div droppable="true" onDragOver={(evt => draggingOver(evt))} onDrop={(evt => onDrop(evt, "Por hacer"))} className="border rounded-2xl px-8 py-5 min-h-full">
-              {getList("Por hacer").map((item, i) => (
-                <div key={item.id} draggable onDragStart={(evt) => startDrag(evt, item)}>
-                  <Incident 
-                    key={item.fields.key}
-                    id={item.id}
-                    img={item.image}
-                    title={item.fields.summary}
-                    description={item.fields.summary}
-                    state={item.fields.status.name}
-                    coments={item.fields.comment.comments}
-                    responsable={item.fields?.assignee}
-                    hsConsumidas={item.fields.timetracking.timeSpent}
-                    hsEstimadas={item.fields.timetracking.remainingEstimate}
-                    progress={item.process}
-                    adjs={item.adjs}
-                    priority={item[i]}
-                  />
-                  </div>
-              ))}
-            </div>
+      <div className="flex gap-x-3 w-full">
+        {/* <div className="bg-bgColumn rounded-2xl pt-5 min-h-full w-5/6">
+              <h1 className="mx-2 mb-1 text-font"> Sin Priorizar</h1>
+              <SortableContext strategy={verticalListSortingStrategy}>
+                
+              </SortableContext>
           </div>
           <div className="bg-bgColumn rounded-2xl pt-5 min-h-full w-5/6">
               <h1 className="mx-2 mb-1 text-font">Priorizado</h1>
@@ -155,9 +110,11 @@ const Tablero = () => {
 
               <div key={item.id} className="flex justify-center mx-2 ">
                 Dra
-                <Incident
-                  item={item}
-                />
+                <button onClick={() => { setModalShow(true), setItemSelect(item) }}>
+                  <Incident
+                    item={item}
+                  />
+                </button>
               </div>
             ))}
           </div>)
