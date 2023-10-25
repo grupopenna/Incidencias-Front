@@ -1,23 +1,18 @@
 import axios from "axios";
-import { BASE_URL } from '../../action-type';
+import { BASE_URL, NEW_COMMENT } from '../../action-type';
 
-export const postComments = () => {
+export const postComments = (comment, key) => {
 
   const bodyData = {
-    "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget venenatis elit. Duis eu justo eget augue iaculis fermentum. Sed semper quam laoreet nisi egestas at posuere augue semper.",
-    "visibility": {
-      "identifier": "Administrators",
-      "type": "role",
-      "value": "Administrators"
-    }
+    "body": `${comment}`,
+    "issueId": `${key}`,
   }
-  return async () => {
+  return async (dispatch) => {
     try {
       const response = await axios.post(`${BASE_URL}/incident/newComments`, bodyData)
       if (response.status === 200) {
-        alert("Su incidencia fue creada con exito")
+        dispatch({ type: NEW_COMMENT, payload: response.data })
       }
-      //return dispatch({ type: POST_ISSUE, payload: response.issues })
 
     } catch (error) {
       console.error('Error al realizar la solicitud:', error);

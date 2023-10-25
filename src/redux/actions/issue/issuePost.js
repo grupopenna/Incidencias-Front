@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL, POST_ISSUE } from '../../action-type';
+import { BASE_URL } from '../../action-type';
 
 export const issuePost = ({ titleDesc, descripcion, projectId, issueId }) => {
 
@@ -32,7 +32,7 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId }) => {
       }
     }
   }
-  return async (dispatch) => {
+  return async () => {
     try {
       const response = await axios.post(`${BASE_URL}/incident/api/notify-incident`, bodyData)
       if (response.status === 200) {
