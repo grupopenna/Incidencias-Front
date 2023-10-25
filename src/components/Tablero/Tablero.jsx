@@ -9,13 +9,9 @@ import Modal from "../Modal/Modal";
 
 
 const Tablero = () => {
-<<<<<<< HEAD
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false)
   const [itemSelect, setItemSelect] = useState({})
-=======
-  // const dispatch = useDispatch();
->>>>>>> bee41074ceedf40567a0619435f3771eb3758423
   const incidents = useSelector((state) => state.incients);
   const transitions = useSelector((state) => state.transitions);
   // const [incident, setIncident] = useState(incidents);
