@@ -1,9 +1,7 @@
 /* eslint-disable react/prop-types */
-import { useNavigate } from "react-router-dom"
-import { getTransitions } from "../../redux/actions/transitions/getTransitions";
+import { getBoard, getIssue, getTransitions } from '../../redux/actions'
 import { useDispatch } from "react-redux";
-import { getIssue } from "../../redux/actions/issue/getIssue";
-import { getBoard } from "../../redux/actions/board/getBoard";
+import { useNavigate } from "react-router-dom"
 
 const SelectedIncident = ({ projects }) =>{
   const dispatch = useDispatch()
