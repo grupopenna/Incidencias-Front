@@ -111,19 +111,15 @@ const Tablero = () => {
                     <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full">
                       <Draggable key={item.id} draggableId={item.id} index={index}>
                           {(provided, snapshot) => (
-                              <div ref={provided.innerRef} {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  style={getItemStyle(
-                                      snapshot.isDragging,
-                                      provided.draggableProps.style
-                                  )}
-                              >
-                                  <div className="flex flex-col w-full">
-                                    {<Incident item={item}/>}
-                                    {/* <p>{item.fields.summary}</p>
-                                    <p>{item.key}</p> */}
-                                  </div>
-                              </div>
+                            <Incident 
+                              item={item} 
+                              innerRef={provided.innerRef}
+                              {...provided.draggableProps} 
+                              {...provided.dragHandleProps}  
+                              style={getItemStyle(
+                              snapshot.isDragging,
+                              provided.draggableProps.style,
+                          )}/>
                           )}
                       </Draggable>
                     </button>
