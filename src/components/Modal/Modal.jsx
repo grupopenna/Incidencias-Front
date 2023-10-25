@@ -71,11 +71,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
                   <>
                     <EditorText setDescripcion={setDescripcion} descripcion={descripcion} />
                     <div className='mt-2'>
-<<<<<<< HEAD
                       <buton onClick={() => sendNewComment(item.key)} className="bg-buttonBg p-1 rounded text-white">Guardar</buton>
-=======
-                      <button onClick={() => sendNewComment} className="bg-buttonBg p-1 rounded text-white">Guardar</button>
->>>>>>> c69f11579f44655f6547477c4414a6408900e5cf
                     </div>
                   </>
                   :
@@ -84,13 +80,8 @@ const Modal = ({ setModalShow, itemSelect }) => {
                   </button>
                 }
               </div>
-<<<<<<< HEAD
               {comentarios.length > 0 ?
                 comentarios.map((cm, i) => (
-=======
-              {item.fields?.comment?.comments.length > 0 ?
-                item.fields?.comment?.comments.reverse().map((cm, i) => (
->>>>>>> c69f11579f44655f6547477c4414a6408900e5cf
                   <div key={i} className='flex pt-2 mb-3' >
                     <div className='mr-4'>
                       <span className="border-2 p-1 rounded-full">{cm.updateAuthor.displayName.match(upString)}</span>
