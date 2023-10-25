@@ -1,9 +1,8 @@
+import { clearAllCommentState, getCommentIssues, postComments } from '../../redux/actions'
 import { PropTypes } from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import EditorText from '../ToolEditorText/EditorText'
-import { useDispatch, useSelector } from 'react-redux';
-import { postComments } from '../../redux/actions/commentIssues/PostComment';
-import { clearAllCommentState, getCommentIssues } from '../../redux/actions/commentIssues/getCommentIssues';
 
 const Modal = ({ setModalShow, itemSelect }) => {
   const dispatch = useDispatch()
