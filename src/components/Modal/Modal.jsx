@@ -1,21 +1,29 @@
 import { PropTypes } from 'prop-types';
 import { useState, useEffect } from 'react';
 import EditorText from '../ToolEditorText/EditorText'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { postComments } from '../../redux/actions/commentIssues/PostComment';
+import { clearAllCommentState, getCommentIssues } from '../../redux/actions/commentIssues/getCommentIssues';
 
 const Modal = ({ setModalShow, itemSelect }) => {
-
-
   const dispatch = useDispatch()
   const upString = /[A-Z]/g
+  const AllComments = useSelector(state => state.commentIssuesById)
+  const [comentarios, setComentarios] = useState([])
   const [item, setItem] = useState(null)
   const [openEditor, setOpenEditor] = useState(false)
   const [descripcion, setDescripcion] = useState('')
 
   useEffect(() => {
     setItem(itemSelect)
-  }, [item])
+    setComentarios(AllComments.reverse())
+  }, [item, AllComments.length])
+
+
+  useEffect(() => {
+    dispatch(getCommentIssues(itemSelect.key))
+    AllComments.length > 0 && setComentarios(AllComments.reverse())
+  }, [dispatch])
 
   const commentTime = (data) => {
     let fechaAntigua = new Date(data);
@@ -32,17 +40,16 @@ const Modal = ({ setModalShow, itemSelect }) => {
           'Hace 1 minuto'
   }
 
-  const sendNewComment = () => {
-    dispatch(postComments())
+  const sendNewComment = (key) => {
+    setDescripcion('')
+    dispatch(postComments(descripcion, key))
   }
-
-  // console.log(item.key)
 
   return (
     <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-5px] h-screen w-full bg-bgModal flex justify-center items-center">
       <div className="bg-white h-4/5 w-4/5 rounded-lg p-3">
         <div className='flex justify-end'>
-          <button onClick={() => setModalShow(false)}><span className="p-1 rounded-full">X</span></button>
+          <button onClick={() => { dispatch(clearAllCommentState()); setModalShow(false) }}><span className="p-1 rounded-full">X</span></button>
         </div>
         {item && (<>
           <div className='ml-5'>
@@ -64,7 +71,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
                   <>
                     <EditorText setDescripcion={setDescripcion} descripcion={descripcion} />
                     <div className='mt-2'>
-                      <buton onClick={() => sendNewComment} className="bg-buttonBg p-1 rounded text-white">Guardar</buton>
+                      <buton onClick={() => sendNewComment(item.key)} className="bg-buttonBg p-1 rounded text-white">Guardar</buton>
                     </div>
                   </>
                   :
@@ -73,8 +80,8 @@ const Modal = ({ setModalShow, itemSelect }) => {
                   </button>
                 }
               </div>
-              {item.fields.comment.comments.length > 0 ?
-                item.fields.comment.comments.reverse().map((cm, i) => (
+              {comentarios.length > 0 ?
+                comentarios.map((cm, i) => (
                   <div key={i} className='flex pt-2 mb-3' >
                     <div className='mr-4'>
                       <span className="border-2 p-1 rounded-full">{cm.updateAuthor.displayName.match(upString)}</span>
