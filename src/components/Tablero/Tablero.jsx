@@ -3,11 +3,11 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getIssue } from "../../redux/actions/issue/getIssue";
 import Modal from "../Modal/Modal";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd"; 
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import Incident from "../Incident/Incident";
 
 const Tablero = () => {
-  
+
   const [modalShow, setModalShow] = useState(false)
   const [itemSelect, setItemSelect] = useState({})
   const incidents = useSelector((state) => state.incients);
@@ -32,7 +32,7 @@ const Tablero = () => {
     return filterList
   }
 
-  const [state, setState] = useState([ getList("Priorizado"), getList("En Proceso"), getList("Validar"), getList("Validado") ]);
+  const [state, setState] = useState([getList("Priorizado"), getList("En Proceso"), getList("Validar"), getList("Validado")]);
 
   function onDragEnd(result) {
     const { source, destination } = result;
