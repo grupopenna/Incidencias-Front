@@ -6,6 +6,7 @@ import { ArrowDown, ArrowUp } from '../Icon'
 import { FormatDate } from '../../utils'
 import { Select, SelectItem, Table, TableBody, TableHeaderCell, TableCell, TableRow, TableHead } from '@tremor/react'
 import Loader from '../Loader'
+import Modal from '../Modal/Modal'
 
 const ORDER_BY = {
     ASC: 'asc',
@@ -15,7 +16,9 @@ const ORDER_BY = {
 function ViewAllIndicent() {
     const [order, setOrder] = useState(ORDER_BY.DESC)
     const [selectedProject, setSelectedProject] = useState('')
+    const [selectedItem, setSelectedItem] = useState()
     const [isLoading, setIsloding] = useState(true)
+    const [modalShow, setModalShow] = useState(false)
     const dispatch = useDispatch()
     const allIncients = useSelector(state => state.allIncients)
     const projects = useSelector(state => state.projects)
@@ -52,6 +55,12 @@ function ViewAllIndicent() {
         }
     }
 
+    const handleShowDetails = (index) => {
+        console.log({ index })
+        setSelectedItem(incidentOrdered[index])
+        setModalShow(true)
+    }
+
     const handleSelectChange = (value) => {
         setSelectedProject(value)
     }
@@ -67,12 +76,15 @@ function ViewAllIndicent() {
     } , [])
 
 
+
+    console.log({ incidentOrdered })
     if (isLoading) {
      return <Loader />
     }
 
     return (
         <section className="flex justify-center flex-col mx-20 mt-10 items-center">
+            { modalShow && <Modal setModalShow={setModalShow} itemSelect={selectedItem}/>}
             <header className='w-full flex gap-3 p-2'>
                 <div className='p-2 flex flex-col gap-2'>
                     <label className='text-white '>
@@ -112,8 +124,11 @@ function ViewAllIndicent() {
                         const formatCreated = FormatDate(new Date(inciden?.fields.created))
                         const formatUpdated = FormatDate(new Date(inciden?.fields.updated))
 
-                        return <TableRow key={index} >
-                            <TableCell className='text-center'>
+                        return <TableRow 
+                            onClick={() => handleShowDetails(index)}
+                            key={index} 
+                            className='hover:bg-white/30'>
+                            <TableCell className='text-cente'>
                                 <div className='flex items-center justify-center m-auto p-2'>
                                   <img className='w-5 h-6' src={inciden?.fields.issuetype.iconUrl} alt={inciden?.key}/>
                                 </div>
