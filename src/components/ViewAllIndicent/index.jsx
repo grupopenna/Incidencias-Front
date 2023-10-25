@@ -1,10 +1,9 @@
-import { useSelector, useDispatch } from 'react-redux'
-import { getAllIssues } from "../../redux/actions/issue/getAllIssues"
-import { getProjects } from '../../redux/actions/projects/getProjects'
-import { useEffect, useState, useMemo } from 'react'
 import { ArrowDown, ArrowUp } from '../Icon'
 import { FormatDate } from '../../utils'
+import { getAllIssues, getProjects } from '../../redux/actions'
 import { Select, SelectItem, Table, TableBody, TableHeaderCell, TableCell, TableRow, TableHead } from '@tremor/react'
+import { useEffect, useState, useMemo } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import Loader from '../Loader'
 import Modal from '../Modal/Modal'
 

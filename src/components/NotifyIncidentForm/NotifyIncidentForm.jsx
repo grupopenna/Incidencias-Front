@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { issuePost } from "../../redux/actions/issue/issuePost";
-import { useLocation } from "react-router-dom";
-
+import { issuePost } from "../../redux/actions/";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { useState } from "react";
 import EditorText from "../ToolEditorText/EditorText";
 
 const NotifyIncidentForm = (key) => {
