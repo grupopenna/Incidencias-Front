@@ -1,47 +1,33 @@
-import { Calendar, OwnerIcon, TagNumber } from "../Icons";
+/* eslint-disable react/prop-types */
+/* eslint-disable no-prototype-builtins */
 
-const Incident = (prop) => {
 
-  const upString = /[A-Z]/g
+const Incident = ({ item }) => {
+  console.log('item.fields', item.fields)
+  console.log('item.fields.responsable', item.fields.assignee?.displayName == null)
+
   return (
-    <div className="h-fit mb-5 flex flex-col bg-slate-400 px-3 rounded-md text-gray-100 hover:bg-transparent border-2 border-slate-400">
-      <div className="h-fit mb-4 text-current">
-        <h2 className="font-bold text-lg ">{prop.title}</h2>
+    <div className="h-full w-full rounded-md bg-bgIncident mb-3 flex flex-col p-1 text-font">
+      {/* key={item.fields.fields.key}
+                      id={item.fields.id}
+                      img={item.fields.image}
+                      title={item.fields.fields.summary}
+                      description={item.fields.fields.description}
+                      state={item.fields.fields.status.name}
+                      responsable={item.fields.fields?.assignee}
+                      hsConsumidas={item.fields.fields.timetracking.timeSpent}
+                      hsEstimadas={item.fields.fields.timetracking.remainingEstimate} */}
+      <h2 className="text-font font-bold text-lg">{item.fields.summary}</h2>
+      <p className="text-base">{item.key}</p>
+      {/* <img src={item.fields.img} alt="" className="h-64 "/> */}
+      <p>{item.fields.timetracking.timeSpent}</p>
+      {/* <p>{item.fields.coments}</p> */}
+      <div>
+        <p>Responsable {item.fields.assignee?.displayName}</p>
       </div>
-      {/* <img src={prop.img} alt="" className="h-64 "/> */}
-      <p className="text-base mb-2">{prop.description}</p>
-      <div className="text-right mb-1">
-        <span className="border-2 p-1 rounded-full">{prop.assignee?.match(upString)}</span>
-      </div>
-      {/* <p>{prop.state}</p> */}
-      {/* <p>{prop.coments}</p> */}
-
-      <div className="flex mb-1 justify-between">
-        <div className="flex items-center">
-          {prop.state === 'Finalizada' ?
-            <p className="text-sm mr-1 line-through">{prop.keyId}</p> :
-            <p className="text-sm mr-1">{prop.keyId}</p>
-          }
-          <TagNumber />
-        </div>
-        <div>
-          <p>{prop.state}</p>
-        </div>
-      </div>
-      <div className="flex justify-between text-xs">
-        <div className="flex">
-          <OwnerIcon />
-          {prop.responsable && prop.responsable}
-        </div>
-        <div className="flex">
-          <Calendar />
-          <span>{new Date(prop.created).toLocaleString("es")}</span>
-        </div>
-      </div>
-      {/* <p>Tiempo invertido: {prop.hsConsumidas}</p>
-      <p>Tiempo estimado: {prop.hsEstimadas}</p>
-      <p>{prop.process}</p>
-      <p>{prop.priority}</p> */}
+      {/* {item.fields.timeSpent == null ? "" : <p> {item.fields.timeSpent }</p> } */}
+      {/* <p>{item.fields.process}</p>
+      <p>{item.fields.priority}</p> */}
     </div>
   )
 }

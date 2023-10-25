@@ -10,13 +10,17 @@ const SelectedIncident = ({ projects }) =>{
   const navigate = useNavigate();
 
   const handleRedirect = async (key) => {
-    await getBoard(key)(dispatch).then((response) =>{ 
+    await getBoard(key)(dispatch).then((response) =>{
       return console.log('response SelectedIncident getBoard', response);
     }).catch((error) => {throw error});
 
-    await getIssue(key)(dispatch).then((response) =>{ 
+    await getIssue(key)(dispatch).then((response) =>{
       if (response){
-        searchTransition(response[0].key);
+        if(response.length > 0){
+          searchTransition(response[0].key);
+        } else if (response.length < 0) {
+          alert("No hay incidencias");
+        }
       }
       return console.log('response SelectedIncident getIssue', response);
     }).catch((error) => {throw error});
@@ -46,9 +50,9 @@ const SelectedIncident = ({ projects }) =>{
             { project.name }
           </button>)
         }
-        <button onClick={() => handleRedirect("create-new")} className="rounded-xl bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-3 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
+        {/* <button onClick={() => handleRedirect("create-new")} className="rounded-xl bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-3 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
           Crear nuevo desarrollo
-        </button>
+        </button> */}
         </div>
       </div>
   </div>

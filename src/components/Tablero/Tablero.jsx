@@ -1,19 +1,24 @@
 /* eslint-disable react/no-unknown-property */
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Incident from "../Incident/Incident";
 import { useEffect, useState } from "react";
-import { postTransition } from "../../redux/actions/transitions/postTransition";
+// import { postTransition } from "../../redux/actions/transitions/postTransition";
 import { getIssue } from "../../redux/actions/issue/getIssue";
 import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../Modal/Modal";
 
+
 const Tablero = () => {
+<<<<<<< HEAD
   const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false)
   const [itemSelect, setItemSelect] = useState({})
+=======
+  // const dispatch = useDispatch();
+>>>>>>> bee41074ceedf40567a0619435f3771eb3758423
   const incidents = useSelector((state) => state.incients);
   const transitions = useSelector((state) => state.transitions);
-  const [incident, setIncident] = useState(incidents);
+  // const [incident, setIncident] = useState(incidents);
   const [reload, setReload] = useState(false);
   const navigate = useNavigate();
 
@@ -39,35 +44,35 @@ const Tablero = () => {
     return filterList
   }
 
-  const startDrag = (evt, item) => {
-    evt.dataTransfer.setData('itemID', item.id)
-  }
+  // const startDrag = (evt, item) => {
+  //   evt.dataTransfer.setData('itemID', item.id)
+  // }
 
-  const draggingOver = (evt) => {
-    evt.preventDefault();
-  }
+  // const draggingOver = (evt) => {
+  //   evt.preventDefault();
+  // }
 
-  const onDrop = (evt, list) => {
-    const itemID = evt.dataTransfer.getData('itemID');
-    const item = incidents.find(item => item.id == itemID);
+  // const onDrop = (evt, list) => {
+  //   const itemID = evt.dataTransfer.getData('itemID');
+  //   const item = incidents.find(item => item.id == itemID);
 
-    const data = {
-      id: item.id,
-      list: list.to.name
-    }
+  //   const data = {
+  //     id: item.id,
+  //     list: list.to.name
+  //   }
 
-    postTransition(data)(dispatch).then((response) => {
-      console.log('response', response)
-    }).catch((error) => console.log('response tablero L38', error))
-    item.list = list;
+  //   postTransition(data)(dispatch).then((response) => {
+  //     console.log('response', response)
+  //   }).catch((error) => console.log('response tablero L38', error))
+  //   item.list = list;
 
-    const newState = incident.map(task => {
-      if (task.id === itemID) return item;
-      return task
-    })
+  //   const newState = incident.map(task => {
+  //     if (task.id === itemID) return item;
+  //     return task
+  //   })
 
-    setIncident(newState);
-  }
+  //   setIncident(newState);
+  // }
   const handleNotify = () => {
     const issueId = incidents[0].fields.issuetype.id
     navigate(`/createIssue/form/${keyPathname[0]}/${issueId}`)
@@ -76,6 +81,7 @@ const Tablero = () => {
   const handleReload = () => {
     setReload(true)
   }
+
 
   return (
     <div className="flex justify-center flex-col mx-20 mt-10">
@@ -140,52 +146,26 @@ const Tablero = () => {
               ))}
             </div>
           </div>
-          <div>
-            <div droppable="true" onDragOver={(evt => draggingOver(evt))} onDrop={(evt => onDrop(evt, "En curso"))} className="border rounded-2xl  px-8 py-5 min-h-full">
-              {getList("En curso").map((item, i)=> (
-                <div  key={item.id} draggable onDragStart={(evt) => startDrag(evt, item)}>
-                  <Incident 
-                    key={item.fields.key}
-                    id={item.id}
-                    img={item.image}
-                    title={item.fields.summary}
-                    description={item.fields.summary}
-                    state={item.fields.status.name}
-                    coments={item.fields.comment.comments}
-                    responsable={item.fields.assignee}
-                    hsConsumidas={item.fields.timetracking.timeSpent}
-                    hsEstimadas={item.fields.timetracking.remainingEstimate}
-                    progress={item.process}
-                    adjs={item.adjs}
-                    priority={item[i]}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-          <div>
-            <div droppable="true" onDragOver={(evt => draggingOver(evt))} onDrop={(evt => onDrop(evt, "Listo"))} className="border rounded-2xl  px-8 py-5 min-h-full">
-              {getList("Listo").map((item, i)=> (
-                <div key={item.id} draggable onDragStart={(evt) => startDrag(evt, item)}>
-                  <Incident 
-                    key={item.fields.key}
-                    id={item.id}
-                    img={item.image}
-                    title={item.fields.summary}
-                    description={item.fields.summary}
-                    state={item.fields.status.name}
-                    coments={item.fields.comment.comments}
-                    responsable={item.fields.assignee}
-                    hsConsumidas={item.fields.timetracking.timeSpent}
-                    hsEstimadas={item.fields.timetracking.remainingEstimate}
-                    progress={item.process}
-                    adjs={item.adjs}
-                    priority={item[i]}
-                  />
-                </div>
-              ))}
-            </div>
+          <div className="bg-bgColumn rounded-2xl pt-5 min-h-full w-5/6">
+              <h1 className="mx-2 mb-1 text-font">Priorizado</h1>
+              <SortableContext strategy={verticalListSortingStrategy}>
+                
+              </SortableContext>
           </div> */}
+        {
+          transitions.map((transition) => <div key={transition.id} className="bg-bgColumn rounded-2xl pt-5 min-h-full w-5/6">
+            <h1 className="mx-2 mb-1 text-font">{transition.to.name}</h1>
+            {getList(transition.to.name).map((item) => (
+
+              <div key={item.id} className="flex justify-center mx-2 ">
+                Dra
+                <Incident
+                  item={item}
+                />
+              </div>
+            ))}
+          </div>)
+        }
       </div>
     </div>
 

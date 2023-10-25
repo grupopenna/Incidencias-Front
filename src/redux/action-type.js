@@ -13,3 +13,7 @@ export const GET_BOARD = "GET_BOARD";
 export const GET_TRANSITIONS = "GET_TRANSITIONS";
 
 export const POST_USER = "POST_USER";
+
+export const GET_COMMENT_ISSUES = "GET_COMMENT_ISSUES";
+
+export const POST_COMMENT_ISSUE = "POST_COMMENT_ISSUE";
