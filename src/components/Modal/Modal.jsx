@@ -79,7 +79,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
                     </div>
                   </>
                   :
-                  <button onClick={() => setOpenEditor(true)} className='border px-3 py-2 text-sm rounded-sm cursor-text ml-2'>
+                  <button onClick={() => setOpenEditor(true)} className='border px-3 py-2 text-sm w-96 rounded-sm cursor-text text-left ml-2'>
                     <span className='text-fontPlaceholder'>Agregue detalles o comentarios</span>
                   </button>
                 }
