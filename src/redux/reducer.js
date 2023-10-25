@@ -10,12 +10,13 @@ import {
 
   GET_TRANSITIONS,
 
-  GET_BOARD
+  GET_BOARD,
+  GET_COMMENT_ISSUES
 
 } from "./action-type";
 
 const initialState = {
-  
+
   incients: [],
   allIncients: [],
 
@@ -27,32 +28,37 @@ const initialState = {
 
   transitions: [],
 
+  commentIssuesById: {}
+
 };
 
 const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
-      //PRODUCTS
-      case POST_ISSUE:
-          return { ...state, incients: payload };
-      case GET_ISSUES:
-        return { ...state, incients: payload }
-      case GET_All_ISSUES:
-        return { ...state, allIncients: payload }
+    //PRODUCTS
+    case POST_ISSUE:
+      return { ...state, incients: payload };
+    case GET_ISSUES:
+      return { ...state, incients: payload }
+    case GET_All_ISSUES:
+      return { ...state, allIncients: payload }
 
-      case GET_PROJECTS:
-        return { ...state, projects: payload }
+    case GET_PROJECTS:
+      return { ...state, projects: payload }
 
-      case GET_BOARD:
-        return { ...state, board: payload }
+    case GET_BOARD:
+      return { ...state, board: payload }
 
-      case POST_USER:
-        return { ...state, user: payload }
+    case POST_USER:
+      return { ...state, user: payload }
 
-      case GET_TRANSITIONS:
-        return { ...state, transitions: payload }
+    case GET_TRANSITIONS:
+      return { ...state, transitions: payload }
 
-      default:
-          return { ...state };
+    case GET_COMMENT_ISSUES:
+      return { ...state, commentIssuesById: payload }
+
+    default:
+      return { ...state };
   }
 };
 

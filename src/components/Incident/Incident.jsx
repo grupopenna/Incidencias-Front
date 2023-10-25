@@ -2,13 +2,13 @@
 /* eslint-disable no-prototype-builtins */
 
 
-const Incident = ({item}) => {
-  console.log('item.fields', item.fields)
-  console.log('item.fields.responsable', item.fields.assignee?.displayName == null)
+const Incident = ({ item }) => {
+  //console.log('item.fields', item.fields)
+  //console.log('item.fields.responsable', item.fields.assignee?.displayName == null)
 
   return (
     <div className="h-full w-full rounded-md bg-bgIncident mb-3 flex flex-col p-1 text-font">
-        {/* key={item.fields.fields.key}
+      {/* key={item.fields.fields.key}
                       id={item.fields.id}
                       img={item.fields.image}
                       title={item.fields.fields.summary}

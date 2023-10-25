@@ -48,6 +48,7 @@ export default {
         fontPlaceholder: "#929DAE",
         inoutRing: "#6789B9",
         hoverButton: "#1D4ED8",
+        bgModal: "rgba(130, 128, 127, 0.4)",
         bgColumn: "#161A1D",
         bgIncident: "#22272B"
       },

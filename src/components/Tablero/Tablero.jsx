@@ -5,10 +5,13 @@ import { useEffect, useState } from "react";
 // import { postTransition } from "../../redux/actions/transitions/postTransition";
 import { getIssue } from "../../redux/actions/issue/getIssue";
 import { useLocation, useNavigate } from "react-router-dom";
+import Modal from "../Modal/Modal";
 
 
 const Tablero = () => {
-  // const dispatch = useDispatch();
+  //const dispatch = useDispatch();
+  const [modalShow, setModalShow] = useState(false)
+  const [itemSelect, setItemSelect] = useState({})
   const incidents = useSelector((state) => state.incients);
   const transitions = useSelector((state) => state.transitions);
   // const [incident, setIncident] = useState(incidents);
@@ -78,6 +81,7 @@ const Tablero = () => {
 
   return (
     <div className="flex justify-center flex-col w-full mx-4">
+      {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} />}
       <div className="flex justify-around my-5">
         <button onClick={() => { handleNotify() }} className="bg-buttonBg w-44 h-10 rounded-md">Notificar Incidencias</button>
         <button onClick={() => { handleReload() }} className="">
@@ -87,7 +91,7 @@ const Tablero = () => {
         </button>
       </div>
       <div className="flex gap-x-3 w-full">
-          {/* <div className="bg-bgColumn rounded-2xl pt-5 min-h-full w-5/6">
+        {/* <div className="bg-bgColumn rounded-2xl pt-5 min-h-full w-5/6">
               <h1 className="mx-2 mb-1 text-font"> Sin Priorizar</h1>
               <SortableContext strategy={verticalListSortingStrategy}>
                 
@@ -99,20 +103,22 @@ const Tablero = () => {
                 
               </SortableContext>
           </div> */}
-          {
-            transitions.map((transition) => <div  key={transition.id}  className="bg-bgColumn rounded-2xl pt-5 min-h-full w-5/6">
-              <h1 className="mx-2 mb-1 text-font">{transition.to.name}</h1>
-                {getList(transition.to.name).map((item) => (
+        {
+          transitions.map((transition) => <div key={transition.id} className="bg-bgColumn rounded-2xl pt-5 min-h-full w-5/6">
+            <h1 className="mx-2 mb-1 text-font">{transition.to.name}</h1>
+            {getList(transition.to.name).map((item) => (
 
-                  <div key={item.id}   className="flex justify-center mx-2 ">
-                    Dra
-                    <Incident
-                      item={item}
-                    />
-                  </div>
-                ))}
-            </div>)
-          }
+              <div key={item.id} className="flex justify-center mx-2 ">
+                Dra
+                <button onClick={() => { setModalShow(true), setItemSelect(item) }}>
+                  <Incident
+                    item={item}
+                  />
+                </button>
+              </div>
+            ))}
+          </div>)
+        }
       </div>
     </div>
 
