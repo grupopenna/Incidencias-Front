@@ -7,7 +7,6 @@ import { postComments } from '../../redux/actions/commentIssues/PostComment';
 const Modal = ({ setModalShow, itemSelect }) => {
 
 
-  console.log({ itemSelect })
   const dispatch = useDispatch()
   const upString = /[A-Z]/g
   const [item, setItem] = useState(null)
