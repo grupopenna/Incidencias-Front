@@ -3,8 +3,9 @@ import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import EditorText from '../ToolEditorText/EditorText'
-import { SimpleArrowUp } from '../Icons';
+import { IconFiles, SimpleArrowUp } from '../Icons';
 import { WithoutPhoto } from '../Icon';
+import ImgModal from '../ImgModal/ImgModal';
 
 const Modal = ({ setModalShow, itemSelect }) => {
   const dispatch = useDispatch()
@@ -15,6 +16,8 @@ const Modal = ({ setModalShow, itemSelect }) => {
   const [verRegistro, setVerRegistro] = useState(false)
   const [descripcion, setDescripcion] = useState('')
   const [loading, setLoading] = useState(true)
+  const [openImage, setOpenImage] = useState(false)
+  const [imageView, setImageView] = useState('')
 
   useEffect(() => {
     setItem(itemSelect)
@@ -54,6 +57,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
   return (
     <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-10px]  bg-bgModal flex justify-center items-center">
       <div className="bg-white h-4/5 w-4/5 rounded-lg p-3">
+        {openImage && <ImgModal openImageState={setOpenImage} imageView={imageView} />}
         <div className='flex justify-end'>
           <button onClick={() => { dispatch(clearAllCommentState()); setModalShow(false) }}><span className="p-1 rounded-full">X</span></button>
         </div>
@@ -69,7 +73,30 @@ const Modal = ({ setModalShow, itemSelect }) => {
               </div>
               <div className='mb-10 max-h-80 w-full pr-3 overflow-auto'>
                 <p>Descripción:</p>
-                <p>{item.fields.description}</p>
+                {item.fields.description ?
+                  <p>{item.fields.description.split('\n')[0]}</p>
+                  : null
+                }
+                {item.fields.attachment.length > 0 ?
+                  <div className=''>
+                    {item.fields.attachment.map((el, i) =>
+                      el.mimeType === "image/png" ?
+                        <button className='mr-3 border-2' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
+                          <img
+                            className="w-64 h-48"
+                            src={el.content}
+                            alt={`persona asignada ${el.author.displayName}`}
+                            aria-label={`persona asignada ${el.author.displayName}`} />
+                        </button>
+                        :
+                        <a href={el.content} key={i} >
+                          <button className='border-2 overflow-auto w-48 flex flex-col items-center m-1'>
+                            <IconFiles />
+                            <span>{el.filename}</span>
+                          </button>
+                        </a>
+                    )}
+                  </div> : null}
               </div>
               <div className='mb-3'>
                 <p>Comentarios:</p>
