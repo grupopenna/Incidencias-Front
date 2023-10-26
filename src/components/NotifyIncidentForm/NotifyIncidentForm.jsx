@@ -2,7 +2,8 @@ import { issuePost } from "../../redux/actions/";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
-import EditorText from "../ToolEditorText/EditorText";
+import TuiEditor from '../Editor/index'
+import '@toast-ui/editor/dist/toastui-editor.css';
 
 const NotifyIncidentForm = (key) => {
   const dispatch = useDispatch()
@@ -111,7 +112,7 @@ const NotifyIncidentForm = (key) => {
                     Detalle de Incidencia*
                   </label>
                   <div className="mt-1">
-                    <EditorText descripcion={descripcion} setDescripcion={setDescripcion} />
+                    <TuiEditor />
                   </div>
                 </div>
                 <div className="">
