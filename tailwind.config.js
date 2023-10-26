@@ -51,7 +51,8 @@ export default {
         hoverButton: "#1D4ED8",
         bgModal: "rgba(130, 128, 127, 0.4)",
         bgColumn: "#161A1D",
-        bgIncident: "#22272B"
+        bgIncident: "#22272B",
+        bgCard: "#21272C"
       },
       boxShadow: {
         // light

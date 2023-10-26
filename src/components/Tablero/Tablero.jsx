@@ -1,10 +1,12 @@
 /* eslint-disable react/no-unknown-property */
-import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { getIssue } from "../../redux/actions/issue/getIssue";
-import Modal from "../Modal/Modal";
+import { useDispatch, useSelector } from "react-redux";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import Modal from "../Modal/Modal";
 import Incident from "../Incident/Incident";
+import { getIssue } from "../../redux/actions/issue/getIssue";
+import { postTransition, putOrder } from "../../redux/actions";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Tablero = () => {
 
@@ -13,6 +15,11 @@ const Tablero = () => {
   const incidents = useSelector((state) => state.incients);
   const transitions = useSelector((state) => state.transitions);
   const [reload, setReload] = useState(false);
+  const dispatch = useDispatch();
+  const location = useLocation()
+  const { pathname } = location;
+  const keyPathname = pathname.split('/').slice(-1)
+  const navigate = useNavigate();
 
   console.log('incidents', incidents)
 
@@ -32,81 +39,88 @@ const Tablero = () => {
     return filterList
   }
 
-  const [state, setState] = useState([getList("Priorizado"), getList("En Proceso"), getList("Validar"), getList("Validado")]);
+  const onDragEnd = async (result) => {
 
-  function onDragEnd(result) {
-    const { source, destination } = result;
+    console.log('result', result);
+    const list = getList(result.source.droppableId);
 
-    if (!destination) {
-      return;
-    }
-    const sInd = +source.droppableId;
-    const dInd = +destination.droppableId;
+    if ((result.source.droppableId == "Sin Priorizar" || result.source.droppableId == "Priorizado") && (result.destination.droppableId == "Sin Priorizar" || result.destination.droppableId == "Priorizado")){
+      
+      const idList = list.map((item) => item.key)
 
-    if (sInd === dInd) {
-      const items = reorder(state[sInd], source.index, destination.index);
-      const newState = [...state];
-      newState[sInd] = items;
-      setState(newState);
+      if (result.source.droppableId != result.destination.droppableId){
+        await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then((response) => {
+        console.log('response', response)
+      }).catch((error) => {
+        console.log('error', error)
+      })
+
+      }
+
+      let reorder = move(idList, result.source.index, result.destination.index);
+
+      const bodyData = {
+        "issues": reorder,
+        "rankBeforeIssue": result.draggableId
+      }
+
+      await putOrder(bodyData)(dispatch).then((response) => {
+        console.log('response', response)
+      }).catch((error) => {
+        console.log('error', error)
+      })
+
+    } else if(result.source.droppableId == "Validar" && result.destination.droppableId == "Validado"){
+
+      await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then((response) => {
+        console.log('response', response)
+      }).catch((error) => {
+        console.log('error', error)
+      })
     } else {
-      const result = move(state[sInd], state[dInd], source, destination);
-      const newState = [...state];
-      newState[sInd] = result[sInd];
-      newState[dInd] = result[dInd];
-
-      setState(newState.filter(group => group.length));
+      alert('movivmiento no permitido')
     }
+
   }
 
-  const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
+  const move = (list, actualIndex, newIndex)=>{
+    console.log('list', list)
+    console.log('actualIndex', actualIndex)
+    console.log('nextIndex', newIndex)
+    const [elemento] = list.splice(actualIndex, 1);
 
-    return result;
-  };
+  // Inserta el elemento en la nueva posición
+  list.splice(newIndex, 0, elemento);
 
-  const move = (source, destination, droppableSource, droppableDestination) => {
-    const sourceClone = Array.from(source);
-    const destClone = Array.from(destination);
-    const [removed] = sourceClone.splice(droppableSource.index, 1);
+  // Devuelve la lista modificada
+  return list;
+  }
 
-    destClone.splice(droppableDestination.index, 0, removed);
-
-    const result = {};
-    result[droppableSource.droppableId] = sourceClone;
-    result[droppableDestination.droppableId] = destClone;
-
-    return result;
-  };
-  const grid = 8;
 
   const getItemStyle = (isDragging, draggableStyle) => ({
     userSelect: "none",
-    padding: grid * 2,
-    margin: `0 0 ${grid}px 0`,
-
-    background: isDragging ? "lightgreen" : "grey",
-
     ...draggableStyle
   });
-  const getListStyle = isDraggingOver => ({
-    background: isDraggingOver ? "lightblue" : "lightgrey",
-    padding: grid,
-    width: 250
-  });
+
+
+  const handleNotify = () => {
+    const issueId = incidents[0].fields.issuetype.id
+    navigate(`/createIssue/form/${keyPathname[0]}/${issueId}`)
+  }
 
   return (
-    <div>
+    <div className="flex flex-col">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} />}
 
+        <button onClick={() => { handleNotify() }} className="bg-buttonBg w-44 h-10 rounded-md my-2">Notificar Incidencias</button>
+
       <div className="flex gap-x-5">
-        <DragDropContext onDragEnd={onDragEnd}>
+        <DragDropContext onDragEnd={onDragEnd} className="flex">
           {transitions.map((transition) => (
-            <Droppable key={transition.id} droppableId={`${transition.to.name}`} className="bg-bgColumn rounded-2xl pt-5 min-h-full w-5/6">
-              {(provided, snapshot) => (
-                <div ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver)} {...provided.droppableProps}>
-                  <h1 className="mx-2 mb-1 text-font">{transition.to.name}</h1>
+            <Droppable key={transition.id} droppableId={`${transition.to.name}`} className="bg-bgColumn rounded-2xl pt-5 my-6 min-h-full w-5/6">
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps} className=" bg-bgColumn w-1/3 ">
+                  <h1 className="p-3 font-bold text-font">{transition.to.name}</h1>
                   {getList(transition.to.name).map((item, index) => (
                     <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full">
                       <Draggable key={item.id} draggableId={item.id} index={index}>
@@ -137,3 +151,30 @@ const Tablero = () => {
 }
 
 export default Tablero;
+
+    // if (!destination) {
+    //   return;
+    // }
+    // const sInd = +source.droppableId;
+    // const dInd = +destination.droppableId;
+
+    // if (sInd === dInd) {
+    //   const items = reorder(state[sInd], source.index, destination.index);
+    //   const newState = [...state];
+    //   newState[sInd] = items;
+    //   setState(newState);
+    // } else {
+    //   const result = move(state[sInd], state[dInd], source, destination);
+    //   const newState = [...state];
+    //   newState[sInd] = result[sInd];
+    //   newState[dInd] = result[dInd];
+
+    //   setState(newState.filter(group => group.length));
+    // }
+
+      // const reorder = (list, startIndex, endIndex) => {
+  //   const result = Array.from(list);
+  //   const [removed] = result.splice(startIndex, 1);
+  //   result.splice(endIndex, 0, removed);
+  //   return result;
+  // };
