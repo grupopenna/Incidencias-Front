@@ -4,11 +4,18 @@
 import { WithoutPhoto } from "../Icon";
 
 
-const Incident = ({ item }) => {
+const Incident = ({ item, style, innerRef, ...rest }) => {
   //console.log('item.fields.responsable', item.fields.assignee?.displayName == null)
 
   return (
-    <div className="h-40 w-64 rounded-md bg-bgIncident mb-3 flex justify-end items-center flex-col p-1 text-font">
+    <div 
+      ref={innerRef}
+      className="h-40 w-64 rounded-md bg-bgIncident mb-3 flex justify-end items-center flex-col p-1 text-font" 
+      {...rest} 
+      style={{
+        ...style,
+        background: 'none',
+        }}>
       {/* key={item.fields.fields.key}
                       id={item.fields.id}
                       img={item.fields.image}
