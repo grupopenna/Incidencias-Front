@@ -1,29 +1,32 @@
+import { clearAllCommentState, getCommentIssues, postComments } from '../../redux/actions'
 import { PropTypes } from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import EditorText from '../ToolEditorText/EditorText'
-import { useDispatch, useSelector } from 'react-redux';
-import { postComments } from '../../redux/actions/commentIssues/PostComment';
-import { clearAllCommentState, getCommentIssues } from '../../redux/actions/commentIssues/getCommentIssues';
+import { SimpleArrowUp } from '../Icons';
+import { WithoutPhoto } from '../Icon';
 
 const Modal = ({ setModalShow, itemSelect }) => {
   const dispatch = useDispatch()
-  const upString = /[A-Z]/g
   const AllComments = useSelector(state => state.commentIssuesById)
   const [comentarios, setComentarios] = useState([])
   const [item, setItem] = useState(null)
   const [openEditor, setOpenEditor] = useState(false)
+  const [verRegistro, setVerRegistro] = useState(false)
   const [descripcion, setDescripcion] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     setItem(itemSelect)
     setComentarios(AllComments.reverse())
+    setTimeout(() => { setLoading(false) }, 2000)
   }, [item, AllComments.length])
-
 
   useEffect(() => {
     dispatch(getCommentIssues(itemSelect.key))
     AllComments.length > 0 && setComentarios(AllComments.reverse())
   }, [dispatch])
+
 
   const commentTime = (data) => {
     let fechaAntigua = new Date(data);
@@ -41,6 +44,9 @@ const Modal = ({ setModalShow, itemSelect }) => {
   }
 
   const sendNewComment = (key) => {
+    setLoading(true)
+    setOpenEditor(false)
+    setTimeout(() => { setLoading(false) }, 2500)
     setDescripcion('')
     dispatch(postComments(descripcion, key))
   }
@@ -57,25 +63,25 @@ const Modal = ({ setModalShow, itemSelect }) => {
           </div>
           <div className='flex h-5/6'>
             {/*-------seccion--1-------- */}
-            <div className='w-1/2 px-5 overflow-auto pb-4'>
+            <div className='w-1/2 h-full px-5 overflow-auto pb-4'>
               <div className='text-2xl mb-10'>
                 <p>{item.fields.summary}</p>
               </div>
-              <div className='mb-2 h-52 w-5/6 pr-8 overflow-auto'>
+              <div className='mb-10 max-h-80 w-full pr-3 overflow-auto'>
                 <p>Descripción:</p>
                 <p>{item.fields.description}</p>
               </div>
               <div className='mb-3'>
-                Comentarios:
+                <p>Comentarios:</p>
                 {openEditor ?
                   <>
                     <EditorText setDescripcion={setDescripcion} descripcion={descripcion} />
                     <div className='mt-2'>
-                      <buton onClick={() => sendNewComment(item.key)} className="bg-buttonBg p-1 rounded text-white">Guardar</buton>
+                      <button onClick={() => sendNewComment(item.key)} className="bg-buttonBg p-1 rounded text-white">Guardar</button>
                     </div>
                   </>
                   :
-                  <button onClick={() => setOpenEditor(true)} className='border px-3 py-2 text-sm rounded-sm cursor-text ml-2'>
+                  <button onClick={() => setOpenEditor(true)} className='border px-3 py-2 text-sm w-96 rounded-sm cursor-text text-left ml-2'>
                     <span className='text-fontPlaceholder'>Agregue detalles o comentarios</span>
                   </button>
                 }
@@ -84,7 +90,14 @@ const Modal = ({ setModalShow, itemSelect }) => {
                 comentarios.map((cm, i) => (
                   <div key={i} className='flex pt-2 mb-3' >
                     <div className='mr-4'>
-                      <span className="border-2 p-1 rounded-full">{cm.updateAuthor.displayName.match(upString)}</span>
+                      {cm.updateAuthor.avatarUrls ?
+                        <img
+                          className="w-6 h-6"
+                          src={cm.updateAuthor.avatarUrls['16x16']}
+                          alt={`persona asignada ${cm.updateAuthor.displayName}`}
+                          aria-label={`persona asignada ${cm.updateAuthor.displayName}`} />
+                        : <WithoutPhoto />
+                      }
                     </div>
                     <div className='w-full'>
                       <div className='flex justify-between'>
@@ -96,19 +109,79 @@ const Modal = ({ setModalShow, itemSelect }) => {
                   </div>
                 ))
                 :
-                null
+                loading && (
+                  <main className='bg-white flex justify-center items-center'>
+                    <div className='w-8 h-8 border-2 border-background rounded-full animate-spin border-r-transparent' />
+                  </main>
+                )
               }
             </div>
             {/*-------seccion--2-------- */}
-            <div className='w-1/2 px-5'>
-              {item.fields.assignee && (
-                <div className='flex justify-between mb-10'>
-                  <p>Asignado:</p>
-                  <p className='font-bold'>{item.fields.assignee.displayName}</p>
-                  <span className="border-2 p-1 rounded-full">{item.fields.assignee?.displayName.match(upString)}</span>
-                </div>)}
-              <div>
-                Status: {item.fields.status.name}
+            <div className='w-1/2 h-full px-5 overflow-auto pb-4'>
+              <div className='mb-5'>
+                <p>Asignado:</p>
+                {item.fields.assignee ? (
+                  <div className='flex justify-between'>
+                    <p className='font-bold'>{item.fields.assignee.displayName}</p>
+                    {item?.fields?.assignee?.avatarUrls ?
+                      <img
+                        className="w-6 h-6"
+                        src={item?.fields?.assignee?.avatarUrls['16x16']}
+                        alt={`persona asignada ${item?.fields?.assignee?.displayName}`}
+                        aria-label={`persona asignada ${item?.fields?.assignee?.displayName}`} />
+                      : <WithoutPhoto />
+                    }
+                  </div>) :
+                  <span className='text-fontPlaceholder text-xs'>Todavia nadie se asigno esta tarea</span>
+                }
+              </div>
+              <div className='mb-5'>
+                <p>Status:</p>
+                <p className='font-bold'>{item.fields.status.name}</p>
+              </div>
+
+              {item.fields.timetracking.timeSpent ?
+                <div className='mb-5'>
+                  <p>Seguimiento de tiempo:</p>
+                  <div className='w-96 h-1 bg-buttonBg'></div>
+                  <p className='font-bold text-buttonBg'><span className='text-fontPlaceholder'>Registrado:</span>{item.fields.timetracking.timeSpent}</p>
+                </div>
+                : null}
+              <div className='max-h-96'>
+                <p>Registro de trabajo:</p>
+
+                <div className='h-full overflow-auto'>
+                  {item.fields.worklog.worklogs.length > 0 ?
+                    !verRegistro ?
+                      <button onClick={() => setVerRegistro(true)} className='border-2 flex w-full justify-center'><span>{`Ver ${item.fields.worklog.worklogs.length} registros`}</span></button>
+                      : <>
+                        <button onClick={() => setVerRegistro(false)} className='border-t-2 flex w-full justify-center'><span><SimpleArrowUp /></span></button>
+                        {item.fields.worklog.worklogs.map((wl, i) => (
+                          <div key={i} className='flex pt-2 mb-3' >
+                            <div className='mr-4'>
+                              {wl.updateAuthor.avatarUrls ?
+                                <img
+                                  className="w-6 h-6"
+                                  src={wl.updateAuthor.avatarUrls['16x16']}
+                                  alt={`persona asignada ${wl.updateAuthor.displayName}`}
+                                  aria-label={`persona asignada ${wl.updateAuthor.displayName}`} />
+                                : <WithoutPhoto />
+                              }
+                            </div>
+                            <div className='w-full'>
+                              <div className='flex justify-between'>
+                                <p className='font-bold text-base'>{wl.updateAuthor.displayName}</p>
+                                <span className='text-buttonBg'><span className='text-fontPlaceholder text-sm'>registro </span>{wl.timeSpent}</span>
+                                <span className='text-fontPlaceholder text-xs'>{commentTime(wl.updated)}</span>
+                              </div>
+                              <p>{wl.comment}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </>
+                    : <span className='text-fontPlaceholder text-xs'>Todavía no se ha hecho ningún registro</span>
+                  }
+                </div>
               </div>
             </div>
           </div>
