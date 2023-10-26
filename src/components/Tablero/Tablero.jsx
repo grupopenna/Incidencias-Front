@@ -9,7 +9,10 @@ import { postTransition, putOrder } from "../../redux/actions";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Tablero = () => {
-
+  
+  // const [ listPriorizado, setListPriorizado] = useState(getList("Priorizado"))
+  // const navigate = useNavigate();
+  //const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false)
   const [itemSelect, setItemSelect] = useState({})
   const incidents = useSelector((state) => state.incients);
@@ -111,9 +114,14 @@ const Tablero = () => {
   return (
     <div className="flex flex-col">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} />}
-
-        <button onClick={() => { handleNotify() }} className="bg-buttonBg w-44 h-10 rounded-md my-2">Notificar Incidencias</button>
-
+      {/* <div>
+        <Droppable  droppableId={`SinPriorizar`}>
+          {listSinPriorizar.map((item) => 
+          <h1 key={item.key}>{item.id}</h1>
+          )}
+        </Droppable>
+        
+      </div> */}
       <div className="flex gap-x-5">
         <DragDropContext onDragEnd={onDragEnd} className="flex">
           {transitions.map((transition) => (

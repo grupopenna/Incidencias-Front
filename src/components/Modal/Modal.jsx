@@ -2,8 +2,9 @@ import { clearAllCommentState, getCommentIssues, postComments } from '../../redu
 import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
-import EditorText from '../ToolEditorText/EditorText'
 import { IconFiles, SimpleArrowUp } from '../Icons';
+import TuiEditor from '../Editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
 import { WithoutPhoto } from '../Icon';
 import ImgModal from '../ImgModal/ImgModal';
 
@@ -102,7 +103,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
                 <p>Comentarios:</p>
                 {openEditor ?
                   <>
-                    <EditorText setDescripcion={setDescripcion} descripcion={descripcion} />
+                    <TuiEditor />
                     <div className='mt-2'>
                       <button onClick={() => sendNewComment(item.key)} className="bg-buttonBg p-1 rounded text-white">Guardar</button>
                     </div>

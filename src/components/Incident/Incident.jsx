@@ -17,12 +17,12 @@ const Incident = ({ item, style, innerRef, ...rest }) => {
       </div>
       <p>{item.fields.timetracking.timeSpent}</p>
       <div className="w-full h-1/2 items-end justify-between p-2 flex">
-        <div className="flex items-center gap-2">
-          <img src={item?.fields.issuetype.iconUrl} alt="Imagen del icono del proyecto de jira" className="w-4 h-4" />
-          <p className="text-base">{item.key}</p>
-        </div>
-        { item?.fields?.assignee?.avatarUrls ?
-        <img 
+         <div className="flex items-center gap-2">
+           <img src={item?.fields.issuetype.iconUrl} alt="Imagen del icono del proyecto de jira" className="w-4 h-4" />
+           <p className="text-base">{item.key}</p>
+         </div>
+         { item?.fields?.assignee?.avatarUrls ?
+         <img 
         className="w-6 h-6" 
         src={item?.fields?.assignee?.avatarUrls['16x16']} 
         alt={`persona asignada ${item?.fields?.assignee?.displayName}`} 
