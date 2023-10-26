@@ -13,7 +13,6 @@ const Modal = ({ setModalShow, itemSelect }) => {
   const [item, setItem] = useState(null)
   const [openEditor, setOpenEditor] = useState(false)
   const [verRegistro, setVerRegistro] = useState(false)
-
   const [descripcion, setDescripcion] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -140,6 +139,14 @@ const Modal = ({ setModalShow, itemSelect }) => {
                 <p>Status:</p>
                 <p className='font-bold'>{item.fields.status.name}</p>
               </div>
+
+              {item.fields.timetracking.timeSpent ?
+                <div className='mb-5'>
+                  <p>Seguimiento de tiempo:</p>
+                  <div className='w-96 h-1 bg-buttonBg'></div>
+                  <p className='font-bold text-buttonBg'><span className='text-fontPlaceholder'>Registrado:</span>{item.fields.timetracking.timeSpent}</p>
+                </div>
+                : null}
               <div className='max-h-96'>
                 <p>Registro de trabajo:</p>
 
@@ -172,7 +179,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
                           </div>
                         ))}
                       </>
-                    : <span className='text-fontPlaceholder text-xs'>Todavía no se ha registrado ningún trabajo</span>
+                    : <span className='text-fontPlaceholder text-xs'>Todavía no se ha hecho ningún registro</span>
                   }
                 </div>
               </div>
