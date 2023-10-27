@@ -31,6 +31,8 @@ export default function TuiEditor(props: TuiEditorExtendedProps) {
     const divRef = useRef<HTMLDivElement>(null);
     const editorRef = useRef<ToastuiEditor|null>(null);
 
+    if (props.markdownRef === undefined) throw new Error('mardownRef is required')
+
     useEffect(
         () => {
             if (divRef.current) {
