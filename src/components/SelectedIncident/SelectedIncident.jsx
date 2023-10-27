@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
-import { getBoard, getIssue, getTransitions } from '../../redux/actions'
+import { getIssue, getTransitions } from '../../redux/actions'
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom"
 
@@ -14,9 +14,6 @@ const SelectedIncident = ({ projects }) => {
     setLoading(true)
     setSelect(key)
     setTimeout(() => { setLoading(false) }, 2500);
-    await getBoard(key)(dispatch).then((response) => {
-      return console.log('response SelectedIncident getBoard', response);
-    }).catch((error) => { throw error });
 
     await getIssue(key)(dispatch).then((response) => {
       if (response) {
