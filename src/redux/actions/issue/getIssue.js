@@ -23,7 +23,9 @@ export const getIssue = (key) => {
       "aggregatetimeestimate",
       "aggregatetimespent",
       "customfield_10019",
-      "worklog"
+      "worklog",
+      "attachment"
+
     ],
     "jql": `project = ${key} and reporter=${idUser}`
 }
