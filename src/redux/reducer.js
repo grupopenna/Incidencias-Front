@@ -13,7 +13,9 @@ import {
   GET_BOARD,
   GET_COMMENT_ISSUES,
   CLEAR_COMMENT_STATE,
-  NEW_COMMENT
+  NEW_COMMENT,
+
+  GET_ISSUETYPE
 
 } from "./action-type";
 
@@ -30,7 +32,9 @@ const initialState = {
 
   transitions: [],
 
-  commentIssuesById: []
+  commentIssuesById: [],
+
+  issuesTypes: []
 
 };
 
@@ -65,6 +69,8 @@ const reducer = (state = initialState, { type, payload }) => {
     case NEW_COMMENT:
       return { ...state, commentIssuesById: [...state.commentIssuesById, payload] }
 
+    case GET_ISSUETYPE:
+      return { ...state, issuesTypes: payload }
     default:
       return { ...state };
   }

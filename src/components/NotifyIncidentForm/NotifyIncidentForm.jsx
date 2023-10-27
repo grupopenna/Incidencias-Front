@@ -1,32 +1,41 @@
-import { issuePost } from "../../redux/actions/";
+import '@toast-ui/editor/dist/toastui-editor.css';
+import { issuePost, getIssueTypes } from "../../redux/actions/";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
+import {  Select, SelectItem  } from '@tremor/react'
 import TuiEditor from '../Editor/index'
-import '@toast-ui/editor/dist/toastui-editor.css';
 
 const NotifyIncidentForm = (key) => {
+  const editorRef = useRef(null)
   const dispatch = useDispatch()
-  const AllProjects = useSelector(state => state.projects)
+  const { issuesType, id } = useSelector(state => state.issuesTypes)
 
   // const [content, setContent] = useState()
 
+
   const [titleDesc, setTitleDesc] = useState('');
   const [email, setEmail] = useState('');
-  const [descripcion, setDescripcion] = useState('');
+  const [selectedIssue, setSelectedIssue] = useState('')
   const [errors, setErrors] = useState({ titleDesc: '', email: '', descripcion: '' });
   const location = useLocation()
   const { pathname } = location;
   // Toolbar edito
   //console.log(content)
+  
+  useEffect(() => {
+
+    (async () => {
+      const [projectName] = pathname.split('/').slice(-2)
+      await getIssueTypes(projectName)(dispatch)
+    })()
+
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const [issueId] = pathname.split('/').slice(-1)
-    const [projectName] = pathname.split('/').slice(-2)
-    const [project] = AllProjects.filter(pr => pr.key === projectName)
-    const projectId = project.id
+    const descripcion = editorRef.current.getMarkdown() 
 
     // Validación de nombre no vacío
     if (!titleDesc.trim()) {
@@ -49,7 +58,7 @@ const NotifyIncidentForm = (key) => {
 
     // Restablece los mensajes de error en caso de éxito
     setErrors({ titleDesc: '', email: '', descripcion: '' });
-    const data = { key, titleDesc, email, descripcion, projectId, issueId }
+    const data = { key, titleDesc, email, descripcion, projectId: id, issueId: selectedIssue }
     // Ahora, realiza la solicitud POST usando axios
     //--------------------------------------------------------
     /*  await issuePost(data).then((response)=>{
@@ -60,8 +69,11 @@ const NotifyIncidentForm = (key) => {
        console.error(error);
      }); */
     //-------------------------------------------------------
+
     dispatch(issuePost(data))
   }
+
+
 
   return (
     <div className=' flex justify-center mx-3 lg:px-16'>
@@ -107,12 +119,25 @@ const NotifyIncidentForm = (key) => {
                     />
                   </div>
                 </div>
+                <label className='text-white'>
+                  Issue type
+                  <Select 
+                    onValueChange={(value) => setSelectedIssue(value)}
+                    className='z-50 mt-2'
+                    value={selectedIssue}>
+                  {issuesType?.map((project) => (
+                      <SelectItem key={project.id} value={project.id}>
+                          {project.name}
+                      </SelectItem>
+                      ))}
+                  </Select>
+                </label>
                 <div className='mt-1'>
                   <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-slate-100">
                     Detalle de Incidencia*
                   </label>
                   <div className="mt-1">
-                    <TuiEditor />
+                    <TuiEditor markdownRef={editorRef}/>
                   </div>
                 </div>
                 <div className="">
