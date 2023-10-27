@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useRef } from "react";
-import ToastuiEditor, { EditorOptions, EventMap } from '@toast-ui/editor';
+import ToastuiEditor, { Editor, EditorOptions, EventMap } from '@toast-ui/editor';
 
 
 export interface EventMapping {
@@ -23,10 +23,14 @@ export type EventNames = keyof EventMapping;
 
 export type TuiEditorProps = Omit<EditorOptions, 'el'> & Partial<EventMapping>;
 
+interface TuiEditorExtendedProps extends TuiEditorProps {
+    markdownRef: React.MutableRefObject<Editor | null>
+} 
 
-export default function TuiEditor(props: TuiEditorProps) {
+export default function TuiEditor(props: TuiEditorExtendedProps) {
     const divRef = useRef<HTMLDivElement>(null);
     const editorRef = useRef<ToastuiEditor|null>(null);
+
     useEffect(
         () => {
             if (divRef.current) {
@@ -37,6 +41,8 @@ export default function TuiEditor(props: TuiEditorProps) {
                     usageStatistics: false,
                     events: getInitEvents(props),
                 });
+
+                props.markdownRef.current = editorRef.current
             }
         },
         []
@@ -58,7 +64,7 @@ export default function TuiEditor(props: TuiEditorProps) {
         },
         [props],
     )
-    return <div ref={divRef} defaultValue='# Write something' className="bg-white"></div>;
+    return <div ref={divRef} className="bg-white"></div>;
 }
 
 
