@@ -1,11 +1,11 @@
 import axios from "axios";
 import {  BASE_URL } from '../../action-type';
 
-export const putOrder = async () => {
-  const orderData = {}
+export const putOrder = async (orderData) => {
+  console.log('orderData', orderData)
 
   try {
-    const response = (await axios.post(`${BASE_URL}/order`, orderData)).data;
+    const response = await axios.put(`${BASE_URL}/order`, orderData);
 
     return response
 

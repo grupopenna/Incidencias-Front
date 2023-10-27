@@ -1,0 +1,228 @@
+import { clearAllCommentState, getCommentIssues, postComments } from '../../redux/actions'
+import { PropTypes } from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { IconFiles, SimpleArrowUp } from '../Icons';
+import TuiEditor from '../Editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
+import { WithoutPhoto } from '../Icon';
+import ImgModal from '../ImgModal/ImgModal';
+
+const Modal = ({ setModalShow, itemSelect }) => {
+  const dispatch = useDispatch()
+  const AllComments = useSelector(state => state.commentIssuesById)
+  const [comentarios, setComentarios] = useState([])
+  const [item, setItem] = useState(null)
+  const [openEditor, setOpenEditor] = useState(false)
+  const [verRegistro, setVerRegistro] = useState(false)
+  const [descripcion, setDescripcion] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [openImage, setOpenImage] = useState(false)
+  const [imageView, setImageView] = useState('')
+
+  useEffect(() => {
+    setItem(itemSelect)
+    setComentarios(AllComments.reverse())
+    setTimeout(() => { setLoading(false) }, 2000)
+  }, [item, AllComments.length])
+
+  useEffect(() => {
+    dispatch(getCommentIssues(itemSelect.key))
+    AllComments.length > 0 && setComentarios(AllComments.reverse())
+  }, [dispatch])
+
+
+  const commentTime = (data) => {
+    let fechaAntigua = new Date(data);
+    let fechaActual = new Date();
+    let diferenciaEnMilisegundos = fechaActual - fechaAntigua;
+
+    let minutos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
+    let horas = Math.floor(minutos / 60);
+    let dias = Math.floor(horas / 24);
+
+    return dias > 0 ? `Hace ${dias} dias` :
+      horas > 0 ? `Hace ${horas} horas` :
+        minutos > 1 ? `Hace ${minutos} minutos` :
+          'Hace 1 minuto'
+  }
+
+  const sendNewComment = (key) => {
+    setLoading(true)
+    setOpenEditor(false)
+    setTimeout(() => { setLoading(false) }, 2500)
+    setDescripcion('')
+    dispatch(postComments(descripcion, key))
+  }
+
+  return (
+    <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-10px]  bg-bgModal flex justify-center items-center">
+      <div className="bg-white h-4/5 w-4/5 rounded-lg p-3">
+        {openImage && <ImgModal openImageState={setOpenImage} imageView={imageView} />}
+        <div className='flex justify-end'>
+          <button onClick={() => { dispatch(clearAllCommentState()); setModalShow(false) }}><span className="p-1 rounded-full">X</span></button>
+        </div>
+        {item && (<>
+          <div className='ml-5'>
+            {item.key}
+          </div>
+          <div className='flex h-5/6'>
+            {/*-------seccion--1-------- */}
+            <div className='w-1/2 h-full px-5 overflow-auto pb-4'>
+              <div className='text-2xl mb-10'>
+                <p>{item.fields.summary}</p>
+              </div>
+              <div className='mb-10 max-h-80 w-full pr-3 overflow-auto'>
+                <p>Descripción:</p>
+                {item.fields.description ?
+                  <p>{item.fields.description.split('\n')[0]}</p>
+                  : null
+                }
+                {item.fields.attachment.length > 0 ?
+                  <div className=''>
+                    {item.fields.attachment.map((el, i) =>
+                      el.mimeType === "image/png" ?
+                        <button className='mr-3 border-2' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
+                          <img
+                            className="w-64 h-48"
+                            src={el.content}
+                            alt={`persona asignada ${el.author.displayName}`}
+                            aria-label={`persona asignada ${el.author.displayName}`} />
+                        </button>
+                        :
+                        <a href={el.content} key={i} >
+                          <button className='border-2 overflow-auto w-48 flex flex-col items-center m-1'>
+                            <IconFiles />
+                            <span>{el.filename}</span>
+                          </button>
+                        </a>
+                    )}
+                  </div> : null}
+              </div>
+              <div className='mb-3'>
+                <p>Comentarios:</p>
+                {openEditor ?
+                  <>
+                    <TuiEditor />
+                    <div className='mt-2'>
+                      <button onClick={() => sendNewComment(item.key)} className="bg-buttonBg p-1 rounded text-white">Guardar</button>
+                    </div>
+                  </>
+                  :
+                  <button onClick={() => setOpenEditor(true)} className='border px-3 py-2 text-sm w-96 rounded-sm cursor-text text-left ml-2'>
+                    <span className='text-fontPlaceholder'>Agregue detalles o comentarios</span>
+                  </button>
+                }
+              </div>
+              {comentarios.length > 0 ?
+                comentarios.map((cm, i) => (
+                  <div key={i} className='flex pt-2 mb-3' >
+                    <div className='mr-4'>
+                      {cm.updateAuthor.avatarUrls ?
+                        <img
+                          className="w-6 h-6"
+                          src={cm.updateAuthor.avatarUrls['16x16']}
+                          alt={`persona asignada ${cm.updateAuthor.displayName}`}
+                          aria-label={`persona asignada ${cm.updateAuthor.displayName}`} />
+                        : <WithoutPhoto />
+                      }
+                    </div>
+                    <div className='w-full'>
+                      <div className='flex justify-between'>
+                        <p className='font-bold text-base'>{cm.updateAuthor.displayName}</p>
+                        <span className='text-fontPlaceholder text-sm'>{commentTime(cm.updated)}</span>
+                      </div>
+                      <p>{cm.body}</p>
+                    </div>
+                  </div>
+                ))
+                :
+                loading && (
+                  <main className='bg-white flex justify-center items-center'>
+                    <div className='w-8 h-8 border-2 border-background rounded-full animate-spin border-r-transparent' />
+                  </main>
+                )
+              }
+            </div>
+            {/*-------seccion--2-------- */}
+            <div className='w-1/2 h-full px-5 overflow-auto pb-4'>
+              <div className='mb-5'>
+                <p>Asignado:</p>
+                {item.fields.assignee ? (
+                  <div className='flex justify-between'>
+                    <p className='font-bold'>{item.fields.assignee.displayName}</p>
+                    {item?.fields?.assignee?.avatarUrls ?
+                      <img
+                        className="w-6 h-6"
+                        src={item?.fields?.assignee?.avatarUrls['16x16']}
+                        alt={`persona asignada ${item?.fields?.assignee?.displayName}`}
+                        aria-label={`persona asignada ${item?.fields?.assignee?.displayName}`} />
+                      : <WithoutPhoto />
+                    }
+                  </div>) :
+                  <span className='text-fontPlaceholder text-xs'>Todavia nadie se asigno esta tarea</span>
+                }
+              </div>
+              <div className='mb-5'>
+                <p>Status:</p>
+                <p className='font-bold'>{item.fields.status.name}</p>
+              </div>
+
+              {item.fields.timetracking.timeSpent ?
+                <div className='mb-5'>
+                  <p>Seguimiento de tiempo:</p>
+                  <div className='w-96 h-1 bg-buttonBg'></div>
+                  <p className='font-bold text-buttonBg'><span className='text-fontPlaceholder'>Registrado:</span>{item.fields.timetracking.timeSpent}</p>
+                </div>
+                : null}
+              <div className='max-h-96'>
+                <p>Registro de trabajo:</p>
+
+                <div className='h-full overflow-auto'>
+                  {item.fields.worklog.worklogs.length > 0 ?
+                    !verRegistro ?
+                      <button onClick={() => setVerRegistro(true)} className='border-2 flex w-full justify-center'><span>{`Ver ${item.fields.worklog.worklogs.length} registros`}</span></button>
+                      : <>
+                        <button onClick={() => setVerRegistro(false)} className='border-t-2 flex w-full justify-center'><span><SimpleArrowUp /></span></button>
+                        {item.fields.worklog.worklogs.map((wl, i) => (
+                          <div key={i} className='flex pt-2 mb-3' >
+                            <div className='mr-4'>
+                              {wl.updateAuthor.avatarUrls ?
+                                <img
+                                  className="w-6 h-6"
+                                  src={wl.updateAuthor.avatarUrls['16x16']}
+                                  alt={`persona asignada ${wl.updateAuthor.displayName}`}
+                                  aria-label={`persona asignada ${wl.updateAuthor.displayName}`} />
+                                : <WithoutPhoto />
+                              }
+                            </div>
+                            <div className='w-full'>
+                              <div className='flex justify-between'>
+                                <p className='font-bold text-base'>{wl.updateAuthor.displayName}</p>
+                                <span className='text-buttonBg'><span className='text-fontPlaceholder text-sm'>registro </span>{wl.timeSpent}</span>
+                                <span className='text-fontPlaceholder text-xs'>{commentTime(wl.updated)}</span>
+                              </div>
+                              <p>{wl.comment}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </>
+                    : <span className='text-fontPlaceholder text-xs'>Todavía no se ha hecho ningún registro</span>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+        )}
+      </div>
+    </div >
+  )
+}
+
+Modal.propTypes = {
+  setModalShow: PropTypes.func,
+  itemSelect: PropTypes.object
+}
+
+export default Modal

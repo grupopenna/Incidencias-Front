@@ -8,7 +8,7 @@ export const getIssue = (key) => {
   let bodyData = {
     "expand": [
         "names",
-        // "schema",
+        "schema",
         "operations"
     ],
     "fields": [
@@ -25,6 +25,7 @@ export const getIssue = (key) => {
       "customfield_10019",
       "worklog",
       "attachment"
+
     ],
     "jql": `project = ${key} and reporter=${idUser}`
 }

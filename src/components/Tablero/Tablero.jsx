@@ -1,25 +1,30 @@
 /* eslint-disable react/no-unknown-property */
-import { useSelector } from "react-redux";
-import Incident from "../Incident/Incident";
 import { useEffect, useState } from "react";
-// import { postTransition } from "../../redux/actions/transitions/postTransition";
+import { useDispatch, useSelector } from "react-redux";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import Modal from "../Modal/Modal";
+import Incident from "../Incident/Incident";
 import { getIssue } from "../../redux/actions/issue/getIssue";
+import { postTransition, putOrder } from "../../redux/actions";
 import { useLocation, useNavigate } from "react-router-dom";
 
-
 const Tablero = () => {
-  // const dispatch = useDispatch();
+  
+  // const [ listPriorizado, setListPriorizado] = useState(getList("Priorizado"))
+  // const navigate = useNavigate();
+  //const dispatch = useDispatch();
+  const [modalShow, setModalShow] = useState(false)
+  const [itemSelect, setItemSelect] = useState({})
   const incidents = useSelector((state) => state.incients);
   const transitions = useSelector((state) => state.transitions);
-  // const [incident, setIncident] = useState(incidents);
   const [reload, setReload] = useState(false);
-  const navigate = useNavigate();
-
-  console.log('incidents', incidents)
-
+  const dispatch = useDispatch();
   const location = useLocation()
   const { pathname } = location;
   const keyPathname = pathname.split('/').slice(-1)
+  const navigate = useNavigate();
+
+  console.log('incidents', incidents)
 
   useEffect(() => {
     getIssue()
@@ -37,86 +42,154 @@ const Tablero = () => {
     return filterList
   }
 
-  // const startDrag = (evt, item) => {
-  //   evt.dataTransfer.setData('itemID', item.id)
-  // }
+  const onDragEnd = async (result) => {
 
-  // const draggingOver = (evt) => {
-  //   evt.preventDefault();
-  // }
+    console.log('result', result);
+    const list = getList(result.source.droppableId);
 
-  // const onDrop = (evt, list) => {
-  //   const itemID = evt.dataTransfer.getData('itemID');
-  //   const item = incidents.find(item => item.id == itemID);
+    if ((result.source.droppableId == "Sin Priorizar" || result.source.droppableId == "Priorizado") && (result.destination.droppableId == "Sin Priorizar" || result.destination.droppableId == "Priorizado")){
+      
+      const idList = list.map((item) => item.key)
 
-  //   const data = {
-  //     id: item.id,
-  //     list: list.to.name
-  //   }
+      if (result.source.droppableId != result.destination.droppableId){
+        console.log('result.destination.droppableId', result.destination.droppableId)
+        console.log('result.draggableId', result.draggableId)
+        await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then(async (response) => {
+          console.log('response', response)
+          console.log('keyPathname[0]', keyPathname[0])
+          await getIssue(keyPathname[0])(dispatch).then((response) => {
+            console.log('response', response)
+            return console.log('response SelectedIncident getIssue', response);
+          }).catch((error) => { throw error });
+      }).catch((error) => {
+        console.log('error', error)
+        return
+      })
 
-  //   postTransition(data)(dispatch).then((response) => {
-  //     console.log('response', response)
-  //   }).catch((error) => console.log('response tablero L38', error))
-  //   item.list = list;
+      } else {
+        let reorder = move(idList, result.source.index, result.destination.index);
 
-  //   const newState = incident.map(task => {
-  //     if (task.id === itemID) return item;
-  //     return task
-  //   })
+        const bodyData = {
+          "issues": reorder,
+          "rankBeforeIssue": result.draggableId
+        }
 
-  //   setIncident(newState);
-  // }
+        await putOrder(bodyData)(dispatch).then(async (response) => {
+          console.log('response', response)
+          
+        }).catch((error) => {
+          console.log('error', error)
+        })
+      }
+
+    } else if (result.source.droppableId == "Validar" && result.destination.droppableId == "Validado"){
+
+      await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then((response) => {
+        console.log('response', response)
+      }).catch((error) => {
+        console.log('error', error)
+      })
+    } else {
+      alert('movivmiento no permitido')
+    }
+  }
+
+  const move = (list, actualIndex, newIndex)=>{
+    console.log('list', list)
+    console.log('actualIndex', actualIndex)
+    console.log('nextIndex', newIndex)
+    const [elemento] = list.splice(actualIndex, 1);
+
+  // Inserta el elemento en la nueva posición
+  list.splice(newIndex, 0, elemento);
+
+  // Devuelve la lista modificada
+  return list;
+  }
+
+
+  const getItemStyle = (isDragging, draggableStyle) => ({
+    userSelect: "none",
+    ...draggableStyle
+  });
+
+
   const handleNotify = () => {
-    const issueId = incidents[0].fields.issuetype.id
-    navigate(`/createIssue/form/${keyPathname[0]}/${issueId}`)
+    navigate(`/createIssue/form/${keyPathname[0]}/`)
   }
-
-  const handleReload = () => {
-    setReload(true)
-  }
-
 
   return (
-    <div className="flex justify-center flex-col w-full mx-4">
-      <div className="flex justify-around my-5">
+    <div className="flex flex-col w-full mx-5">
+      {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} />}
+      <div className="flex  my-5">
         <button onClick={() => { handleNotify() }} className="bg-buttonBg w-44 h-10 rounded-md">Notificar Incidencias</button>
-        <button onClick={() => { handleReload() }} className="">
+        {/* <button onClick={() => { handleReload() }} className="">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-slate-100 w-6 h-6 bg-buttonBg p-3">
-            <path d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+              <path d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
           </svg>
-        </button>
+        </button> */}
       </div>
-      <div className="flex gap-x-3 w-full">
-          {/* <div className="bg-bgColumn rounded-2xl pt-5 min-h-full w-5/6">
-              <h1 className="mx-2 mb-1 text-font"> Sin Priorizar</h1>
-              <SortableContext strategy={verticalListSortingStrategy}>
-                
-              </SortableContext>
-          </div>
-          <div className="bg-bgColumn rounded-2xl pt-5 min-h-full w-5/6">
-              <h1 className="mx-2 mb-1 text-font">Priorizado</h1>
-              <SortableContext strategy={verticalListSortingStrategy}>
-                
-              </SortableContext>
-          </div> */}
-          {
-            transitions.map((transition) => <div  key={transition.id}  className="bg-bgColumn rounded-2xl pt-5 min-h-full w-5/6">
-              <h1 className="mx-2 mb-1 text-font">{transition.to.name}</h1>
-                {getList(transition.to.name).map((item) => (
-
-                  <div key={item.id}   className="flex justify-center mx-2 ">
-                    Dra
-                    <Incident
-                      item={item}
-                    />
-                  </div>
-                ))}
-            </div>)
-          }
+      <div className="flex gap-x-2">
+        <DragDropContext onDragEnd={onDragEnd} className="flex">
+          {transitions.map((transition) => (
+            <Droppable key={transition.id} droppableId={`${transition.to.name}`} className="min-h-full w-5/6">
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps} className=" bg-bgColumn rounded-lg w-1/3 flex flex-col px-1">
+                  <h1 className="p-3 font-bold text-font">{transition.to.name}</h1>
+                  {getList(transition.to.name).map((item, index) => (
+                    <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full flex ">
+                      <Draggable key={item.key} draggableId={item.key} index={index}>
+                          {(provided, snapshot) => (
+                            <Incident 
+                              item={item} 
+                              innerRef={provided.innerRef}
+                              {...provided.draggableProps} 
+                              {...provided.dragHandleProps}  
+                              style={getItemStyle(
+                              snapshot.isDragging,
+                              provided.draggableProps.style,
+                          )}/>
+                          )}
+                      </Draggable>
+                    </button>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          ))
+        }
+        </DragDropContext>
       </div>
     </div>
-
   )
 }
 
 export default Tablero;
+
+    // if (!destination) {
+    //   return;
+    // }
+    // const sInd = +source.droppableId;
+    // const dInd = +destination.droppableId;
+
+    // if (sInd === dInd) {
+    //   const items = reorder(state[sInd], source.index, destination.index);
+    //   const newState = [...state];
+    //   newState[sInd] = items;
+    //   setState(newState);
+    // } else {
+    //   const result = move(state[sInd], state[dInd], source, destination);
+    //   const newState = [...state];
+    //   newState[sInd] = result[sInd];
+    //   newState[dInd] = result[dInd];
+
+    //   setState(newState.filter(group => group.length));
+    // }
+
+      // const reorder = (list, startIndex, endIndex) => {
+  //   const result = Array.from(list);
+  //   const [removed] = result.splice(startIndex, 1);
+  //   result.splice(endIndex, 0, removed);
+  //   return result;
+  // };
