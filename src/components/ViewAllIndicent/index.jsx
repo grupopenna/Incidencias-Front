@@ -1,7 +1,17 @@
-import { ArrowDown, ArrowUp } from '../Icon'
+import { ArrowDown, ArrowUp, SearchIcon } from '../Icon'
 import { FormatDate } from '../../utils'
 import { getAllIssues, getProjects } from '../../redux/actions'
-import { Select, SelectItem, Table, TableBody, TableHeaderCell, TableCell, TableRow, TableHead } from '@tremor/react'
+import { 
+    Select, 
+    SelectItem, 
+    Table, 
+    TableBody, 
+    TableHeaderCell, 
+    TableCell, 
+    TableRow,
+    TableHead,
+    TextInput 
+} from '@tremor/react'
 import { useEffect, useState, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Loader from '../Loader'
@@ -18,12 +28,15 @@ function ViewAllIndicent() {
     const [selectedItem, setSelectedItem] = useState()
     const [isLoading, setIsloding] = useState(true)
     const [modalShow, setModalShow] = useState(false)
+    const [searchByDetail, setSearchByDetail] = useState('')
+
     const dispatch = useDispatch()
     const allIncients = useSelector(state => state.allIncients)
     const projects = useSelector(state => state.projects)
 
     const incidentOrdered = useMemo(() => {
         
+
         if (!allIncients) return []
         
         let mutateData = allIncients
@@ -42,9 +55,19 @@ function ViewAllIndicent() {
             mutateData = mutateData?.filter((item) => item.fields.project.name === selectedProject)
         }
 
+        if (searchByDetail !== '') {
+            mutateData = mutateData?.filter((item) => item.fields.summary?.toLowerCase().includes(searchByDetail?.toLowerCase()))
+        }
+
         return mutateData
 
-    }, [order, allIncients, selectedProject])
+    }, [order, allIncients, selectedProject, searchByDetail])
+
+
+
+    const handleSearchByDetail = (event) => {
+        setSearchByDetail(event.target.value)
+    }
 
     const handleOrderTable = () => {
         if (order === ORDER_BY.DESC) {
@@ -55,7 +78,6 @@ function ViewAllIndicent() {
     }
 
     const handleShowDetails = (index) => {
-        console.log({ index })
         setSelectedItem(incidentOrdered[index])
         setModalShow(true)
     }
@@ -76,7 +98,6 @@ function ViewAllIndicent() {
 
 
 
-    console.log({ incidentOrdered })
     if (isLoading) {
      return <Loader />
     }
@@ -84,7 +105,7 @@ function ViewAllIndicent() {
     return (
         <section className="flex justify-center flex-col mx-20 mt-10 items-center">
             { modalShow && <Modal setModalShow={setModalShow} itemSelect={selectedItem}/>}
-            <header className='w-full flex gap-3 p-2'>
+            <header className='w-full flex gap-3 p-2 items-end justify-between'>
                 <div className='p-2 flex flex-col gap-2'>
                     <label className='text-white '>
                 Filtrar por projecto
@@ -97,7 +118,9 @@ function ViewAllIndicent() {
                     ))}
                 </Select>
                 </div>
-
+                <div className='w-1/3 flex'>
+                  <TextInput onChange={handleSearchByDetail} className='p-1' role='searchbox' icon={SearchIcon} placeholder='Buscar por detalle...'/>
+                </div>
             </header>
             <Table  className='w-full'>
                 <TableHead>
