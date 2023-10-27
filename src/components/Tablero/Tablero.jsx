@@ -52,28 +52,37 @@ const Tablero = () => {
       const idList = list.map((item) => item.key)
 
       if (result.source.droppableId != result.destination.droppableId){
-        await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then((response) => {
-        console.log('response', response)
+        console.log('result.destination.droppableId', result.destination.droppableId)
+        console.log('result.draggableId', result.draggableId)
+        await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then(async (response) => {
+          console.log('response', response)
+          console.log('keyPathname[0]', keyPathname[0])
+          await getIssue(keyPathname[0])(dispatch).then((response) => {
+            console.log('response', response)
+            return console.log('response SelectedIncident getIssue', response);
+          }).catch((error) => { throw error });
       }).catch((error) => {
         console.log('error', error)
+        return
       })
 
+      } else {
+        let reorder = move(idList, result.source.index, result.destination.index);
+
+        const bodyData = {
+          "issues": reorder,
+          "rankBeforeIssue": result.draggableId
+        }
+
+        await putOrder(bodyData)(dispatch).then(async (response) => {
+          console.log('response', response)
+          
+        }).catch((error) => {
+          console.log('error', error)
+        })
       }
 
-      let reorder = move(idList, result.source.index, result.destination.index);
-
-      const bodyData = {
-        "issues": reorder,
-        "rankBeforeIssue": result.draggableId
-      }
-
-      await putOrder(bodyData)(dispatch).then((response) => {
-        console.log('response', response)
-      }).catch((error) => {
-        console.log('error', error)
-      })
-
-    } else if(result.source.droppableId == "Validar" && result.destination.droppableId == "Validado"){
+    } else if (result.source.droppableId == "Validar" && result.destination.droppableId == "Validado"){
 
       await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then((response) => {
         console.log('response', response)
@@ -83,7 +92,6 @@ const Tablero = () => {
     } else {
       alert('movivmiento no permitido')
     }
-
   }
 
   const move = (list, actualIndex, newIndex)=>{
@@ -112,26 +120,26 @@ const Tablero = () => {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full mx-5">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} />}
-      {/* <div>
-        <Droppable  droppableId={`SinPriorizar`}>
-          {listSinPriorizar.map((item) => 
-          <h1 key={item.key}>{item.id}</h1>
-          )}
-        </Droppable>
-        
-      </div> */}
-      <div className="flex gap-x-5">
+      <div className="flex  my-5">
+        <button onClick={() => { handleNotify() }} className="bg-buttonBg w-44 h-10 rounded-md">Notificar Incidencias</button>
+        {/* <button onClick={() => { handleReload() }} className="">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-slate-100 w-6 h-6 bg-buttonBg p-3">
+              <path d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+          </svg>
+        </button> */}
+      </div>
+      <div className="flex gap-x-2">
         <DragDropContext onDragEnd={onDragEnd} className="flex">
           {transitions.map((transition) => (
-            <Droppable key={transition.id} droppableId={`${transition.to.name}`} className="bg-bgColumn rounded-2xl pt-5 my-6 min-h-full w-5/6">
+            <Droppable key={transition.id} droppableId={`${transition.to.name}`} className="min-h-full w-5/6">
               {(provided) => (
-                <div ref={provided.innerRef} {...provided.droppableProps} className=" bg-bgColumn w-1/3 ">
+                <div ref={provided.innerRef} {...provided.droppableProps} className=" bg-bgColumn rounded-lg w-1/3 flex flex-col px-1">
                   <h1 className="p-3 font-bold text-font">{transition.to.name}</h1>
                   {getList(transition.to.name).map((item, index) => (
-                    <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full">
-                      <Draggable key={item.id} draggableId={item.id} index={index}>
+                    <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full flex ">
+                      <Draggable key={item.key} draggableId={item.key} index={index}>
                           {(provided, snapshot) => (
                             <Incident 
                               item={item} 
@@ -146,12 +154,12 @@ const Tablero = () => {
                       </Draggable>
                     </button>
                   ))}
-
                   {provided.placeholder}
                 </div>
               )}
             </Droppable>
-          ))}
+          ))
+        }
         </DragDropContext>
       </div>
     </div>
