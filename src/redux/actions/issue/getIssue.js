@@ -1,5 +1,5 @@
 import axios from "axios";
-import {  BASE_URL, GET_ISSUES } from '../../action-type';
+import { BASE_URL, GET_ISSUES } from '../../action-type';
 
 export const getIssue = (key) => {
 
@@ -7,9 +7,9 @@ export const getIssue = (key) => {
 
   let bodyData = {
     "expand": [
-        "names",
-        "schema",
-        "operations"
+      "names",
+      "schema",
+      "operations"
     ],
     "fields": [
       "description",
@@ -28,20 +28,15 @@ export const getIssue = (key) => {
 
     ],
     "jql": `project = ${key} and reporter=${idUser}`
-}
+  }
 
   return async (dispatch) => {
     try {
-      const response = (await axios.post(`${BASE_URL}/incident/search/`, bodyData)).data;
-
-      console.log('response', response)
-
-      dispatch({type: GET_ISSUES, payload: response})
-
-      return response
+      const response = (await axios.post(`${BASE_URL}/incident/search/`, bodyData));
+      if (response.status === 200) dispatch({ type: GET_ISSUES, payload: response.data })
+      return response.data
     } catch (error) {
       console.log('Error al realizar la solicitud getIssue');
-
     }
   };
 };
