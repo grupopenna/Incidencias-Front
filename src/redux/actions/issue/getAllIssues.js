@@ -11,22 +11,22 @@ export const getAllIssues = () => {
       // "operations"
     ],
     "fields": [
-        "description",
-        "issuetype",
-        "summary",
-        "status",
-        "assignee",
-        "accountId",
-        "timetracking",
-        "timeoriginalestimate",
-        "aggregatetimeestimate",
-        "aggregatetimespent",
-        "customfield_10019",
-        "worklog",
-        "attachment",
-        "project",
-        "created",
-        "updated"
+      "description",
+      "issuetype",
+      "summary",
+      "status",
+      "assignee",
+      "accountId",
+      "timetracking",
+      "timeoriginalestimate",
+      "aggregatetimeestimate",
+      "aggregatetimespent",
+      "customfield_10019",
+      "worklog",
+      "attachment",
+      "project",
+      "created",
+      "updated"
     ],
     "jql": `reporter=${userId} order by created DESC`
   }

@@ -7,6 +7,7 @@ import TuiEditor from '../Editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { WithoutPhoto } from '../Icon';
 import ImgModal from '../ImgModal/ImgModal';
+import { useRef } from 'react';
 
 const Modal = ({ setModalShow, itemSelect }) => {
   const dispatch = useDispatch()
@@ -15,10 +16,16 @@ const Modal = ({ setModalShow, itemSelect }) => {
   const [item, setItem] = useState(null)
   const [openEditor, setOpenEditor] = useState(false)
   const [verRegistro, setVerRegistro] = useState(false)
-  const [descripcion, setDescripcion] = useState('')
   const [loading, setLoading] = useState(true)
   const [openImage, setOpenImage] = useState(false)
   const [imageView, setImageView] = useState('')
+
+  /**
+   * 
+   * Cuando se use el componente TuiEditor es necesario pasar una referencia usando useRef() por props
+   * Esto le asignara la instancia del editor para luego poder user el metodo getMarkdown(), para recuperar el contenido del editor.
+   */
+  const editorRef = useRef(null)
 
   useEffect(() => {
     setItem(itemSelect)
@@ -51,8 +58,9 @@ const Modal = ({ setModalShow, itemSelect }) => {
     setLoading(true)
     setOpenEditor(false)
     setTimeout(() => { setLoading(false) }, 2500)
-    setDescripcion('')
+    const descripcion = editorRef.current.getMarkdown()
     dispatch(postComments(descripcion, key))
+    editorRef.current.reset()
   }
 
   return (
@@ -103,7 +111,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
                 <p>Comentarios:</p>
                 {openEditor ?
                   <>
-                    <TuiEditor />
+                    <TuiEditor markdownRef={editorRef}/>
                     <div className='mt-2'>
                       <button onClick={() => sendNewComment(item.key)} className="bg-buttonBg p-1 rounded text-white">Guardar</button>
                     </div>
