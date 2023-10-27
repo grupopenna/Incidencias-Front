@@ -115,8 +115,7 @@ const Tablero = () => {
 
 
   const handleNotify = () => {
-    const issueId = incidents[0].fields.issuetype.id
-    navigate(`/createIssue/form/${keyPathname[0]}/${issueId}`)
+    navigate(`/createIssue/form/${keyPathname[0]}/`)
   }
 
   return (
