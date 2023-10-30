@@ -20,7 +20,6 @@ export  const parseTextToMarkdown = (inputText) => {
 
   if (!inputText) return ''
 
-  console.log('inputText', inputText)
   const lines = inputText.split('\n');
   const markdownLines = [];
 
@@ -40,11 +39,14 @@ export  const parseTextToMarkdown = (inputText) => {
       } else if (line.startsWith('!')) {
           // Imagen
           markdownLines.push(line);
+      } else {
+        markdownLines.push(line)
       }
   }
 
   // Unir las líneas en una cadena de texto Markdown
   const markdownText = markdownLines.join('\n');
+
 
   return markdownText;
 }
