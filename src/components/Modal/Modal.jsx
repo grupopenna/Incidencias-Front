@@ -1,15 +1,55 @@
-import { clearAllCommentState, getCommentIssues, postComments } from '../../redux/actions'
+import { clearAllCommentState, getCommentIssues, postComments, editDescription } from '../../redux/actions'
 import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRef } from 'react';
 import { useState, useEffect } from 'react';
 import { IconFiles, SimpleArrowUp, TrashIcon } from '../Icons';
-import TuiEditor from '../Editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { WithoutPhoto } from '../Icon';
 import ImgModal from '../ImgModal/ImgModal';
-import { useRef } from 'react';
 import ModalDelete from './ModalDelete';
 import { deleteIssues } from '../../redux/actions/issue/deleteIssue';
+import { Viewer, Editor as TuiEditor } from '../Editor/index';
+import { parseTextToMarkdown } from '../../utils/index'
+
+import '@toast-ui/editor/dist/toastui-editor.css';
+
+const ALLOW_COLUMS_TO_EDIT = ['priorizado', 'sin priorizar']
+
+const DescriptionField = ({
+  editMode,
+  description,
+  editorRef,
+  onClick,
+  currentColum
+}) => {
+
+  const isAllowToEdit = ALLOW_COLUMS_TO_EDIT.includes(currentColum.toLowerCase())
+
+  if (!isAllowToEdit || !editMode) {
+    return description
+      ? <Viewer initialValue={parseTextToMarkdown(description)} />
+      : <p className='text-slate-500'>Editar descripcion</p>
+  }
+
+  return <>
+    <TuiEditor markdownRef={editorRef} initialValue={parseTextToMarkdown(description)} />
+    <button onClick={() => onClick()} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>Guardar</button>
+  </>
+}
+
+const ActionDeleteIncident = ({ currentColum, setModalDeleteIssue }) => {
+  const isAllowToEdit = ALLOW_COLUMS_TO_EDIT.includes(currentColum.toLowerCase())
+  if (isAllowToEdit) {
+    return (
+      <div className='pr-5 mt-4 flex justify-end'>
+        <button onClick={() => setModalDeleteIssue(true)} className='text-red-500 flex justify-end rounded-full p-1 border-2 border-red-500 hover:text-white hover:bg-red-500'>
+          <TrashIcon />
+        </button>
+      </div>
+    )
+  }
+}
 
 const Modal = ({ setModalShow, itemSelect }) => {
   const dispatch = useDispatch()
@@ -20,15 +60,17 @@ const Modal = ({ setModalShow, itemSelect }) => {
   const [verRegistro, setVerRegistro] = useState(false)
   const [loading, setLoading] = useState(true)
   const [openImage, setOpenImage] = useState(false)
+  const [editMode, setEditMode] = useState(false)
   const [imageView, setImageView] = useState('')
   const [modalDeleteIssue, setModalDeleteIssue] = useState(false)
 
   /**
    * 
    * Cuando se use el componente TuiEditor es necesario pasar una referencia usando useRef() por props
-   * Esto le asignara la instancia del editor para luego poder user el metodo getMarkdown(), para recuperar el contenido del editor.
+   * Esto le asignara la instancia del editor para luego poder user el metodo getMarkdown() para recuperar el contenido del editor.
    */
   const editorRef = useRef(null)
+  const viewUpdateRef = useRef(null)
 
   useEffect(() => {
     setItem(itemSelect)
@@ -41,6 +83,10 @@ const Modal = ({ setModalShow, itemSelect }) => {
     AllComments.length > 0 && setComentarios(AllComments.reverse())
   }, [dispatch])
 
+
+  const handleEditDesc = async () => {
+    await editDescription(item.key, viewUpdateRef.current.getMarkdown())(dispatch)
+  }
 
   const commentTime = (data) => {
     let fechaAntigua = new Date(data);
@@ -72,18 +118,6 @@ const Modal = ({ setModalShow, itemSelect }) => {
     setModalShow(false)
   }
 
-  const ActionDeleteIncident = () => {
-    if (itemSelect.fields.status.name.toUpperCase() === ("sin priorizar".toUpperCase()) || itemSelect.fields.status.name.toUpperCase() === ("priorizado".toUpperCase())) {
-      return (
-        <div className='pr-5 mt-4 flex justify-end'>
-          <button onClick={() => setModalDeleteIssue(true)} className='text-red-500 flex justify-end rounded-full p-1 border-2 border-red-500 hover:text-white hover:bg-red-500'>
-            <TrashIcon />
-          </button>
-        </div>
-      )
-    }
-  }
-
   return (
     <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-10px]  bg-bgModal flex justify-center items-center">
       <div className="bg-white h-4/5 w-4/5 rounded-lg p-3">
@@ -105,12 +139,20 @@ const Modal = ({ setModalShow, itemSelect }) => {
               </div>
               <div className='mb-10 max-h-80 w-full pr-3 overflow-auto'>
                 <p>Descripción:</p>
-                {item.fields.description ?
-                  <p>{item.fields.description.split('\n')[0]}</p>
-                  : null
-                }
+                <section
+                  onClick={() => setEditMode(true)}
+                  className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
+
+                  <DescriptionField
+                    onClick={handleEditDesc}
+                    editMode={editMode}
+                    currentColum={item.fields.status.name}
+                    description={item.fields.description}
+                    editorRef={viewUpdateRef} />
+
+                </section>
                 {item.fields.attachment.length > 0 ?
-                  <div className=''>
+                  <div className='mt-6'>
                     {item.fields.attachment.map((el, i) =>
                       el.mimeType === "image/png" ?
                         <button className='mr-3 border-2' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
@@ -246,7 +288,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
           </div>
         </>
         )}
-        <ActionDeleteIncident />
+        <ActionDeleteIncident currentColum={item.fields.status.name} setModalDeleteIssue={setModalDeleteIssue} />
       </div>
     </div >
   )
