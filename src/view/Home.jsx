@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import SelectedIncident from "../components/selectedIncident/selectedIncident";
+import SelectedIncident from "../components/selectedIncident/SelectedIncident";
 import { getProjects } from "../redux/actions/projects/getProjects";
 // import NotifyIncidentForm from "../components/NotifyIncidentForm/NotifyIncidentForm"
 
