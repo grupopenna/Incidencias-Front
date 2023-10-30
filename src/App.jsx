@@ -15,7 +15,7 @@ const HomeLazy = lazy(() => import('./view/Home'))
 const NotifyIncidentFormLazy = lazy(() => import('./components/NotifyIncidentForm/NotifyIncidentForm'))
 const NewRequirementsLazy = lazy(() => import('./view/IncidentTable/IncidentTable'))
 const IncidentTableLazy = lazy(() => import('./view/IncidentTable/IncidentTable'))
-const ViewAllIndicentLazy = lazy(() => import('./components/viewAllIndicent'))
+const ViewAllIndicentLazy = lazy(() => import('./components/ViewAllIndicent/index'))
 const SprintTableLazy = lazy(() => import('./components/ProxSprintTable/SprintTable'))
 
 
