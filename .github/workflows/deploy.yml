@@ -1,0 +1,49 @@
+name: Deploy 🚀
+
+on:
+  push:
+    branches:
+      - test/production
+jobs:
+  FTP-DEPLOY-ACTION:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get latest code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Set up Node.js
+        uses: actions/stup-node@v3
+        with:
+          node-version: 18
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: '**/node_modules'
+          key:  ${{ runner.os }}--node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Prepare folder to deploy
+        run: |
+          mv .htaccess dist/
+
+      - name: Sync folders and files to the server
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          log-level: verbose
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASWORD }}
+          local-dir: ./dist/
+          server-dir: ./
+          dangerous-clean-slate: true
