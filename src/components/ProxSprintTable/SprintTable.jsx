@@ -24,8 +24,8 @@ const SprintTable = () => {
 
   const solicitud = async () => {
     await getIssue(`${issueDev}D`)(dispatch).then(async (response) => {
-      if (response.data === undefined || response.data.length === 0) setView(true)
-      await getTransitions(response.data[0].key)(dispatch)
+      if (response === undefined || response.length === 0) setView(true)
+      await getTransitions(response[0].key)(dispatch)
     })
     setView(true)
   }

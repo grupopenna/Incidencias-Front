@@ -117,6 +117,20 @@ const Tablero = () => {
     navigate(`/createIssue/form/${keyPathname[0]}/`)
   }
 
+  const AlertMessage = () => {
+    if (keyPathname[0] === 'CFS' || keyPathname[0] === 'CMS') {
+      return (
+        <div className="flex items-center rounded-lg pl-2 bg-bgIncident">
+          <AlertIcon />
+          <span className="text-white">Si su tarjeta no esta revise los mail ó</span>
+          <button onClick={() => navigate(`/proxSprint/${keyPathname}`)} className="px-3 py-1">
+            <span className="text-buttonBg hover:underline">Haga click aqui</span>
+          </button>
+        </div>
+      )
+    }
+  }
+
   return (
     <div className="flex flex-col w-full mx-5">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} />}
@@ -127,15 +141,7 @@ const Tablero = () => {
               <path d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
           </svg>
         </button> */}
-        {keyPathname[0] === 'CMS' &&
-          <div className="flex items-center rounded-lg pl-2 bg-bgIncident">
-            <AlertIcon />
-            <span className="text-white">Si su tarjeta no esta revise los mail ó</span>
-            <button onClick={() => navigate(`/proxSprint/${keyPathname}`)} className="px-3 py-1">
-              <span className="text-buttonBg hover:underline">Haga click aqui</span>
-            </button>
-          </div>
-        }
+        <AlertMessage />
 
       </div>
       <div className="flex gap-x-2">
