@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:3001";
+export const BASE_URL = "http://ec2-52-90-154-234.compute-1.amazonaws.com:3002";
 
 export const POST_ISSUE = "POST_ISSUE";
 
