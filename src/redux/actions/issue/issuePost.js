@@ -3,6 +3,8 @@ import { BASE_URL } from '../../action-type';
 
 export const issuePost = ({ titleDesc, descripcion, projectId, issueId }) => {
 
+  const userId = "712020:8a4ac3e0-8800-405a-96a0-a09c82e1a727"
+
   const bodyData = {
     "fields": {
       "project": {
@@ -25,7 +27,7 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId }) => {
         ]
       },
       "reporter": {
-        "id": "712020:8a4ac3e0-8800-405a-96a0-a09c82e1a727"
+        "id": `${userId}`
       },
       "issuetype": {
         "id": `${issueId}`

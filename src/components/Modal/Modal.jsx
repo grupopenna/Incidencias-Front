@@ -288,7 +288,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
           </div>
         </>
         )}
-        <ActionDeleteIncident currentColum={item.fields.status.name} setModalDeleteIssue={setModalDeleteIssue} />
+        <ActionDeleteIncident currentColum={itemSelect.fields.status.name} setModalDeleteIssue={setModalDeleteIssue} />
       </div>
     </div >
   )
