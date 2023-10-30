@@ -35,9 +35,10 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId }) => {
   return async () => {
     try {
       const response = await axios.post(`${BASE_URL}/incident/api/notify-incident`, bodyData)
-      if (response.status === 200) {
+      if (response.status == 200) {
         alert("Su incidencia fue creada con exito")
       }
+      return response
       //return dispatch({ type: POST_ISSUE, payload: response.issues })
 
     } catch (error) {

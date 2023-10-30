@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { issuePost, getIssueTypes } from "../../redux/actions/";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,6 +7,8 @@ import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import {  Select, SelectItem  } from '@tremor/react'
 import TuiEditor from '../Editor/index'
+import { DocFiles, ImgFiles } from '../Icons';
+import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
 
 const NotifyIncidentForm = (key) => {
   const editorRef = useRef(null)
@@ -17,13 +20,14 @@ const NotifyIncidentForm = (key) => {
 
   const [titleDesc, setTitleDesc] = useState('');
   const [email, setEmail] = useState('');
+  const [file, setfile] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState('')
   const [errors, setErrors] = useState({ titleDesc: '', email: '', descripcion: '' });
   const location = useLocation()
   const { pathname } = location;
   // Toolbar edito
   //console.log(content)
-  
+  console.log('attachment', file)
   useEffect(() => {
 
     (async () => {
@@ -59,21 +63,39 @@ const NotifyIncidentForm = (key) => {
     // Restablece los mensajes de error en caso de éxito
     setErrors({ titleDesc: '', email: '', descripcion: '' });
     const data = { key, titleDesc, email, descripcion, projectId: id, issueId: selectedIssue }
-    // Ahora, realiza la solicitud POST usando axios
-    //--------------------------------------------------------
-    /*  await issuePost(data).then((response)=>{
-       console.log('action response', response)
-     })
-     .catch(error => {
-       // Manejar errores
-       console.error(error);
-     }); */
-    //-------------------------------------------------------
 
-    dispatch(issuePost(data))
+    if (file.length > 0) {
+      // if (response.status == 200){
+        // console.log('response', response)
+        const formData = new FormData();
+        formData.append('file', file[0]);
+        console.log('file', file[0])
+
+        let keyAttachment = "CMS-20";
+        console.log('formData', formData)
+
+        await postAttachments(formData, keyAttachment)(dispatch).then((response) => {
+          console.log('response', response)
+        }).then((error) => console.log('error', error))
+
+      // }
+    }
+
+    await issuePost(data)(dispatch).then( async (response) => {
+      console.log('response', response)
+      if (response.status == 200 ){
+        console.log('response', response)
+      }
+    }).then((error) => {
+      console.log('error', error)
+    })
   }
 
-
+  const handleFileChange = (event) => {
+    const files = event.target.files;
+    console.log('files', files)
+    setfile([...event.target.files]);
+  };
 
   return (
     <div className=' flex justify-center mx-3 lg:px-16'>
@@ -152,9 +174,35 @@ const NotifyIncidentForm = (key) => {
                           className="relative px-2 cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500 hover:bg-sky-200"
                         >
                           <span>Subir archivo</span>
-                          <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+                          <input id="file-upload" name="file-upload" type="file" className="sr-only"  multiple
+                            onChange={(e) => handleFileChange(e)}
+                          />
                         </label>
                       </div>
+                      {file.length > 0 ?
+                        <div className='grid grid-cols-2'>
+                          {file.map((el, i) =>(
+                            el.type === "image/png" ?
+                              <button className='bg-bgCard rounded-lg overflow-auto w-48 flex flex-col items-center m-1 h-28' key={i} >
+                                {/* <img
+                                  className="w-64 h-48"
+                                  src={el.content}
+                                  // alt={`persona asignada ${el.author.displayName}`}
+                                  // aria-label={`persona asignada ${el.author.displayName}`} 
+                                /> */}
+                                <ImgFiles />
+                                  <span className="text-font font-semibold">{el.name}</span>
+                              </button>
+                              :
+                              <a href={el.content} key={i} >
+                                <button className='bg-bgCard  rounded-lg overflow-auto w-48 flex flex-col items-center m-1 h-28'>
+                                  <DocFiles />
+                                  <span className="text-font font-semibold">{el.name}</span>
+                                </button>
+                              </a>
+                          ))}
+                        </div> : null
+                      }
                     </div>
                   </div>
                 </div>
