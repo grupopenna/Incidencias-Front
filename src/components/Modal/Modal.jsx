@@ -1,4 +1,4 @@
-import { clearAllCommentState, getCommentIssues, postComments } from '../../redux/actions'
+import { clearAllCommentState, getCommentIssues, postComments, editDescription } from '../../redux/actions'
 import { IconFiles, SimpleArrowUp } from '../Icons';
 import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,8 +10,7 @@ import {Viewer, Editor as TuiEditor} from '../Editor/index';
 import { parseTextToMarkdown } from '../../utils/index'
 
 
-const DescriptionField = ({ editMode, description, editorRef }) => {
-
+const DescriptionField = ({ editMode, description, editorRef, onClick, key }) => {
 
   if (!editMode) {
     return description 
@@ -22,7 +21,7 @@ const DescriptionField = ({ editMode, description, editorRef }) => {
 
   return <>
     <TuiEditor markdownRef={editorRef} initialValue={parseTextToMarkdown(description)}/>
-    <button className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>Guardar</button>
+    <button onClick={() => onClick(key)} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>Guardar</button>
   </>
 }
 
@@ -46,6 +45,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
    * Esto le asignara la instancia del editor para luego poder user el metodo getMarkdown(), para recuperar el contenido del editor.
    */
   const editorRef = useRef(null)
+  const viewUpdateRef = useRef(null)
 
   useEffect(() => {
     setItem(itemSelect)
@@ -58,6 +58,10 @@ const Modal = ({ setModalShow, itemSelect }) => {
     AllComments.length > 0 && setComentarios(AllComments.reverse())
   }, [dispatch])
 
+
+  const handleEditDesc = async () => {
+    await editDescription(item.key, viewUpdateRef.current.getMarkdown())(dispatch)
+  }
 
   const commentTime = (data) => {
     let fechaAntigua = new Date(data);
@@ -83,7 +87,6 @@ const Modal = ({ setModalShow, itemSelect }) => {
     editorRef.current.reset()
   }
 
-
   return (
     <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-10px]  bg-bgModal flex justify-center items-center">
       <div className="bg-white h-4/5 w-4/5 rounded-lg p-3">
@@ -107,7 +110,12 @@ const Modal = ({ setModalShow, itemSelect }) => {
                   onClick={() => setEditMode(true)} 
                   className={`w-full p-2 z-50 ${ !editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
                 
-                <DescriptionField editMode={editMode} description={item.fields.description} editorRef={editorRef}/>
+                <DescriptionField 
+                  key={itemSelect}  
+                  onClick={handleEditDesc} 
+                  editMode={editMode} 
+                  description={item.fields.description} 
+                  editorRef={viewUpdateRef}/>
                   
                 </section>
                 {item.fields.attachment.length > 0 ?
