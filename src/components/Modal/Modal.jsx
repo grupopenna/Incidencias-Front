@@ -2,12 +2,14 @@ import { clearAllCommentState, getCommentIssues, postComments } from '../../redu
 import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
-import { IconFiles, SimpleArrowUp } from '../Icons';
+import { IconFiles, SimpleArrowUp, TrashIcon } from '../Icons';
 import TuiEditor from '../Editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { WithoutPhoto } from '../Icon';
 import ImgModal from '../ImgModal/ImgModal';
 import { useRef } from 'react';
+import ModalDelete from './ModalDelete';
+import { deleteIssues } from '../../redux/actions/issue/deleteIssue';
 
 const Modal = ({ setModalShow, itemSelect }) => {
   const dispatch = useDispatch()
@@ -19,6 +21,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
   const [loading, setLoading] = useState(true)
   const [openImage, setOpenImage] = useState(false)
   const [imageView, setImageView] = useState('')
+  const [modalDeleteIssue, setModalDeleteIssue] = useState(false)
 
   /**
    * 
@@ -63,16 +66,36 @@ const Modal = ({ setModalShow, itemSelect }) => {
     editorRef.current.reset()
   }
 
+  const deleteInfoIssue = (key) => {
+    dispatch(deleteIssues(key))
+    setModalDeleteIssue(false)
+    setModalShow(false)
+  }
+
+  const ActionDeleteIncident = () => {
+    if (itemSelect.fields.status.name.toUpperCase() === ("sin priorizar".toUpperCase()) || itemSelect.fields.status.name.toUpperCase() === ("priorizado".toUpperCase())) {
+      return (
+        <div className='pr-5 mt-4 flex justify-end'>
+          <button onClick={() => setModalDeleteIssue(true)} className='text-red-500 flex justify-end rounded-full p-1 border-2 border-red-500 hover:text-white hover:bg-red-500'>
+            <TrashIcon />
+          </button>
+        </div>
+      )
+    }
+  }
+
   return (
     <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-10px]  bg-bgModal flex justify-center items-center">
       <div className="bg-white h-4/5 w-4/5 rounded-lg p-3">
         {openImage && <ImgModal openImageState={setOpenImage} imageView={imageView} />}
+        {modalDeleteIssue && <ModalDelete setDeleteIssue={setModalDeleteIssue} item={itemSelect} deleteIssue={deleteInfoIssue} />}
         <div className='flex justify-end'>
           <button onClick={() => { dispatch(clearAllCommentState()); setModalShow(false) }}><span className="p-1 rounded-full">X</span></button>
         </div>
         {item && (<>
-          <div className='ml-5'>
-            {item.key}
+          <div className="flex items-center gap-2">
+            <img src={item?.fields.issuetype?.iconUrl} alt="Imagen del icono del proyecto de jira" className="w-4 h-4" />
+            <p className="text-base">{item.key}</p>
           </div>
           <div className='flex h-5/6'>
             {/*-------seccion--1-------- */}
@@ -111,7 +134,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
                 <p>Comentarios:</p>
                 {openEditor ?
                   <>
-                    <TuiEditor markdownRef={editorRef}/>
+                    <TuiEditor markdownRef={editorRef} />
                     <div className='mt-2'>
                       <button onClick={() => sendNewComment(item.key)} className="bg-buttonBg p-1 rounded text-white">Guardar</button>
                     </div>
@@ -223,6 +246,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
           </div>
         </>
         )}
+        <ActionDeleteIncident />
       </div>
     </div >
   )

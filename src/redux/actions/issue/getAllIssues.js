@@ -1,5 +1,5 @@
 import axios from "axios";
-import {  BASE_URL, GET_All_ISSUES } from '../../action-type';
+import { BASE_URL, GET_All_ISSUES } from '../../action-type';
 
 export const getAllIssues = () => {
 
@@ -38,7 +38,7 @@ export const getAllIssues = () => {
 
       const filteredData = response?.filter((item) => item?.fields.project.projectCategory.name === 'notificacionesIncidencias')
 
-      dispatch({type: GET_All_ISSUES, payload: filteredData})
+      dispatch({ type: GET_All_ISSUES, payload: filteredData })
 
       return filteredData
     } catch (error) {
