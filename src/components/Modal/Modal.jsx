@@ -10,13 +10,14 @@ import ImgModal from '../ImgModal/ImgModal';
 import ModalDelete from './ModalDelete';
 import { deleteIssues } from '../../redux/actions/issue/deleteIssue';
 import { Viewer, Editor as TuiEditor } from '../Editor/index';
-import { parseTextToMarkdown } from '../../utils/index'
 
 import '@toast-ui/editor/dist/toastui-editor.css';
+import { parseTextToMarkdown } from '../../utils/index'
+
 
 const ALLOW_COLUMS_TO_EDIT = ['priorizado', 'sin priorizar']
 
-const DescriptionField = ({
+/* const DescriptionField = ({
   editMode,
   description,
   editorRef,
@@ -36,7 +37,7 @@ const DescriptionField = ({
     <TuiEditor markdownRef={editorRef} initialValue={parseTextToMarkdown(description)} />
     <button onClick={() => onClick()} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>Guardar</button>
   </>
-}
+} */
 
 const ActionDeleteIncident = ({ currentColum, setModalDeleteIssue }) => {
   const isAllowToEdit = ALLOW_COLUMS_TO_EDIT.includes(currentColum.toLowerCase())
@@ -50,6 +51,14 @@ const ActionDeleteIncident = ({ currentColum, setModalDeleteIssue }) => {
     )
   }
 }
+
+
+const ViewerView = ({ description }) => {
+  return description
+    ? <Viewer initialValue={parseTextToMarkdown(description)} />
+    : <p className='text-slate-500'>Editar descripcion</p>
+}
+
 
 const Modal = ({ setModalShow, itemSelect }) => {
   const dispatch = useDispatch()
@@ -84,8 +93,16 @@ const Modal = ({ setModalShow, itemSelect }) => {
   }, [dispatch])
 
 
+  /**
+   * Crear una funcion que formatee lo que devuelve el editor a un formato que jira entienda.
+   */
   const handleEditDesc = async () => {
-    await editDescription(item.key, viewUpdateRef.current.getMarkdown())(dispatch)
+    setLoading(true)
+    const newValue = viewUpdateRef.current.getMarkdown().split('\n')
+    const formatValue = newValue.join('\\n\\n')
+    await editDescription(item.key, formatValue)(dispatch)
+    setLoading(false)
+    setEditMode(false)
   }
 
   const commentTime = (data) => {
@@ -105,7 +122,6 @@ const Modal = ({ setModalShow, itemSelect }) => {
 
   const sendNewComment = (key) => {
     setLoading(true)
-    setOpenEditor(false)
     setTimeout(() => { setLoading(false) }, 2500)
     const descripcion = editorRef.current.getMarkdown()
     dispatch(postComments(descripcion, key))
@@ -143,14 +159,30 @@ const Modal = ({ setModalShow, itemSelect }) => {
                   onClick={() => setEditMode(true)}
                   className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
 
-                  <DescriptionField
-                    onClick={handleEditDesc}
-                    editMode={editMode}
-                    currentColum={item.fields.status.name}
-                    description={item.fields.description}
-                    editorRef={viewUpdateRef} />
+                  {!ALLOW_COLUMS_TO_EDIT.includes(item.fields.status.name.toLowerCase()) || !editMode && (
+                    <ViewerView description={item.fields.description} />
+                  )
+                  }
+
+                  {editMode && (
+                    <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(item.fields.description)} />
+
+                  )}
 
                 </section>
+                {editMode && <div className='flex gap-3 p-4'>
+                  <button onClick={handleEditDesc} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>
+                    {loading
+                      ? <div className='w-6 animate-spin border-2  border-white border-l-transparent rounded-full h-6' />
+                      : 'Guardar'
+                    }
+                  </button>
+                  <button
+                    type='button'
+                    onClick={() => setEditMode(false)}
+                    className='bg-slate-300 z-50 py-2 px-4 mt-4 hover:bg-slate-300/80'>Cancelar
+                  </button>
+                </div>}
                 {item.fields.attachment.length > 0 ?
                   <div className='mt-6'>
                     {item.fields.attachment.map((el, i) =>
