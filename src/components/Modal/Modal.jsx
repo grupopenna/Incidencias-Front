@@ -11,13 +11,25 @@ import { parseTextToMarkdown } from '../../utils/index'
 
 import '@toast-ui/editor/dist/toastui-editor.css';
 
-const DescriptionField = ({ editMode, description, editorRef, onClick }) => {
+const ALLOW_COLUMS_TO_EDIT = ['priorizado', 'sin priorizar']
 
-  if (!editMode) {
+const DescriptionField = ({ 
+  editMode,
+  description, 
+  editorRef, 
+  onClick,
+  currentColum 
+}) => {
+
+  const isAllowToEdit = ALLOW_COLUMS_TO_EDIT.includes(currentColum.toLowerCase())
+  
+
+  if (!isAllowToEdit || !editMode) {
     return description 
     ?  <Viewer initialValue={parseTextToMarkdown(description)}/>
     : <p className='text-slate-500'>Editar descripcion</p>
   }
+
 
 
   return <>
@@ -43,7 +55,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
   /**
    * 
    * Cuando se use el componente TuiEditor es necesario pasar una referencia usando useRef() por props
-   * Esto le asignara la instancia del editor para luego poder user el metodo getMarkdown(), para recuperar el contenido del editor.
+   * Esto le asignara la instancia del editor para luego poder user el metodo getMarkdown() para recuperar el contenido del editor.
    */
   const editorRef = useRef(null)
   const viewUpdateRef = useRef(null)
@@ -114,6 +126,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
                 <DescriptionField 
                   onClick={handleEditDesc} 
                   editMode={editMode} 
+                  currentColum={item.fields.status.name}
                   description={item.fields.description} 
                   editorRef={viewUpdateRef}/>
                   
