@@ -21,3 +21,5 @@ export const GET_COMMENT_ISSUES = "GET_COMMENT_ISSUES";
 export const CLEAR_COMMENT_STATE = "CLEAR_COMMENT_STATE";
 
 export const NEW_COMMENT = "NEW_COMMENT"
+
+export const EDIT_DESC = 'EDIT_DESC'

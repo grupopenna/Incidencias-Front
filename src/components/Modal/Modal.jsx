@@ -1,13 +1,31 @@
-import { clearAllCommentState, getCommentIssues, postComments } from '../../redux/actions'
+import { clearAllCommentState, getCommentIssues, postComments, editDescription } from '../../redux/actions'
+import { IconFiles, SimpleArrowUp } from '../Icons';
 import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRef } from 'react';
 import { useState, useEffect } from 'react';
-import { IconFiles, SimpleArrowUp } from '../Icons';
-import TuiEditor from '../Editor';
-import '@toast-ui/editor/dist/toastui-editor.css';
 import { WithoutPhoto } from '../Icon';
 import ImgModal from '../ImgModal/ImgModal';
-import { useRef } from 'react';
+import {Viewer, Editor as TuiEditor} from '../Editor/index';
+import { parseTextToMarkdown } from '../../utils/index'
+
+
+const DescriptionField = ({ editMode, description, editorRef, onClick, key }) => {
+
+  if (!editMode) {
+    return description 
+    ?  <Viewer initialValue={parseTextToMarkdown(description)}/>
+    : <p className='text-slate-500'>Editar descripcion</p>
+  }
+
+
+  return <>
+    <TuiEditor markdownRef={editorRef} initialValue={parseTextToMarkdown(description)}/>
+    <button onClick={() => onClick(key)} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>Guardar</button>
+  </>
+}
+
+
 
 const Modal = ({ setModalShow, itemSelect }) => {
   const dispatch = useDispatch()
@@ -18,6 +36,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
   const [verRegistro, setVerRegistro] = useState(false)
   const [loading, setLoading] = useState(true)
   const [openImage, setOpenImage] = useState(false)
+  const [editMode, setEditMode] = useState(false)
   const [imageView, setImageView] = useState('')
 
   /**
@@ -26,6 +45,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
    * Esto le asignara la instancia del editor para luego poder user el metodo getMarkdown(), para recuperar el contenido del editor.
    */
   const editorRef = useRef(null)
+  const viewUpdateRef = useRef(null)
 
   useEffect(() => {
     setItem(itemSelect)
@@ -38,6 +58,10 @@ const Modal = ({ setModalShow, itemSelect }) => {
     AllComments.length > 0 && setComentarios(AllComments.reverse())
   }, [dispatch])
 
+
+  const handleEditDesc = async () => {
+    await editDescription(item.key, viewUpdateRef.current.getMarkdown())(dispatch)
+  }
 
   const commentTime = (data) => {
     let fechaAntigua = new Date(data);
@@ -82,12 +106,20 @@ const Modal = ({ setModalShow, itemSelect }) => {
               </div>
               <div className='mb-10 max-h-80 w-full pr-3 overflow-auto'>
                 <p>Descripción:</p>
-                {item.fields.description ?
-                  <p>{item.fields.description.split('\n')[0]}</p>
-                  : null
-                }
+                <section 
+                  onClick={() => setEditMode(true)} 
+                  className={`w-full p-2 z-50 ${ !editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
+                
+                <DescriptionField 
+                  key={itemSelect}  
+                  onClick={handleEditDesc} 
+                  editMode={editMode} 
+                  description={item.fields.description} 
+                  editorRef={viewUpdateRef}/>
+                  
+                </section>
                 {item.fields.attachment.length > 0 ?
-                  <div className=''>
+                  <div className='mt-6'>
                     {item.fields.attachment.map((el, i) =>
                       el.mimeType === "image/png" ?
                         <button className='mr-3 border-2' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>

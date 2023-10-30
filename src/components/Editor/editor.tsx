@@ -5,6 +5,7 @@
 
 import { useEffect, useRef } from "react";
 import ToastuiEditor, { Editor, EditorOptions, EventMap } from '@toast-ui/editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
 
 
 export interface EventMapping {
@@ -24,7 +25,8 @@ export type EventNames = keyof EventMapping;
 export type TuiEditorProps = Omit<EditorOptions, 'el'> & Partial<EventMapping>;
 
 interface TuiEditorExtendedProps extends TuiEditorProps {
-    markdownRef: React.MutableRefObject<Editor | null>
+    markdownRef: React.MutableRefObject<Editor | null>,
+    disabled?: boolean
 } 
 
 export default function TuiEditor(props: TuiEditorExtendedProps) {
@@ -40,7 +42,8 @@ export default function TuiEditor(props: TuiEditorExtendedProps) {
                     ...props,
                     initialEditType: 'wysiwyg',
                     el: divRef.current,
-                    usageStatistics: false,
+                    hideModeSwitch: true,
+                    useCommandShortcut: true,
                     events: getInitEvents(props),
                 });
 
@@ -66,18 +69,19 @@ export default function TuiEditor(props: TuiEditorExtendedProps) {
         },
         [props],
     )
-    return <div ref={divRef} className="bg-white"></div>;
+    return <div ref={divRef} className={`${props.disabled ? 'pointer-events-none' : ''}`}></div>;
 }
 
 
 
-function getBindingEventNames(props: TuiEditorProps) {
+
+function getBindingEventNames(props: TuiEditorExtendedProps) {
     return Object.keys(props)
         .filter((key) => /^on[A-Z][a-zA-Z]+/.test(key))
         .filter((key) => props[key as EventNames]);
 }
 
-function bindEventHandlers(editor: ToastuiEditor, props: TuiEditorProps) {
+function bindEventHandlers(editor: ToastuiEditor, props: TuiEditorExtendedProps) {
     getBindingEventNames(props).forEach((key) => {
         const eventName = key[2].toLowerCase() + key.slice(3);
 
@@ -86,7 +90,7 @@ function bindEventHandlers(editor: ToastuiEditor, props: TuiEditorProps) {
     });
 }
 
-function getInitEvents(props: TuiEditorProps) {
+function getInitEvents(props: TuiEditorExtendedProps) {
     return getBindingEventNames(props).reduce(
         (acc: Record<string, EventMap[keyof EventMap]>, key) => {
             const eventName = (key[2].toLowerCase() + key.slice(3)) as keyof EventMap;

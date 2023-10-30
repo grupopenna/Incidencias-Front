@@ -6,9 +6,10 @@ import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import {  Select, SelectItem  } from '@tremor/react'
-import TuiEditor from '../Editor/index'
+
 import { DocFiles, ImgFiles } from '../Icons';
 import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
+import { Editor as TuiEditor } from '../Editor/index'
 
 const NotifyIncidentForm = (key) => {
   const editorRef = useRef(null)
