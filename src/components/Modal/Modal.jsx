@@ -9,8 +9,9 @@ import ImgModal from '../ImgModal/ImgModal';
 import {Viewer, Editor as TuiEditor} from '../Editor/index';
 import { parseTextToMarkdown } from '../../utils/index'
 
+import '@toast-ui/editor/dist/toastui-editor.css';
 
-const DescriptionField = ({ editMode, description, editorRef, onClick, key }) => {
+const DescriptionField = ({ editMode, description, editorRef, onClick }) => {
 
   if (!editMode) {
     return description 
@@ -21,7 +22,7 @@ const DescriptionField = ({ editMode, description, editorRef, onClick, key }) =>
 
   return <>
     <TuiEditor markdownRef={editorRef} initialValue={parseTextToMarkdown(description)}/>
-    <button onClick={() => onClick(key)} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>Guardar</button>
+    <button onClick={() => onClick()} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>Guardar</button>
   </>
 }
 
@@ -111,7 +112,6 @@ const Modal = ({ setModalShow, itemSelect }) => {
                   className={`w-full p-2 z-50 ${ !editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
                 
                 <DescriptionField 
-                  key={itemSelect}  
                   onClick={handleEditDesc} 
                   editMode={editMode} 
                   description={item.fields.description} 

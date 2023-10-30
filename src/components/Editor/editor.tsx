@@ -5,7 +5,6 @@
 
 import { useEffect, useRef } from "react";
 import ToastuiEditor, { Editor, EditorOptions, EventMap } from '@toast-ui/editor';
-import '@toast-ui/editor/dist/toastui-editor.css';
 
 
 export interface EventMapping {

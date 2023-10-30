@@ -1,7 +1,6 @@
 import { ViewerOptions } from '@toast-ui/editor'
 import Viewer, { EventMap } from '@toast-ui/editor/dist/toastui-editor-viewer';
 import { useEffect, useRef } from 'react';
-import '@toast-ui/editor/dist/toastui-editor.css';
 
 
 export interface EventMapping {
