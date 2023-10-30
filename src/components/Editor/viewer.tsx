@@ -21,11 +21,11 @@ type ViewerProps = Omit<ViewerOptions, 'el'> & Partial<EventMapping>
 
 export default function ViewerComponent(props: ViewerProps) {
     const rootEl = useRef<HTMLDivElement>(null)
-    let viewerInst!: Viewer
+    const viewerInst = useRef<Viewer | null>(null)
 
     useEffect(() => {
         if (rootEl.current) {
-            viewerInst = new Viewer({
+            viewerInst.current = new Viewer({
                 el: rootEl.current!,
                 ...props,
                 events: getInitEvents(props)
@@ -34,8 +34,24 @@ export default function ViewerComponent(props: ViewerProps) {
     }, [])
 
 
+    useEffect(() => {
+        if (viewerInst.current) {
+        bindEventHandlers(viewerInst.current, props)
+        }
+    }, [props])
 
     return <div ref={rootEl} />
+}
+
+function bindEventHandlers(viewerRef: Viewer, props: ViewerProps) {
+    getBindingEventNames(props).forEach((key) => {
+        const eventName = key[2].toLowerCase() + key.slice(3)
+
+
+        viewerRef.off(eventName)
+        viewerRef.on(eventName, props[key as EventNames]!)
+
+    })
 }
 
 function getBindingEventNames(props: ViewerProps) {
