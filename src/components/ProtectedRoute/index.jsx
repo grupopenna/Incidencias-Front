@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 import { setUserData } from '../../redux/actions'
+import { BASE_URL } from '../../redux/action-type'
 import { useEffect, useState } from 'react'
 
 function ProtectedRoute() {
@@ -11,19 +12,19 @@ function ProtectedRoute() {
     const params = new URLSearchParams(window.location.search)
     const token = params.get('token')
     if (!token) {
-        window.location.href = 'http://localhost:5174/'
+        window.location.href = 'http://testgp.compc.com.ar/'
         return 
     }
     
     (async () => {
-        const response = await fetch('http://localhost:3002/auth/check-url-token', {
+        const response = await fetch(`${BASE_URL}/auth/check-url-token`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
         })
         
         if (!response.ok) {
-            window.location.href = 'http://localhost:5174/login'
+            window.location.href = 'http://testgp.compc.com.ar/login'
             return 
         }
 
@@ -39,7 +40,7 @@ function ProtectedRoute() {
    }, [])
 
    if (isLoading) {
-    return <div className='w-6 h-6 rounded-full border-2 border-white border-l-transparent animate-spin '/>
+    return <div className='w-6 h-6 rounded-full  m-auto border-2 border-white border-l-transparent animate-spin '/>
    }
 
 
