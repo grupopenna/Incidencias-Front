@@ -30,7 +30,6 @@ function ProtectedRoute() {
 
         const { data } = await response.json()
 
-        console.log({ data })
         localStorage.setItem('userData', JSON.stringify({ token: data.token, user: data.user }))
         setUserData(data.user)(dispatch)
         setIsLoading(false)
