@@ -3,7 +3,7 @@ import {  BASE_URL, GET_All_ISSUES } from '../../action-type';
 
 export const getAllIssues = () => {
 
-  let userId = "712020:8a4ac3e0-8800-405a-96a0-a09c82e1a727"
+  let userId = "712020:75da847b-f656-4020-a3fd-84d8811cd76f"
 
   const bodyData = {
     "expand": [
