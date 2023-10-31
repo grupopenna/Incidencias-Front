@@ -17,7 +17,7 @@ const NewRequirementsLazy = lazy(() => import('./view/IncidentTable/IncidentTabl
 const IncidentTableLazy = lazy(() => import('./view/IncidentTable/IncidentTable'))
 const ViewAllIndicentLazy = lazy(() => import('./components/ViewAllIndicent/index'))
 const SprintTableLazy = lazy(() => import('./components/ProxSprintTable/SprintTable'))
-
+const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'))
 
 const App = () => {
 
@@ -27,12 +27,14 @@ const App = () => {
         <div className="flex min-h-screen flex-col bg-background">
           <NavBar />
           <Routes>
-            <Route exact path="/" element={<HomeLazy />} />
-            <Route exact path="/createIssue" element={<NewRequirementsLazy />} />
-            <Route exact path="/board/:key" element={<IncidentTableLazy />} />
-            <Route exact path="/createIssue/form/:key/" element={<NotifyIncidentFormLazy />} />
-            <Route exac path="/view-all-incidents/:jiraAccountId" element={<ViewAllIndicentLazy />} />
-            <Route exact path="/proxSprint/:key" element={<SprintTableLazy />} />
+            <Route element={<ProtectedRoute />}>
+              <Route exact path="/" element={<HomeLazy />} />
+              <Route exact path="/createIssue" element={<NewRequirementsLazy />} />
+              <Route exact path="/board/:key" element={<IncidentTableLazy />} />
+              <Route exact path="/createIssue/form/:key/" element={<NotifyIncidentFormLazy />} />
+              <Route exac path="/view-all-incidents/:jiraAccountId" element={<ViewAllIndicentLazy />} />
+              <Route exact path="/proxSprint/:key" element={<SprintTableLazy />} />
+            </Route>
           </Routes>
         </div>
       </Suspense>

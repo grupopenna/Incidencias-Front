@@ -8,7 +8,7 @@ export const GET_All_ISSUES = "GET_All_ISSUES";
 
 export const GET_ISSUETYPE = 'GET_ISSUETYPE'
 
-export const GET_PROJECTS = "GET_PROJECTS";
+export const GET_PROJECTS = "GET_PROJECTS"; 
 
 export const GET_BOARD = "GET_BOARD";
 
@@ -23,3 +23,5 @@ export const CLEAR_COMMENT_STATE = "CLEAR_COMMENT_STATE";
 export const NEW_COMMENT = "NEW_COMMENT"
 
 export const EDIT_DESC = 'EDIT_DESC'
+
+export const SET_USER_DATA = 'SET_USER_DATA'
