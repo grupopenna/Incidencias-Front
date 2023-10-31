@@ -1,12 +1,15 @@
 import { clearAllCommentState, getCommentIssues, postComments, editDescription } from '../../redux/actions'
-import { IconFiles, SimpleArrowUp } from '../Icons';
 import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRef } from 'react';
 import { useState, useEffect } from 'react';
+import { IconFiles, SimpleArrowUp, TrashIcon } from '../Icons';
+import '@toast-ui/editor/dist/toastui-editor.css';
 import { WithoutPhoto } from '../Icon';
 import ImgModal from '../ImgModal/ImgModal';
-import { Viewer ,Editor as TuiEditor} from '../Editor/index';
+import ModalDelete from './ModalDelete';
+import { deleteIssues } from '../../redux/actions/issue/deleteIssue';
+import { Viewer, Editor as TuiEditor } from '../Editor/index';
 
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { parseTextToMarkdown } from '../../utils/index'
@@ -14,11 +17,45 @@ import { parseTextToMarkdown } from '../../utils/index'
 
 const ALLOW_COLUMS_TO_EDIT = ['priorizado', 'sin priorizar']
 
+/* const DescriptionField = ({
+  editMode,
+  description,
+  editorRef,
+  onClick,
+  currentColum
+}) => {
+
+  const isAllowToEdit = ALLOW_COLUMS_TO_EDIT.includes(currentColum.toLowerCase())
+
+  if (!isAllowToEdit || !editMode) {
+    return description
+      ? <Viewer initialValue={parseTextToMarkdown(description)} />
+      : <p className='text-slate-500'>Editar descripcion</p>
+  }
+
+  return <>
+    <TuiEditor markdownRef={editorRef} initialValue={parseTextToMarkdown(description)} />
+    <button onClick={() => onClick()} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>Guardar</button>
+  </>
+} */
+
+const ActionDeleteIncident = ({ currentColum, setModalDeleteIssue }) => {
+  const isAllowToEdit = ALLOW_COLUMS_TO_EDIT.includes(currentColum.toLowerCase())
+  if (isAllowToEdit) {
+    return (
+      <div className='pr-5 mt-4 flex justify-end'>
+        <button onClick={() => setModalDeleteIssue(true)} className='text-red-500 flex justify-end rounded-full p-1 border-2 border-red-500 hover:text-white hover:bg-red-500'>
+          <TrashIcon />
+        </button>
+      </div>
+    )
+  }
+}
 
 
-const ViewerView = ({ description}) => {
-  return description 
-    ?<Viewer initialValue={parseTextToMarkdown(description)}/>
+const ViewerView = ({ description }) => {
+  return description
+    ? <Viewer initialValue={parseTextToMarkdown(description)} />
     : <p className='text-slate-500'>Editar descripcion</p>
 }
 
@@ -34,6 +71,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
   const [openImage, setOpenImage] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [imageView, setImageView] = useState('')
+  const [modalDeleteIssue, setModalDeleteIssue] = useState(false)
 
   /**
    * 
@@ -55,14 +93,14 @@ const Modal = ({ setModalShow, itemSelect }) => {
   }, [dispatch])
 
 
-/**
- * Crear una funcion que formatee lo que devuelve el editor a un formato que jira entienda.
- */
+  /**
+   * Crear una funcion que formatee lo que devuelve el editor a un formato que jira entienda.
+   */
   const handleEditDesc = async () => {
     setLoading(true)
     const newValue = viewUpdateRef.current.getMarkdown().split('\n')
     const formatValue = newValue.join('\\n\\n')
-    await editDescription(item.key,formatValue)(dispatch)
+    await editDescription(item.key, formatValue)(dispatch)
     setLoading(false)
     setEditMode(false)
   }
@@ -90,16 +128,24 @@ const Modal = ({ setModalShow, itemSelect }) => {
     editorRef.current.reset()
   }
 
+  const deleteInfoIssue = (key) => {
+    dispatch(deleteIssues(key))
+    setModalDeleteIssue(false)
+    setModalShow(false)
+  }
+
   return (
     <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-10px]  bg-bgModal flex justify-center items-center">
       <div className="bg-white h-4/5 w-4/5 rounded-lg p-3">
         {openImage && <ImgModal openImageState={setOpenImage} imageView={imageView} />}
+        {modalDeleteIssue && <ModalDelete setDeleteIssue={setModalDeleteIssue} item={itemSelect} deleteIssue={deleteInfoIssue} />}
         <div className='flex justify-end'>
           <button onClick={() => { dispatch(clearAllCommentState()); setModalShow(false) }}><span className="p-1 rounded-full">X</span></button>
         </div>
         {item && (<>
-          <div className='ml-5'>
-            {item.key}
+          <div className="flex items-center gap-2">
+            <img src={item?.fields.issuetype?.iconUrl} alt="Imagen del icono del proyecto de jira" className="w-4 h-4" />
+            <p className="text-base">{item.key}</p>
           </div>
           <div className='flex h-5/6'>
             {/*-------seccion--1-------- */}
@@ -109,34 +155,34 @@ const Modal = ({ setModalShow, itemSelect }) => {
               </div>
               <div className='mb-10 max-h-80 w-full pr-3 overflow-auto'>
                 <p>Descripción:</p>
-                <section 
-                  onClick={() => setEditMode(true)} 
-                  className={`w-full p-2 z-50 ${ !editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
+                <section
+                  onClick={() => setEditMode(true)}
+                  className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
 
                   {!ALLOW_COLUMS_TO_EDIT.includes(item.fields.status.name.toLowerCase()) || !editMode && (
-                   <ViewerView description={item.fields.description}/>
-                   )
-                  } 
+                    <ViewerView description={item.fields.description} />
+                  )
+                  }
 
                   {editMode && (
-                        <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(item.fields.description)}/>
-                         
-                  )} 
+                    <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(item.fields.description)} />
+
+                  )}
 
                 </section>
-                {editMode &&  <div className='flex gap-3 p-4'>
-                    <button onClick={handleEditDesc} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>
-                      { loading 
-                        ? <div className='w-6 animate-spin border-2  border-white border-l-transparent rounded-full h-6'/>
-                        : 'Guardar'
-                      }
-                    </button>
-                    <button 
-                      type='button'
-                      onClick={() => setEditMode(false)}
-                      className='bg-slate-300 z-50 py-2 px-4 mt-4 hover:bg-slate-300/80'>Cancelar
-                      </button>
-                  </div>}
+                {editMode && <div className='flex gap-3 p-4'>
+                  <button onClick={handleEditDesc} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>
+                    {loading
+                      ? <div className='w-6 animate-spin border-2  border-white border-l-transparent rounded-full h-6' />
+                      : 'Guardar'
+                    }
+                  </button>
+                  <button
+                    type='button'
+                    onClick={() => setEditMode(false)}
+                    className='bg-slate-300 z-50 py-2 px-4 mt-4 hover:bg-slate-300/80'>Cancelar
+                  </button>
+                </div>}
                 {item.fields.attachment.length > 0 ?
                   <div className='mt-6'>
                     {item.fields.attachment.map((el, i) =>
@@ -162,7 +208,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
                 <p>Comentarios:</p>
                 {openEditor ?
                   <>
-                    <TuiEditor markdownRef={editorRef}/>
+                    <TuiEditor markdownRef={editorRef} />
                     <div className='mt-2'>
                       <button onClick={() => sendNewComment(item.key)} className="bg-buttonBg p-1 rounded text-white">Guardar</button>
                     </div>
@@ -274,6 +320,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
           </div>
         </>
         )}
+        <ActionDeleteIncident currentColum={itemSelect.fields.status.name} setModalDeleteIssue={setModalDeleteIssue} />
       </div>
     </div >
   )

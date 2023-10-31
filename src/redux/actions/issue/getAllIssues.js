@@ -1,9 +1,9 @@
 import axios from "axios";
-import {  BASE_URL, GET_All_ISSUES } from '../../action-type';
+import { BASE_URL, GET_All_ISSUES } from '../../action-type';
 
 export const getAllIssues = () => {
 
-  let userId = "712020:8a4ac3e0-8800-405a-96a0-a09c82e1a727"
+  let userId = "712020:75da847b-f656-4020-a3fd-84d8811cd76f"
 
   const bodyData = {
     "expand": [
@@ -38,7 +38,7 @@ export const getAllIssues = () => {
 
       const filteredData = response?.filter((item) => item?.fields.project.projectCategory.name === 'notificacionesIncidencias')
 
-      dispatch({type: GET_All_ISSUES, payload: filteredData})
+      dispatch({ type: GET_All_ISSUES, payload: filteredData })
 
       return filteredData
     } catch (error) {

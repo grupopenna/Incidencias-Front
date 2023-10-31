@@ -11,16 +11,16 @@ import { AlertIcon } from "../Icons";
 
 const Tablero = () => {
 
-  // const [ listPriorizado, setListPriorizado] = useState(getList("Priorizado"))
+  // const [ listPriorizado, setListPriorizado] = useState(getList("Priorizado"));
   // const navigate = useNavigate();
   //const dispatch = useDispatch();
-  const [modalShow, setModalShow] = useState(false)
-  const [itemSelect, setItemSelect] = useState({})
+  const [modalShow, setModalShow] = useState(false);
+  const [itemSelect, setItemSelect] = useState({});
   const incidents = useSelector((state) => state.incients);
   const transitions = useSelector((state) => state.transitions);
   const [reload, setReload] = useState(false);
   const dispatch = useDispatch();
-  const location = useLocation()
+  const location = useLocation();
   const { pathname } = location;
   const keyPathname = pathname.split('/').slice(-1)
   const navigate = useNavigate();
@@ -35,6 +35,23 @@ const Tablero = () => {
       setReload
     }
   }, [reload])
+
+  // const orderScrum = (transition) => {
+  //   return [transition.find((t) => t.name == "Por hacer"), 
+  //   transition.find((t) => t.name == "En curso"), 
+  //   transition.find((t) => t.name == "Listo")]
+  // }
+
+  // const orderKanban  = (transition) => {
+    
+  //   return [transition.find((t) => t.to.name == "Sin Priorizar"), 
+  //   transition.find((t) => t.to.name == "Priorizado"), 
+  //   transition.find((t) => t.to.name == "En Proceso"), 
+  //   transition.find((t) => t.to.name == "Validar"), 
+  //   transition.find((t) => t.to.name == "Validado")]
+  // }
+
+  // const transitions = transitionState.length == 3 && keyPathname != "NR" ? orderScrum(transitionState) : orderKanban(transitionState)
 
   const getList = (list) => {
     let filterList = incidents.filter((incident) => incident.fields.status.name == list)
@@ -55,7 +72,6 @@ const Tablero = () => {
         console.log('result.draggableId', result.draggableId)
         await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then(async (response) => {
           console.log('response', response)
-          console.log('keyPathname[0]', keyPathname[0])
           await getIssue(keyPathname[0])(dispatch).then((response) => {
             console.log('response', response)
             return console.log('response SelectedIncident getIssue', response);
@@ -112,7 +128,6 @@ const Tablero = () => {
     ...draggableStyle
   });
 
-
   const handleNotify = () => {
     navigate(`/createIssue/form/${keyPathname[0]}/`)
   }
@@ -145,6 +160,21 @@ const Tablero = () => {
 
       </div>
       <div className="flex gap-x-2">
+        {keyPathname == "NR" ? (
+          transitions.map((transition, i) => (
+                <div key={i} className=" bg-bgColumn rounded-lg w-1/3 flex flex-col px-1">
+                  <h1 className="p-3 font-bold text-font">{transition.to.name}</h1>
+                  {getList(transition.to.name).map((item) => (
+                    <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full flex ">
+                      <Incident
+                      item={item}
+                      />
+                    </button>
+                  ))}
+                </div>
+          ))
+        )
+        :(
         <DragDropContext onDragEnd={onDragEnd} className="flex">
           {transitions.map((transition) => (
             <Droppable key={transition.id} droppableId={`${transition.to.name}`} className="min-h-full w-5/6">
@@ -153,6 +183,7 @@ const Tablero = () => {
                   <h1 className="p-3 font-bold text-font">{transition.to.name}</h1>
                   {getList(transition.to.name).map((item, index) => (
                     <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full flex ">
+                      {transition.to.name != "En Proceso" ?(
                       <Draggable key={item.key} draggableId={item.key} index={index}>
                         {(provided, snapshot) => (
                           <Incident
@@ -165,7 +196,14 @@ const Tablero = () => {
                               provided.draggableProps.style,
                             )} />
                         )}
-                      </Draggable>
+                      </Draggable>)
+                      : <Incident
+                      item={item}
+                      innerRef={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      />
+                      }
                     </button>
                   ))}
                   {provided.placeholder}
@@ -174,7 +212,7 @@ const Tablero = () => {
             </Droppable>
           ))
           }
-        </DragDropContext>
+        </DragDropContext>)}
       </div>
     </div>
   )
