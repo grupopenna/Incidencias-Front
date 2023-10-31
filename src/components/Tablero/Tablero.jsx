@@ -43,7 +43,7 @@ const Tablero = () => {
   // }
 
   // const orderKanban  = (transition) => {
-    
+
   //   return [transition.find((t) => t.to.name == "Sin Priorizar"), 
   //   transition.find((t) => t.to.name == "Priorizado"), 
   //   transition.find((t) => t.to.name == "En Proceso"), 
@@ -158,61 +158,67 @@ const Tablero = () => {
         <AlertMessage />
 
       </div>
-      <div className="flex gap-x-2">
-        {keyPathname == "NR" ? (
-          transitions.map((transition, i) => (
-                <div key={i} className=" bg-bgColumn rounded-lg w-1/3 flex flex-col px-1">
-                  <h1 className="p-3 font-bold text-font">{transition.to.name}</h1>
-                  {getList(transition.to.name).map((item) => (
-                    <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full flex ">
-                      <Incident
+      {incidents?.length > 0 ?
+        <div className="flex gap-x-2">
+          {keyPathname == "NR" ? (
+            transitions.map((transition, i) => (
+              <div key={i} className=" bg-bgColumn rounded-lg w-1/3 flex flex-col px-1">
+                <h1 className="p-3 font-bold text-font">{transition.to.name}</h1>
+                {getList(transition.to.name).map((item) => (
+                  <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full flex ">
+                    <Incident
                       item={item}
-                      />
-                    </button>
-                  ))}
-                </div>
-          ))
-        )
-        :(
-        <DragDropContext onDragEnd={onDragEnd} className="flex">
-          {transitions.map((transition) => (
-            <Droppable key={transition.id} droppableId={`${transition.to.name}`} className="min-h-full w-5/6">
-              {(provided) => (
-                <div ref={provided.innerRef} {...provided.droppableProps} className=" bg-bgColumn rounded-lg w-1/3 flex flex-col px-1">
-                  <h1 className="p-3 font-bold text-font">{transition.to.name}</h1>
-                  {getList(transition.to.name).map((item, index) => (
-                    <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full flex ">
-                      {transition.to.name != "En Proceso" ?(
-                      <Draggable key={item.key} draggableId={item.key} index={index}>
-                        {(provided, snapshot) => (
-                          <Incident
-                            item={item}
-                            innerRef={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={getItemStyle(
-                              snapshot.isDragging,
-                              provided.draggableProps.style,
-                            )} />
-                        )}
-                      </Draggable>)
-                      : <Incident
-                      item={item}
-                      innerRef={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      />
-                      }
-                    </button>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          ))
-          }
-        </DragDropContext>)}
-      </div>
+                    />
+                  </button>
+                ))}
+              </div>
+            ))
+          )
+            : (
+              <DragDropContext onDragEnd={onDragEnd} className="flex">
+                {transitions.map((transition) => (
+                  <Droppable key={transition.id} droppableId={`${transition.to.name}`} className="min-h-full w-5/6">
+                    {(provided) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps} className=" bg-bgColumn rounded-lg w-1/3 flex flex-col px-1">
+                        <h1 className="p-3 font-bold text-font">{transition.to.name}</h1>
+                        {getList(transition.to.name).map((item, index) => (
+                          <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full flex ">
+                            {transition.to.name != "En Proceso" ? (
+                              <Draggable key={item.key} draggableId={item.key} index={index}>
+                                {(provided, snapshot) => (
+                                  <Incident
+                                    item={item}
+                                    innerRef={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    style={getItemStyle(
+                                      snapshot.isDragging,
+                                      provided.draggableProps.style,
+                                    )} />
+                                )}
+                              </Draggable>)
+                              : <Incident
+                                item={item}
+                                innerRef={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                              />
+                            }
+                          </button>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                ))
+                }
+              </DragDropContext>)}
+        </div>
+        :
+        <div className="text-center">
+          <h2 className="text-white">Aún no se informaron incidencias para este modulo</h2>
+        </div>
+      }
     </div>
   )
 }

@@ -19,19 +19,18 @@ const SelectedIncident = ({ projects }) => {
       if (response) {
         if (response.length > 0) {
           searchTransition(response[0].key);
-        } else if (response.length < 0) {
-          alert("No hay incidencias");
+        } else if (response.length < 1) {
+          //alert("No hay incidencias");
+          navigate(`board/${key}`)
         }
       }
       return console.log('response SelectedIncident getIssue', response);
     }).catch((error) => { throw error });
-
-    navigate(`board/${key}`)
-
   }
 
   const searchTransition = async (key) => {
     await getTransitions(key)(dispatch).then((response) => {
+      navigate(`board/${key.split('-')[0]}`)
       console.log('response SelectedIncident getTransitions', response);
     }).catch((error) => console.log('error', error));
   }

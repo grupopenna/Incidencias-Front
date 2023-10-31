@@ -18,7 +18,6 @@ const IncidentTableLazy = lazy(() => import('./view/IncidentTable/IncidentTable'
 const ViewAllIndicentLazy = lazy(() => import('./components/viewAllIndicent'))
 const SprintTableLazy = lazy(() => import('./components/ProxSprintTable/SprintTable'))
 
-
 const App = () => {
 
   return (
