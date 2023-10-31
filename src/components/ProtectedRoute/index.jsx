@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 import { setUserData } from '../../redux/actions'
-import { BASE_URL } from '../../redux/action-type'
+import { BACK_AUTH_URL} from '../../redux/action-type'
 import { useEffect, useState } from 'react'
 
 function ProtectedRoute() {
@@ -17,7 +17,7 @@ function ProtectedRoute() {
     }
     
     (async () => {
-        const response = await fetch(`${BASE_URL}/auth/check-url-token`, {
+        const response = await fetch(`${BACK_AUTH_URL}/auth/check-url-token`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
