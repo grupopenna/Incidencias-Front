@@ -54,7 +54,6 @@ function ViewAllIndicent() {
             })
         }
 
-
         if (selectedProject !== '') {
             mutateData = mutateData?.filter((item) => item.fields.project.name === selectedProject)
         }
@@ -66,8 +65,6 @@ function ViewAllIndicent() {
         return mutateData
 
     }, [order, allIncients, selectedProject, searchByDetail])
-
-
 
     const handleSearchByDetail = (event) => {
         setSearchByDetail(event.target.value)
@@ -99,8 +96,6 @@ function ViewAllIndicent() {
         })()
 
     }, [])
-
-
 
     if (isLoading) {
         return <Loader />
