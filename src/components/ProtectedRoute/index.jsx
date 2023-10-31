@@ -11,8 +11,9 @@ function ProtectedRoute() {
    useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const token = params.get('token')
+
     if (!token) {
-        window.location.href = 'http://testgp.compc.com.ar/'
+        window.location.href = import.meta.env.VITE_REDIRECT_URL
         return 
     }
     
@@ -24,7 +25,7 @@ function ProtectedRoute() {
         })
         
         if (!response.ok) {
-            window.location.href = 'http://testgp.compc.com.ar/login'
+            window.location.href = import.meta.env.VITE_REDIRECT_URL
             return 
         }
 
