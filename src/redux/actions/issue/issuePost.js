@@ -3,6 +3,8 @@ import { BASE_URL } from '../../action-type';
 
 export const issuePost = ({ titleDesc, descripcion, projectId, issueId }) => {
 
+  const userId = "712020:8a4ac3e0-8800-405a-96a0-a09c82e1a727"
+
   const bodyData = {
     "fields": {
       "project": {
@@ -25,7 +27,7 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId }) => {
         ]
       },
       "reporter": {
-        "id": "712020:75da847b-f656-4020-a3fd-84d8811cd76f"
+        "id": `${userId}`
       },
       "issuetype": {
         "id": `${issueId}`
@@ -35,9 +37,10 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId }) => {
   return async () => {
     try {
       const response = await axios.post(`${BASE_URL}/incident/api/notify-incident`, bodyData)
-      if (response.status === 200) {
+      if (response.status == 200) {
         alert("Su incidencia fue creada con exito")
       }
+      return response
       //return dispatch({ type: POST_ISSUE, payload: response.issues })
 
     } catch (error) {
