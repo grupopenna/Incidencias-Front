@@ -36,19 +36,27 @@ const Tablero = () => {
     }
   }, [reload])
 
-  const orderScrum = (transition) => {
-    return [transition.find((t) => t.name == "Por hacer"), 
-    transition.find((t) => t.name == "En curso"), 
-    transition.find((t) => t.name == "Listo")]
+  const orderScrum = (trans) => {
+    return [trans.find((t) => t.name == "Por hacer"), 
+    trans.find((t) => t.name == "En curso"), 
+    trans.find((t) => t.name == "Listo")]
   }
 
-  const orderKanban  = (transition) => {
+  const orderKanban  = (trans) => {
+    console.log('transition', trans)
+    console.log('transition', trans.filter((t) => t.to.name == "Priorizado"))
     
-    return [transition.find((t) => t.to.name == "Sin Priorizar"), 
-    transition.find((t) => t.to.name == "Priorizado"), 
-    transition.find((t) => t.to.name == "En Proceso"), 
-    transition.find((t) => t.to.name == "Validar"), 
-    transition.find((t) => t.to.name == "Validado")]
+    
+    let order = [
+      trans.find((t) => t.to.name == "Sin Priorizar"),
+      trans.find((t) => t.to.name == "Priorizado"),
+      trans.find((t) => t.to.name == "En Proceso"),
+      trans.find((t) => t.to.name == "Validar"),
+      trans.find((t) => t.to.name == "Validado")
+    ]
+    console.log('order', order)
+    
+    return order
   }
 
   const transitions = transitionState.length == 3 && keyPathname != "NR" ? orderScrum(transitionState) : orderKanban(transitionState)
@@ -220,30 +228,3 @@ const Tablero = () => {
 }
 
 export default Tablero;
-
-// if (!destination) {
-//   return;
-// }
-// const sInd = +source.droppableId;
-// const dInd = +destination.droppableId;
-
-// if (sInd === dInd) {
-//   const items = reorder(state[sInd], source.index, destination.index);
-//   const newState = [...state];
-//   newState[sInd] = items;
-//   setState(newState);
-// } else {
-//   const result = move(state[sInd], state[dInd], source, destination);
-//   const newState = [...state];
-//   newState[sInd] = result[sInd];
-//   newState[dInd] = result[dInd];
-
-//   setState(newState.filter(group => group.length));
-// }
-
-// const reorder = (list, startIndex, endIndex) => {
-//   const result = Array.from(list);
-//   const [removed] = result.splice(startIndex, 1);
-//   result.splice(endIndex, 0, removed);
-//   return result;
-// };
