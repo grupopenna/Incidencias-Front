@@ -1,7 +1,8 @@
 import axios from "axios";
 import { BASE_URL } from '../../action-type';
+import { getIssue } from "./getIssue";
 
-export const issuePost = ({ titleDesc, descripcion, projectId, issueId }) => {
+export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey }) => {
 
   const userId = "712020:8a4ac3e0-8800-405a-96a0-a09c82e1a727"
 
@@ -34,14 +35,14 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId }) => {
       }
     }
   }
-  return async () => {
+  return async (dispatch) => {
     try {
       const response = await axios.post(`${BASE_URL}/incident/api/notify-incident`, bodyData)
-      if (response.status == 200) {
+      if (response.status === 200) {
+        await getIssue(`${IssueKey}`)(dispatch)
         alert("Su incidencia fue creada con exito")
+        window.history.back()
       }
-      return response
-      //return dispatch({ type: POST_ISSUE, payload: response.issues })
 
     } catch (error) {
       console.error('Error al realizar la solicitud:', error);

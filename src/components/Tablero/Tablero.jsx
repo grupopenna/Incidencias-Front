@@ -59,8 +59,7 @@ const Tablero = () => {
   }
 
   const onDragEnd = async (result) => {
-
-    console.log('result', result);
+    //console.log('result', result);
     const list = getList(result.source.droppableId);
 
     if ((result.source.droppableId == "Sin Priorizar" || result.source.droppableId == "Priorizado") && (result.destination.droppableId == "Sin Priorizar" || result.destination.droppableId == "Priorizado")) {

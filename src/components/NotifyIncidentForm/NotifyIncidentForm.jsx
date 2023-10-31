@@ -3,32 +3,30 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import { issuePost, getIssueTypes } from "../../redux/actions/";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import {  Select, SelectItem  } from '@tremor/react'
+import { Select, SelectItem } from '@tremor/react'
 
 import { DocFiles, ImgFiles } from '../Icons';
 import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
 import { Editor as TuiEditor } from '../Editor/index'
 
-const NotifyIncidentForm = (key) => {
+const NotifyIncidentForm = () => {
+
   const editorRef = useRef(null)
   const dispatch = useDispatch()
   const { issuesType, id } = useSelector(state => state.issuesTypes)
-
-  // const [content, setContent] = useState()
-
-
   const [titleDesc, setTitleDesc] = useState('');
   const [email, setEmail] = useState('');
   const [file, setfile] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState('')
   const [errors, setErrors] = useState({ titleDesc: '', email: '', descripcion: '' });
   const location = useLocation()
+  const navigate = useNavigate();
   const { pathname } = location;
-  // Toolbar edito
-  //console.log(content)
-  console.log('attachment', file)
+  const [IssueKey] = pathname.split('/').slice(-2)
+
+
   useEffect(() => {
 
     (async () => {
@@ -40,7 +38,7 @@ const NotifyIncidentForm = (key) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const descripcion = editorRef.current.getMarkdown() 
+    const descripcion = editorRef.current.getMarkdown()
 
     // Validación de nombre no vacío
     if (!titleDesc.trim()) {
@@ -63,28 +61,28 @@ const NotifyIncidentForm = (key) => {
 
     // Restablece los mensajes de error en caso de éxito
     setErrors({ titleDesc: '', email: '', descripcion: '' });
-    const data = { key, titleDesc, email, descripcion, projectId: id, issueId: selectedIssue }
+    const data = { IssueKey, titleDesc, email, descripcion, projectId: id, issueId: selectedIssue }
 
     if (file.length > 0) {
       // if (response.status == 200){
-        // console.log('response', response)
-        const formData = new FormData();
-        formData.append('file', file[0]);
-        console.log('file', file[0])
+      // console.log('response', response)
+      const formData = new FormData();
+      formData.append('file', file[0]);
+      console.log('file', file[0])
 
-        let keyAttachment = "CMS-20";
-        console.log('formData', formData)
+      let keyAttachment = "CMS-20";
+      console.log('formData', formData)
 
-        await postAttachments(formData, keyAttachment)(dispatch).then((response) => {
-          console.log('response', response)
-        }).then((error) => console.log('error', error))
+      await postAttachments(formData, keyAttachment)(dispatch).then((response) => {
+        console.log('response', response)
+      }).then((error) => console.log('error', error))
 
       // }
     }
 
-    await issuePost(data)(dispatch).then( async (response) => {
+    await issuePost(data)(dispatch).then(async (response) => {
       console.log('response', response)
-      if (response.status == 200 ){
+      if (response.status == 200) {
         console.log('response', response)
       }
     }).then((error) => {
@@ -99,68 +97,73 @@ const NotifyIncidentForm = (key) => {
   };
 
   return (
-    <div className=' flex justify-center mx-3 lg:px-16'>
-      <div className='flex flex-col w-full lg:w-2/4'>
-        <form onSubmit={handleSubmit}>
-          {/* <div className="text-red-500">
+    <>
+      <div className='ml-7 mt-5'>
+        <button onClick={() => navigate(-1)} className='bg-buttonBg px-3 py-2 text-white rounded-lg'>Atras</button>
+      </div>
+      <div className='flex justify-center mx-3 lg:px-16'>
+        <div className='flex flex-col w-full lg:w-2/4'>
+          <form onSubmit={handleSubmit}>
+            {/* <div className="text-red-500">
             {errors.usuario && <div>{errors.usuario}</div>}
             {errors.email && <div>{errors.email}</div>}
             {errors.descripcion && <div>{errors.descripcion}</div>}
           </div> */}
-          <div className="space-y-12">
-            <div className="pb-12">
-              <div className="mt-8 grid grid-cols-1 gap-x-2 gap-y-4">
-                <div className="">
-                  <label htmlFor="titleDesc" className="block text-sm font-medium leading-6 text-slate-100">
-                    Titulo Descriptivo*
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      name="title"
-                      id="titleDesc"
-                      autoComplete="given-name"
-                      className="px-3 block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-fontPlaceholder focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      value={titleDesc}
-                      onChange={(e) => setTitleDesc(e.target.value)}
-                    />
+            <div className="space-y-12">
+              <div className="pb-12">
+                <div className="mt-8 grid grid-cols-1 gap-x-2 gap-y-4">
+                  <div className="">
+                    <label htmlFor="titleDesc" className="block text-sm font-medium leading-6 text-slate-100">
+                      Titulo Descriptivo*
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        name="title"
+                        id="titleDesc"
+                        autoComplete="given-name"
+                        className="px-3 block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-fontPlaceholder focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        value={titleDesc}
+                        onChange={(e) => setTitleDesc(e.target.value)}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="">
-                  <label htmlFor="email" className="block text-sm font-medium leading-6 text-slate-100">
-                    Email*
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="email"
-                      name="email"
-                      // type="email"
-                      autoComplete="email"
-                      className="px-3 block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-fontPlaceholder focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
+                  <div className="">
+                    <label htmlFor="email" className="block text-sm font-medium leading-6 text-slate-100">
+                      Email*
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        id="email"
+                        name="email"
+                        // type="email"
+                        autoComplete="email"
+                        className="px-3 block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-fontPlaceholder focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
                   </div>
-                </div>
-                <label className='text-white'>
-                  Issue type
-                  <Select 
-                    onValueChange={(value) => setSelectedIssue(value)}
-                    className='z-50 mt-2'
-                    value={selectedIssue}>
-                  {issuesType?.map((project) => (
-                      <SelectItem key={project.id} value={project.id}>
+                  <label className='text-white'>
+                    Issue type
+                    <Select
+                      onValueChange={(value) => setSelectedIssue(value)}
+                      className='z-50 mt-2'
+                      value={selectedIssue}>
+                      {issuesType?.map((project) => (
+                        <SelectItem key={project.id} value={project.id}>
                           {project.name}
-                      </SelectItem>
+                        </SelectItem>
                       ))}
-                  </Select>
-                </label>
-                <div className='mt-1'>
-                  <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-slate-100">
-                    Detalle de Incidencia*
+                    </Select>
                   </label>
-                  <div className="mt-1">
-                    <TuiEditor markdownRef={editorRef}/>
+                  <div className='mt-1'>
+                    <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-slate-100">
+                      Detalle de Incidencia*
+                    </label>
+                    <div className="mt-1">
+                      <TuiEditor markdownRef={editorRef} />
+                    </div>
                   </div>
                 </div>
                 <div className="">
@@ -175,14 +178,14 @@ const NotifyIncidentForm = (key) => {
                           className="relative px-2 cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500 hover:bg-sky-200"
                         >
                           <span>Subir archivo</span>
-                          <input id="file-upload" name="file-upload" type="file" className="sr-only"  multiple
+                          <input id="file-upload" name="file-upload" type="file" className="sr-only" multiple
                             onChange={(e) => handleFileChange(e)}
                           />
                         </label>
                       </div>
                       {file.length > 0 ?
                         <div className='grid grid-cols-2'>
-                          {file.map((el, i) =>(
+                          {file.map((el, i) => (
                             el.type === "image/png" ?
                               <button className='bg-bgCard rounded-lg overflow-auto w-48 flex flex-col items-center m-1 h-28' key={i} >
                                 {/* <img
@@ -192,7 +195,7 @@ const NotifyIncidentForm = (key) => {
                                   // aria-label={`persona asignada ${el.author.displayName}`} 
                                 /> */}
                                 <ImgFiles />
-                                  <span className="text-font font-semibold">{el.name}</span>
+                                <span className="text-font font-semibold">{el.name}</span>
                               </button>
                               :
                               <a href={el.content} key={i} >
@@ -207,20 +210,20 @@ const NotifyIncidentForm = (key) => {
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="mt-9 flex items-center justify-center">
-                <button
-                  type="submit"
-                  className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  Informar incidencia
-                </button>
+                <div className="mt-9 flex items-center justify-center">
+                  <button
+                    type="submit"
+                    className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    Informar incidencia
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 
