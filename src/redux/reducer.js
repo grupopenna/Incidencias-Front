@@ -15,7 +15,9 @@ import {
   CLEAR_COMMENT_STATE,
   NEW_COMMENT,
 
-  GET_ISSUETYPE
+  GET_ISSUETYPE,
+
+  GET_WORKLOG,
 
 } from "./action-type";
 
@@ -34,7 +36,9 @@ const initialState = {
 
   commentIssuesById: [],
 
-  issuesTypes: []
+  issuesTypes: [],
+
+  worklogs: [],
 
 };
 
@@ -62,17 +66,18 @@ const reducer = (state = initialState, { type, payload }) => {
 
     case GET_COMMENT_ISSUES:
       return { ...state, commentIssuesById: payload }
-
     case CLEAR_COMMENT_STATE:
       return { ...state, commentIssuesById: [] }
-
     case NEW_COMMENT:
       return { ...state, commentIssuesById: [...state.commentIssuesById, payload] }
 
     case GET_ISSUETYPE:
       return { ...state, issuesTypes: payload }
+
+    case GET_WORKLOG:
+      return { ...state, worklogs: payload }
     default:
-      return { ...state };
+      return { ...state, worklogs: payload};
   }
 };
 
