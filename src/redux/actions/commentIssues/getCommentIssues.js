@@ -2,7 +2,7 @@ import axios from "axios";
 import { BASE_URL, GET_COMMENT_ISSUES, CLEAR_COMMENT_STATE } from '../../action-type';
 
 export const getCommentIssues = (key) => {
-  let userId = "712020:75da847b-f656-4020-a3fd-84d8811cd76f"
+  const userId = "712020:8a4ac3e0-8800-405a-96a0-a09c82e1a727"
 
   const bodyData = {
     "jql": `reporter=${userId} order by created DESC`
