@@ -23,3 +23,5 @@ export const CLEAR_COMMENT_STATE = "CLEAR_COMMENT_STATE";
 export const NEW_COMMENT = "NEW_COMMENT"
 
 export const EDIT_DESC = 'EDIT_DESC'
+
+export const GET_WORKLOG = 'GET_WORKLOG'
