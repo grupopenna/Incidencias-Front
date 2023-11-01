@@ -3,7 +3,7 @@ import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRef } from 'react';
 import { useState, useEffect } from 'react';
-import { IconFiles, SimpleArrowUp, TrashIcon } from '../Icons';
+import { AdjIcon, IconFiles, SimpleArrowUp, TrashIcon } from '../Icons';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { WithoutPhoto } from '../Icon';
 import ImgModal from '../ImgModal/ImgModal';
@@ -52,13 +52,11 @@ const ActionDeleteIncident = ({ currentColum, setModalDeleteIssue }) => {
   }
 }
 
-
 const ViewerView = ({ description }) => {
   return description
     ? <Viewer initialValue={parseTextToMarkdown(description)} />
     : <p className='text-slate-500'>Editar descripcion</p>
 }
-
 
 const Modal = ({ setModalShow, itemSelect }) => {
   const dispatch = useDispatch()
@@ -150,10 +148,13 @@ const Modal = ({ setModalShow, itemSelect }) => {
           <div className='flex h-5/6'>
             {/*-------seccion--1-------- */}
             <div className='w-1/2 h-full px-5 overflow-auto pb-4'>
-              <div className='text-2xl mb-10'>
+              <div className='text-2xl mb-5 '>
                 <p>{item.fields.summary}</p>
               </div>
-              <div className='mb-10 max-h-80 w-full pr-3 overflow-auto'>
+              <div className='my-1 w-8 h-8 bg-bgCard rounded-lg '>
+              <AdjIcon/>
+            </div>
+              <div className='my-5 max-h-80 w-full pr-3 overflow-auto'>
                 <p>Descripción:</p>
                 {ALLOW_COLUMS_TO_EDIT.includes(item.fields.status.name.toLowerCase()) ?
                   <section
