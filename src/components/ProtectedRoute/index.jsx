@@ -11,6 +11,9 @@ function ProtectedRoute() {
    useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const token = params.get('token')
+    
+    // REMOVE LOG:
+    console.log(import.meta.env.VITE_REDIRECT_URL)
 
     if (!token) {
         window.location.href = import.meta.env.VITE_REDIRECT_URL

@@ -31,7 +31,10 @@ jobs:
         run: npm install
 
       - name: Build Application
-        run: npm run build
+        run: |
+          touch .env.production
+          echo VITE_REDIRECT_URL=${{ secrets.REDIRECT_URL }} >> .env.production
+          npm run build
 
       - name: Prepare folder to deploy
         run: |
