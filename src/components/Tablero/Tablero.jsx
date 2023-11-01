@@ -75,6 +75,7 @@ const Tablero = () => {
       if (result.source.droppableId != result.destination.droppableId) {
         console.log('result.destination.droppableId', result.destination.droppableId)
         console.log('result.draggableId', result.draggableId)
+
         await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then(async (response) => {
           console.log('response', response)
           await getIssue(keyPathname[0])(dispatch).then((response) => {
@@ -128,7 +129,7 @@ const Tablero = () => {
   }
 
 
-  const getItemStyle = (isDragging, draggableStyle) => ({
+  const getItemStyle = (draggableStyle) => ({
     userSelect: "none",
     ...draggableStyle
   });
@@ -191,15 +192,14 @@ const Tablero = () => {
                           <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full flex ">
                             {transition.to.name != "En Proceso" ? (
                               <Draggable key={item.key} draggableId={item.key} index={index}>
-                                {(provided, snapshot) => (
+                                {(provided) => (
                                   <Incident
                                     item={item}
                                     innerRef={provided.innerRef}
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
                                     style={getItemStyle(
-                                      snapshot.isDragging,
-                                      provided.draggableProps.style,
+                                      provided.draggableProps.style
                                     )} />
                                 )}
                               </Draggable>)
