@@ -19,18 +19,19 @@ const SelectedIncident = ({ projects }) => {
       if (response) {
         if (response.length > 0) {
           searchTransition(response[0].key);
-        } else if (response.length < 1) {
-          //alert("No hay incidencias");
-          navigate(`board/${key}`)
+        } else if (response.length < 0) {
+          alert("No hay incidencias");
         }
       }
       return console.log('response SelectedIncident getIssue', response);
     }).catch((error) => { throw error });
+
+    navigate(`board/${key}`)
+
   }
 
   const searchTransition = async (key) => {
     await getTransitions(key)(dispatch).then((response) => {
-      navigate(`board/${key.split('-')[0]}`)
       console.log('response SelectedIncident getTransitions', response);
     }).catch((error) => console.log('error', error));
   }
@@ -56,11 +57,8 @@ const SelectedIncident = ({ projects }) => {
                   project.name
                 }
               </button>)
-
           }
-          <button onClick={() => navigate("/view-all-incidents/12")} className="rounded-xl bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-3 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
-            Ver todas las incidencias
-          </button>
+          
           {/* <button onClick={() => handleRedirect("create-new")} className="rounded-xl bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-3 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
           Crear nuevo desarrollo
         </button> */}
