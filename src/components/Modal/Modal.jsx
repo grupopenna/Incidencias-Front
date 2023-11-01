@@ -155,21 +155,20 @@ const Modal = ({ setModalShow, itemSelect }) => {
               </div>
               <div className='mb-10 max-h-80 w-full pr-3 overflow-auto'>
                 <p>Descripción:</p>
-                <section
-                  onClick={() => setEditMode(true)}
-                  className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
+                {ALLOW_COLUMS_TO_EDIT.includes(item.fields.status.name.toLowerCase()) ?
+                  <section
+                    onClick={() => setEditMode(true)}
+                    className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
+                    {editMode ?
+                      <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(item.fields.description)} />
+                      :
+                      <ViewerView description={item.fields.description} />
+                    }
+                  </section>
+                  :
+                  <ViewerView description={item.fields.description} />
+                }
 
-                  {!ALLOW_COLUMS_TO_EDIT.includes(item.fields.status.name.toLowerCase()) || !editMode && (
-                    <ViewerView description={item.fields.description} />
-                  )
-                  }
-
-                  {editMode && (
-                    <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(item.fields.description)} />
-
-                  )}
-
-                </section>
                 {editMode && <div className='flex gap-3 p-4'>
                   <button onClick={handleEditDesc} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>
                     {loading
@@ -252,7 +251,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
             {/*-------seccion--2-------- */}
             <div className='w-1/2 h-full px-5 overflow-auto pb-4'>
               <div className='mb-5'>
-                <p>Asignado:</p>
+                <p>Profesional asignado:</p>
                 {item.fields.assignee ? (
                   <div className='flex justify-between'>
                     <p className='font-bold'>{item.fields.assignee.displayName}</p>

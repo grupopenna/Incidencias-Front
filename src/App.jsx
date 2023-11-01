@@ -25,7 +25,6 @@ const Loader = () => {
   </section>
 }
 
-
 const App = () => {
 
   return (
