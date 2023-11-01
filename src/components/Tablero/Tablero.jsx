@@ -9,6 +9,11 @@ import { postTransition, putOrder } from "../../redux/actions";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AlertIcon } from "../Icons";
 
+const BOARD_STATUS = {
+  SIN_PRIORIZAR: "Sin Priorizar",
+  PRIORIZADO: "Priorizado"
+}
+
 const Tablero = () => {
 
   // const [ listPriorizado, setListPriorizado] = useState(getList("Priorizado"));
@@ -24,6 +29,7 @@ const Tablero = () => {
   const { pathname } = location;
   const keyPathname = pathname.split('/').slice(-1)
   const navigate = useNavigate();
+
 
   useEffect(() => {
     getIssue()
@@ -62,13 +68,25 @@ const Tablero = () => {
     //console.log('result', result);
     const list = getList(result.source.droppableId);
 
-    if ((result.source.droppableId == "Sin Priorizar" || result.source.droppableId == "Priorizado") && (result.destination.droppableId == "Sin Priorizar" || result.destination.droppableId == "Priorizado")) {
+    if ((result.source.droppableId == BOARD_STATUS.SIN_PRIORIZAR|| result.source.droppableId == BOARD_STATUS.PRIORIZADO)
+       && (result.destination.droppableId == BOARD_STATUS.SIN_PRIORIZAR || result.destination.droppableId == BOARD_STATUS.PRIORIZADO)) {
 
       const idList = list.map((item) => item.key)
 
+
+      // Optimistic UI
+
+      
+      
       if (result.source.droppableId != result.destination.droppableId) {
         console.log('result.destination.droppableId', result.destination.droppableId)
         console.log('result.draggableId', result.draggableId)
+
+        const originalDepature = result.source.droppableId
+        const issueIndex = incidents.findIndex((incident) => incident.key === result.draggableId)
+
+        incidents[issueIndex].fields.status.name = result.destination.droppableId
+
         await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then(async (response) => {
           console.log('response', response)
           await getIssue(keyPathname[0])(dispatch).then((response) => {
@@ -77,6 +95,7 @@ const Tablero = () => {
           }).catch((error) => { throw error });
         }).catch((error) => {
           console.log('error', error)
+          incidents[issueIndex].fields.status.name = originalDepature
           return
         })
 
@@ -88,12 +107,7 @@ const Tablero = () => {
           "rankBeforeIssue": result.draggableId
         }
 
-        await putOrder(bodyData)(dispatch).then(async (response) => {
-          console.log('response', response)
-
-        }).catch((error) => {
-          console.log('error', error)
-        })
+        await putOrder(bodyData)(dispatch)
       }
 
     } else if (result.source.droppableId == "Validar" && result.destination.droppableId == "Validado") {
@@ -112,17 +126,19 @@ const Tablero = () => {
     console.log('list', list)
     console.log('actualIndex', actualIndex)
     console.log('nextIndex', newIndex)
+
     const [elemento] = list.splice(actualIndex, 1);
 
     // Inserta el elemento en la nueva posición
     list.splice(newIndex, 0, elemento);
+
 
     // Devuelve la lista modificada
     return list;
   }
 
 
-  const getItemStyle = (isDragging, draggableStyle) => ({
+  const getItemStyle = (draggableStyle) => ({
     userSelect: "none",
     ...draggableStyle
   });
@@ -144,6 +160,7 @@ const Tablero = () => {
       )
     }
   }
+
 
   return (
     <div className="flex flex-col w-full mx-5">
@@ -185,15 +202,14 @@ const Tablero = () => {
                           <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full flex ">
                             {transition.to.name != "En Proceso" ? (
                               <Draggable key={item.key} draggableId={item.key} index={index}>
-                                {(provided, snapshot) => (
+                                {(provided) => (
                                   <Incident
                                     item={item}
                                     innerRef={provided.innerRef}
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
                                     style={getItemStyle(
-                                      snapshot.isDragging,
-                                      provided.draggableProps.style,
+                                      provided.draggableProps.style
                                     )} />
                                 )}
                               </Draggable>)

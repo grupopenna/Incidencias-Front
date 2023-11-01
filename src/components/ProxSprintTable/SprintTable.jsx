@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getIssue, getTransitions } from "../../redux/actions"
+import { getIssueByUser, getTransitions } from "../../redux/actions"
 import { useDispatch, useSelector } from "react-redux"
 import Modal from "../Modal/Modal";
 import { WithoutPhoto } from "../Icon";
@@ -23,7 +23,7 @@ const SprintTable = () => {
   }, [])
 
   const solicitud = async () => {
-    await getIssue(`${issueDev}D`)(dispatch).then(async (response) => {
+    await getIssueByUser(`${issueDev}D`)(dispatch).then(async (response) => {
       if (response === undefined || response.length === 0) setView(true)
       await getTransitions(response[0].key)(dispatch)
     })
