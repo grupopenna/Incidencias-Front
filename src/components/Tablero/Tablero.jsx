@@ -9,6 +9,11 @@ import { postTransition, putOrder } from "../../redux/actions";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AlertIcon } from "../Icons";
 
+const BOARD_STATUS = {
+  SIN_PRIORIZAR: "Sin Priorizar",
+  PRIORIZADO: "Priorizado"
+}
+
 const Tablero = () => {
 
   // const [ listPriorizado, setListPriorizado] = useState(getList("Priorizado"));
@@ -62,7 +67,8 @@ const Tablero = () => {
     //console.log('result', result);
     const list = getList(result.source.droppableId);
 
-    if ((result.source.droppableId == "Sin Priorizar" || result.source.droppableId == "Priorizado") && (result.destination.droppableId == "Sin Priorizar" || result.destination.droppableId == "Priorizado")) {
+    if ((result.source.droppableId == BOARD_STATUS.SIN_PRIORIZAR|| result.source.droppableId == BOARD_STATUS.PRIORIZADO)
+       && (result.destination.droppableId == BOARD_STATUS.SIN_PRIORIZAR || result.destination.droppableId == BOARD_STATUS.PRIORIZADO)) {
 
       const idList = list.map((item) => item.key)
 
