@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { clearAllCommentState, getCommentIssues, postComments, editDescription } from '../../redux/actions'
 import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -79,9 +80,11 @@ const Modal = ({ setModalShow, itemSelect }) => {
   const editorRef = useRef(null)
   const viewUpdateRef = useRef(null)
 
+  // console.log('AllComments.reverse()', AllComments[0].body)
+
   useEffect(() => {
     setItem(itemSelect)
-    setComentarios(AllComments.reverse())
+    setComentarios(AllComments)
     setTimeout(() => { setLoading(false) }, 2000)
   }, [item, AllComments.length])
 
@@ -90,10 +93,10 @@ const Modal = ({ setModalShow, itemSelect }) => {
     AllComments.length > 0 && setComentarios(AllComments.reverse())
   }, [dispatch])
 
-
   /**
    * Crear una funcion que formatee lo que devuelve el editor a un formato que jira entienda.
    */
+
   const handleEditDesc = async () => {
     setLoading(true)
     const newValue = viewUpdateRef.current.getMarkdown().split('\n')
@@ -132,6 +135,10 @@ const Modal = ({ setModalShow, itemSelect }) => {
     setModalShow(false)
   }
 
+  const clientName = (str) => {
+    return str.substring(1)
+  }
+
   return (
     <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-10px]  bg-bgModal flex justify-center items-center">
       <div className="bg-white h-4/5 w-4/5 rounded-lg p-3">
@@ -152,8 +159,8 @@ const Modal = ({ setModalShow, itemSelect }) => {
                 <p>{item.fields.summary}</p>
               </div>
               <div className='my-1 w-8 h-8 bg-bgCard rounded-lg '>
-              <AdjIcon/>
-            </div>
+                <AdjIcon/>
+              </div>
               <div className='my-5 max-h-80 w-full pr-3 overflow-auto'>
                 <p>Descripción:</p>
                 {ALLOW_COLUMS_TO_EDIT.includes(item.fields.status.name.toLowerCase()) ?
@@ -223,8 +230,8 @@ const Modal = ({ setModalShow, itemSelect }) => {
                 comentarios.map((cm, i) => (
                   <div key={i} className='flex pt-2 mb-3' >
                     <div className='mr-4'>
-                      {cm.updateAuthor.avatarUrls ?
-                        <img
+                      {cm.updateAuthor.avatarUrls 
+                        ? <img
                           className="w-6 h-6"
                           src={cm.updateAuthor.avatarUrls['16x16']}
                           alt={`persona asignada ${cm.updateAuthor.displayName}`}
@@ -234,10 +241,17 @@ const Modal = ({ setModalShow, itemSelect }) => {
                     </div>
                     <div className='w-full'>
                       <div className='flex justify-between'>
-                        <p className='font-bold text-base'>{cm.updateAuthor.displayName}</p>
-                        <span className='text-fontPlaceholder text-sm'>{commentTime(cm.updated)}</span>
+                        {cm.body.content[0].content.length > 1 
+                          ? <p className='font-bold text-base'>{clientName(cm.body.content[0].content[0].attrs.text)}</p>
+                          : <p className='font-bold text-base'>{cm.updateAuthor.displayName}</p>
+                        }
+                        
+                        <span className='text-fontPlaceholder text-sm'>{commentTime(cm.updated)} </span>
                       </div>
-                      <p>{cm.body}</p>
+                      {cm.body.content[0].content.length > 1 
+                        ? <p>{cm.body.content[0].content[1].text}</p>
+                        : <p>{cm.body.content[0].content[0].text}</p>
+                      }
                     </div>
                   </div>
                 ))
