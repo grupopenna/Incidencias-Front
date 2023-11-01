@@ -14,7 +14,7 @@ function ProtectedRoute() {
     
     // REMOVE LOG:
     console.log(import.meta.env.VITE_REDIRECT_URL)
-
+    alert('')
     if (!token) {
         window.location.href = import.meta.env.VITE_REDIRECT_URL
         return 
