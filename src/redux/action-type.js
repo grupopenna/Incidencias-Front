@@ -28,3 +28,5 @@ export const EDIT_DESC = 'EDIT_DESC'
 export const SET_USER_DATA = 'SET_USER_DATA'
 
 export const GET_WORKLOG = 'GET_WORKLOG'
+
+export const GET_ISSUE_BY_USER = 'GET_ISSUE_BY_USER'
