@@ -30,6 +30,7 @@ const Tablero = () => {
   const keyPathname = pathname.split('/').slice(-1)
   const navigate = useNavigate();
 
+
   useEffect(() => {
     getIssue()
   }, [])
@@ -72,9 +73,19 @@ const Tablero = () => {
 
       const idList = list.map((item) => item.key)
 
+
+      // Optimistic UI
+
+      
+      
       if (result.source.droppableId != result.destination.droppableId) {
         console.log('result.destination.droppableId', result.destination.droppableId)
         console.log('result.draggableId', result.draggableId)
+
+        const originalDepature = result.source.droppableId
+        const issueIndex = incidents.findIndex((incident) => incident.key === result.draggableId)
+
+        incidents[issueIndex].fields.status.name = result.destination.droppableId
 
         await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then(async (response) => {
           console.log('response', response)
@@ -84,6 +95,7 @@ const Tablero = () => {
           }).catch((error) => { throw error });
         }).catch((error) => {
           console.log('error', error)
+          incidents[issueIndex].fields.status.name = originalDepature
           return
         })
 
@@ -95,12 +107,7 @@ const Tablero = () => {
           "rankBeforeIssue": result.draggableId
         }
 
-        await putOrder(bodyData)(dispatch).then(async (response) => {
-          console.log('response', response)
-
-        }).catch((error) => {
-          console.log('error', error)
-        })
+        await putOrder(bodyData)(dispatch)
       }
 
     } else if (result.source.droppableId == "Validar" && result.destination.droppableId == "Validado") {
@@ -119,10 +126,12 @@ const Tablero = () => {
     console.log('list', list)
     console.log('actualIndex', actualIndex)
     console.log('nextIndex', newIndex)
+
     const [elemento] = list.splice(actualIndex, 1);
 
     // Inserta el elemento en la nueva posición
     list.splice(newIndex, 0, elemento);
+
 
     // Devuelve la lista modificada
     return list;
@@ -151,6 +160,7 @@ const Tablero = () => {
       )
     }
   }
+
 
   return (
     <div className="flex flex-col w-full mx-5">
