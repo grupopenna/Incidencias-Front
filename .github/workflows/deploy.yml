@@ -3,7 +3,7 @@ name: Deploy 🚀
 on:
   push:
     branches:
-      - test/production
+      - test
 jobs:
   FTP-DEPLOY-ACTION:
     name: Deploy
