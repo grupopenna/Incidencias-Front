@@ -25,3 +25,5 @@ export const NEW_COMMENT = "NEW_COMMENT"
 export const EDIT_DESC = 'EDIT_DESC'
 
 export const GET_WORKLOG = 'GET_WORKLOG'
+
+export const GET_ISSUE_BY_USER = 'GET_ISSUE_BY_USER'
