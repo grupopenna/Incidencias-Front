@@ -19,11 +19,18 @@ const ViewAllIndicentLazy = lazy(() => import('./components/ViewAllIndicent/inde
 const SprintTableLazy = lazy(() => import('./components/ProxSprintTable/SprintTable'))
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'))
 
+const Loader = () => {
+  return <section className='w-full min-h-screen flex justify-center items-center'>
+    <div className='w-6 h-6 rounded-full border-2 border-white border-l-transparent animate-spin'/>
+  </section>
+}
+
+
 const App = () => {
 
   return (
     <BrowserRouter>
-      <Suspense fallback={null}>
+      <Suspense fallback={<Loader />}>
         <div className="flex min-h-screen flex-col bg-background">
           <NavBar />
           <Routes>
