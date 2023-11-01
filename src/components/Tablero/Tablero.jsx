@@ -15,10 +15,6 @@ const BOARD_STATUS = {
 }
 
 const Tablero = () => {
-
-  // const [ listPriorizado, setListPriorizado] = useState(getList("Priorizado"));
-  // const navigate = useNavigate();
-  //const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false);
   const [itemSelect, setItemSelect] = useState({});
   const incidents = useSelector((state) => state.incients);
@@ -42,30 +38,13 @@ const Tablero = () => {
     }
   }, [reload])
 
-  // const orderScrum = (transition) => {
-  //   return [transition.find((t) => t.name == "Por hacer"), 
-  //   transition.find((t) => t.name == "En curso"), 
-  //   transition.find((t) => t.name == "Listo")]
-  // }
-
-  // const orderKanban  = (transition) => {
-
-  //   return [transition.find((t) => t.to.name == "Sin Priorizar"), 
-  //   transition.find((t) => t.to.name == "Priorizado"), 
-  //   transition.find((t) => t.to.name == "En Proceso"), 
-  //   transition.find((t) => t.to.name == "Validar"), 
-  //   transition.find((t) => t.to.name == "Validado")]
-  // }
-
-  // const transitions = transitionState.length == 3 && keyPathname != "NR" ? orderScrum(transitionState) : orderKanban(transitionState)
-
+  
   const getList = (list) => {
     let filterList = incidents.filter((incident) => incident.fields.status.name == list)
     return filterList
   }
 
   const onDragEnd = async (result) => {
-    //console.log('result', result);
     const list = getList(result.source.droppableId);
 
     if ((result.source.droppableId == BOARD_STATUS.SIN_PRIORIZAR|| result.source.droppableId == BOARD_STATUS.PRIORIZADO)
@@ -123,15 +102,29 @@ const Tablero = () => {
   }
 
   const move = (list, actualIndex, newIndex) => {
-    console.log('list', list)
-    console.log('actualIndex', actualIndex)
-    console.log('nextIndex', newIndex)
+    const keys = new Set(list)
+    const filteredKeys = incidents.filter((incident) => keys.has(incident.key))
 
-    const [elemento] = list.splice(actualIndex, 1);
+    const [elemento] = filteredKeys.splice(actualIndex, 1);
+    const [el] = list.splice(actualIndex, 1)
 
     // Inserta el elemento en la nueva posición
-    list.splice(newIndex, 0, elemento);
+    filteredKeys.splice(newIndex, 0, elemento);
+    list.splice(newIndex, 0, el)
 
+    const othersValues = [] 
+
+    const copyValues = [...incidents]
+
+    for (let index = 0; index < copyValues.length ; index++ ) {
+          if (!keys.has(copyValues[index].key)) {
+            othersValues.push(copyValues[index])
+          }
+
+        incidents.pop()
+    }
+
+    incidents.push(...[...filteredKeys, ...othersValues])
 
     // Devuelve la lista modificada
     return list;
@@ -160,7 +153,6 @@ const Tablero = () => {
       )
     }
   }
-
 
   return (
     <div className="flex flex-col w-full mx-5">
@@ -240,30 +232,3 @@ const Tablero = () => {
 }
 
 export default Tablero;
-
-// if (!destination) {
-//   return;
-// }
-// const sInd = +source.droppableId;
-// const dInd = +destination.droppableId;
-
-// if (sInd === dInd) {
-//   const items = reorder(state[sInd], source.index, destination.index);
-//   const newState = [...state];
-//   newState[sInd] = items;
-//   setState(newState);
-// } else {
-//   const result = move(state[sInd], state[dInd], source, destination);
-//   const newState = [...state];
-//   newState[sInd] = result[sInd];
-//   newState[dInd] = result[dInd];
-
-//   setState(newState.filter(group => group.length));
-// }
-
-// const reorder = (list, startIndex, endIndex) => {
-//   const result = Array.from(list);
-//   const [removed] = result.splice(startIndex, 1);
-//   result.splice(endIndex, 0, removed);
-//   return result;
-// };
