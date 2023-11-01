@@ -4,4 +4,4 @@ export { getAllIssues, getIssue, issuePost, getIssueTypes, editDescription, getI
 export { putOrder } from './order/index'
 export { getProjects } from './projects/index'
 export { getTransitions, postTransition } from './transitions'
-export { postUser } from './user'
+export { postUser, setUserData } from './user'

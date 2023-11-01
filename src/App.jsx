@@ -15,23 +15,32 @@ const HomeLazy = lazy(() => import('./view/Home'))
 const NotifyIncidentFormLazy = lazy(() => import('./components/NotifyIncidentForm/NotifyIncidentForm'))
 const NewRequirementsLazy = lazy(() => import('./view/IncidentTable/IncidentTable'))
 const IncidentTableLazy = lazy(() => import('./view/IncidentTable/IncidentTable'))
-const ViewAllIndicentLazy = lazy(() => import('./components/viewAllIndicent'))
+const ViewAllIndicentLazy = lazy(() => import('./components/ViewAllIndicent/index'))
 const SprintTableLazy = lazy(() => import('./components/ProxSprintTable/SprintTable'))
+const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'))
+
+const Loader = () => {
+  return <section className='w-full min-h-screen flex justify-center items-center'>
+    <div className='w-6 h-6 rounded-full border-2 border-white border-l-transparent animate-spin'/>
+  </section>
+}
 
 const App = () => {
 
   return (
     <BrowserRouter>
-      <Suspense fallback={null}>
+      <Suspense fallback={<Loader />}>
         <div className="flex min-h-screen flex-col bg-background">
           <NavBar />
           <Routes>
-            <Route exact path="/" element={<HomeLazy />} />
-            <Route exact path="/createIssue" element={<NewRequirementsLazy />} />
-            <Route exact path="/board/:key" element={<IncidentTableLazy />} />
-            <Route exact path="/createIssue/form/:key/" element={<NotifyIncidentFormLazy />} />
-            <Route exac path="/view-all-incidents/:jiraAccountId" element={<ViewAllIndicentLazy />} />
-            <Route exact path="/proxSprint/:key" element={<SprintTableLazy />} />
+            <Route element={<ProtectedRoute />}>
+              <Route exact path="/" element={<HomeLazy />} />
+              <Route exact path="/createIssue" element={<NewRequirementsLazy />} />
+              <Route exact path="/board/:key" element={<IncidentTableLazy />} />
+              <Route exact path="/createIssue/form/:key/" element={<NotifyIncidentFormLazy />} />
+              <Route exac path="/view-all-incidents/:jiraAccountId" element={<ViewAllIndicentLazy />} />
+              <Route exact path="/proxSprint/:key" element={<SprintTableLazy />} />
+            </Route>
           </Routes>
         </div>
       </Suspense>
