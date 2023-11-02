@@ -13,7 +13,7 @@ import { deleteIssues } from '../../redux/actions/issue/deleteIssue';
 import { Viewer, Editor as TuiEditor } from '../Editor/index';
 
 import '@toast-ui/editor/dist/toastui-editor.css';
-import { parseTextToMarkdown } from '../../utils/index'
+import { parseTextToJiraFormatt, parseTextToMarkdown } from '../../utils/index'
 
 
 const ALLOW_COLUMS_TO_EDIT = ['priorizado', 'sin priorizar']
@@ -99,9 +99,8 @@ const Modal = ({ setModalShow, itemSelect }) => {
 
   const handleEditDesc = async () => {
     setLoading(true)
-    const newValue = viewUpdateRef.current.getMarkdown().split('\n')
-    const formatValue = newValue.join('\\n\\n')
-    await editDescription(item.key, formatValue)(dispatch)
+    const newValue = viewUpdateRef.current.getMarkdown()
+    await editDescription(item.key, parseTextToJiraFormatt(newValue))(dispatch)
     setLoading(false)
     setEditMode(false)
   }
@@ -125,7 +124,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
     setLoading(true)
     setTimeout(() => { setLoading(false) }, 2500)
     const descripcion = editorRef.current.getMarkdown()
-    dispatch(postComments(descripcion, key))
+    dispatch(postComments( parseTextToJiraFormatt(descripcion), key))
     editorRef.current.reset()
   }
 
