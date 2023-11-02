@@ -1,9 +1,7 @@
 import axios from "axios";
 import { BASE_URL, GET_ISSUES } from '../../action-type';
 
-export const getIssue = (key) => {
-
-  const userId = "712020:75da847b-f656-4020-a3fd-84d8811cd76f"
+export const getIssue = (key, userId) => {
 
   return async (dispatch) => {
     try {

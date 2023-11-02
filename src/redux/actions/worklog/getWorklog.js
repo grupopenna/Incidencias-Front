@@ -1,9 +1,8 @@
 import axios from "axios";
 import { BASE_URL, GET_WORKLOG } from '../../action-type';
 
-export const getWorklog = () => {
+export const getWorklog = (idUser) => {
 
-  const idUser = "712020:75da847b-f656-4020-a3fd-84d8811cd76f"
   const initDate = `2023-09-01`
   const finalDate = `2023-11-01`
 

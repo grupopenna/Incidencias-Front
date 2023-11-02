@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ArrowDown, ArrowUp, SearchIcon } from '../Icon'
 import { FormatDate } from '../../utils'
 import { getAllIssues, getProjects } from '../../redux/actions'
@@ -39,6 +40,7 @@ function ViewAllIndicent() {
     const dispatch = useDispatch()
     const allIncients = useSelector(state => state.allIncients)
     const projects = useSelector(state => state.projects)
+    const { jiraAccountId } = useSelector(state => state.user)
 
     const incidentOrdered = useMemo(() => {
         if (!allIncients) return []
@@ -65,7 +67,6 @@ function ViewAllIndicent() {
         return mutateData
 
     }, [order, allIncients, selectedProject, searchByDetail])
-
     const handleSearchByDetail = (event) => {
         setSearchByDetail(event.target.value)
     }
@@ -90,7 +91,7 @@ function ViewAllIndicent() {
     useEffect(() => {
 
         (async () => {
-            await getAllIssues()(dispatch)
+            await getAllIssues(jiraAccountId)(dispatch)
             await getProjects()(dispatch)
             setIsloding(false)
         })()

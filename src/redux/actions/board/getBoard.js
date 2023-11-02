@@ -11,7 +11,7 @@ export const getBoard = () => {
 
       return response
     } catch (error) {
-      console.log('Error al realizar la solicitud getIssue');
+      console.log('Error al realizar la solicitud getBoard');
 
     }
   };

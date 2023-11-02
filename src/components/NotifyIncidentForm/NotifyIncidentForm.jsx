@@ -16,6 +16,7 @@ const NotifyIncidentForm = () => {
   const editorRef = useRef(null)
   const dispatch = useDispatch()
   const { issuesType, id } = useSelector(state => state.issuesTypes)
+  const { jiraAccountId } = useSelector(state => state.user)
   const [titleDesc, setTitleDesc] = useState('');
   const [email, setEmail] = useState('');
   const [file, setfile] = useState([]);
@@ -80,7 +81,7 @@ const NotifyIncidentForm = () => {
       // }
     }
 
-    await issuePost(data)(dispatch).then(async (response) => {
+    await issuePost(data, jiraAccountId)(dispatch).then(async (response) => {
       console.log('response', response)
       if (response.status == 200) {
         console.log('response', response)
