@@ -18,6 +18,7 @@ import {
   GET_ISSUETYPE,
 
   GET_WORKLOG,
+  
 
 } from "./action-type";
 
@@ -30,7 +31,14 @@ const initialState = {
 
   board: [],
 
-  user: {},
+  user: {
+    fullName: "Juana De prueba",
+    email: "juanaDeprueba@penna.com.ar",
+    company: "",
+    area: "",
+    rol: "",
+    jiraAccountId: "qm:c0387339-02b1-4e0d-8f36-3232066900ca:b5398dba-f790-4ee2-a5cc-1acc95bf39a9"
+  },
 
   transitions: [],
 
@@ -41,7 +49,6 @@ const initialState = {
   worklogs: [],
 
 };
-
 const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     //PRODUCTS
