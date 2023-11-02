@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unknown-property */
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,10 +16,6 @@ const BOARD_STATUS = {
 }
 
 const Tablero = () => {
-
-  // const [ listPriorizado, setListPriorizado] = useState(getList("Priorizado"));
-  // const navigate = useNavigate();
-  //const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false);
   const [itemSelect, setItemSelect] = useState({});
   const incidents = useSelector((state) => state.incients);
@@ -27,12 +24,16 @@ const Tablero = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const { pathname } = location;
-  const keyPathname = pathname.split('/').slice(-1)
+  const keyPathname = pathname.split('/').slice(-1);
   const navigate = useNavigate();
+  const [worklog, setWorklog] = useState(false);
 
 
   useEffect(() => {
     getIssue()
+    if (keyPathname[0] == "ERP"){
+      setWorklog(true);
+    }
   }, [])
 
   useEffect(() => {
@@ -42,42 +43,20 @@ const Tablero = () => {
     }
   }, [reload])
 
-  // const orderScrum = (transition) => {
-  //   return [transition.find((t) => t.name == "Por hacer"), 
-  //   transition.find((t) => t.name == "En curso"), 
-  //   transition.find((t) => t.name == "Listo")]
-  // }
-
-  // const orderKanban  = (transition) => {
-
-  //   return [transition.find((t) => t.to.name == "Sin Priorizar"), 
-  //   transition.find((t) => t.to.name == "Priorizado"), 
-  //   transition.find((t) => t.to.name == "En Proceso"), 
-  //   transition.find((t) => t.to.name == "Validar"), 
-  //   transition.find((t) => t.to.name == "Validado")]
-  // }
-
-  // const transitions = transitionState.length == 3 && keyPathname != "NR" ? orderScrum(transitionState) : orderKanban(transitionState)
-
+  
   const getList = (list) => {
     let filterList = incidents.filter((incident) => incident.fields.status.name == list)
     return filterList
   }
 
   const onDragEnd = async (result) => {
-    //console.log('result', result);
     const list = getList(result.source.droppableId);
 
     if ((result.source.droppableId == BOARD_STATUS.SIN_PRIORIZAR|| result.source.droppableId == BOARD_STATUS.PRIORIZADO)
-       && (result.destination.droppableId == BOARD_STATUS.SIN_PRIORIZAR || result.destination.droppableId == BOARD_STATUS.PRIORIZADO)) {
+      && (result.destination.droppableId == BOARD_STATUS.SIN_PRIORIZAR || result.destination.droppableId == BOARD_STATUS.PRIORIZADO)) {
 
       const idList = list.map((item) => item.key)
 
-
-      // Optimistic UI
-
-      
-      
       if (result.source.droppableId != result.destination.droppableId) {
         console.log('result.destination.droppableId', result.destination.droppableId)
         console.log('result.draggableId', result.draggableId)
@@ -123,17 +102,29 @@ const Tablero = () => {
   }
 
   const move = (list, actualIndex, newIndex) => {
-    console.log('list', list)
-    console.log('actualIndex', actualIndex)
-    console.log('nextIndex', newIndex)
+    const keys = new Set(list);
+    const filteredKeys = incidents.filter((incident) => keys.has(incident.key));
 
-    const [elemento] = list.splice(actualIndex, 1);
+    const [elemento] = filteredKeys.splice(actualIndex, 1);
+    const [el] = list.splice(actualIndex, 1)
 
-    // Inserta el elemento en la nueva posición
-    list.splice(newIndex, 0, elemento);
+    filteredKeys.splice(newIndex, 0, elemento);
+    list.splice(newIndex, 0, el)
 
+    const othersValues = [] 
 
-    // Devuelve la lista modificada
+    const copyValues = [...incidents]
+
+    for (let index = 0; index < copyValues.length ; index++ ) {
+          if (!keys.has(copyValues[index].key)) {
+            othersValues.push(copyValues[index])
+          }
+
+        incidents.pop()
+    }
+
+    incidents.push(...[...filteredKeys, ...othersValues])
+
     return list;
   }
 
@@ -161,10 +152,9 @@ const Tablero = () => {
     }
   }
 
-
   return (
     <div className="flex flex-col w-full mx-5">
-      {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} />}
+      {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} worklog={worklog} />}
       <div className="flex my-5 justify-between">
         <button onClick={() => { handleNotify() }} className="bg-buttonBg w-44 h-10 rounded-md">Notificar Incidencias</button>
         {/* <button onClick={() => { handleReload() }} className="">
@@ -240,30 +230,3 @@ const Tablero = () => {
 }
 
 export default Tablero;
-
-// if (!destination) {
-//   return;
-// }
-// const sInd = +source.droppableId;
-// const dInd = +destination.droppableId;
-
-// if (sInd === dInd) {
-//   const items = reorder(state[sInd], source.index, destination.index);
-//   const newState = [...state];
-//   newState[sInd] = items;
-//   setState(newState);
-// } else {
-//   const result = move(state[sInd], state[dInd], source, destination);
-//   const newState = [...state];
-//   newState[sInd] = result[sInd];
-//   newState[dInd] = result[dInd];
-
-//   setState(newState.filter(group => group.length));
-// }
-
-// const reorder = (list, startIndex, endIndex) => {
-//   const result = Array.from(list);
-//   const [removed] = result.splice(startIndex, 1);
-//   result.splice(endIndex, 0, removed);
-//   return result;
-// };

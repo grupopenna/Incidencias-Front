@@ -1,14 +1,13 @@
 import axios from "axios";
-import { BASE_URL, NEW_COMMENT } from '../../action-type';
+import { BASE_URL } from '../../action-type';
 
-export const postComments = (comment, key) => {
+export const postWorklog = (comment, time, date, key) => {
 
   const userId = "712020:bc1d0c78-c825-468f-8ca0-e6cfaee060d5"
-  const bodyData = {
-    "body": {
-        "version": 1,
-        "type": "doc",
+  let bodyData = {
+    "comment": {
         "content": [
+            
             {
                 "type": "paragraph",
                 "content": [
@@ -25,20 +24,20 @@ export const postComments = (comment, key) => {
                     }
                 ]
             }
-        ]
-    }
+        ],
+        "type": "doc",
+        "version": 1
+    },
+    "started": date,
+    "timeSpentSeconds": time
 }
 
-  return async (dispatch) => {
+  return async () => {
     try {
-      const response = await axios.post(`${BASE_URL}/incident/newComments/${key}`, bodyData)
-      if (response.status === 200) {
-        dispatch({ type: NEW_COMMENT, payload: response.data })
-      }
-
+      const response = (await axios.post(`${BASE_URL}/worklog/newWorklog/${key}`, bodyData));
+      return response.data
     } catch (error) {
-      console.error('Error al realizar la solicitud:', error);
-
+      console.log('Error al realizar la solicitud postWorklog');
     }
-  }
-}
+  };
+};

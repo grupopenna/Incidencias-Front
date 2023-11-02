@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { clearAllCommentState, getCommentIssues, postComments, editDescription } from '../../redux/actions'
 import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,9 +13,14 @@ import { deleteIssues } from '../../redux/actions/issue/deleteIssue';
 import { Viewer, Editor as TuiEditor } from '../Editor/index';
 
 import '@toast-ui/editor/dist/toastui-editor.css';
+<<<<<<< HEAD
 import { parseTextToMarkdown } from '../../utils/index'
 import AdjuntarArchivos from '../adjuntarArchivos/AdjuntarArchivos';
 import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
+=======
+import { parseTextToJiraFormatt, parseTextToMarkdown } from '../../utils/index'
+import Worklog from '../Worklog/Worklog';
+>>>>>>> 94d8a843e1cde5b8b16b394c3d57f9cd5ca00472
 
 
 const ALLOW_COLUMS_TO_EDIT = ['priorizado', 'sin priorizar']
@@ -23,7 +29,7 @@ const ActionDeleteIncident = ({ currentColum, setModalDeleteIssue }) => {
   const isAllowToEdit = ALLOW_COLUMS_TO_EDIT.includes(currentColum.toLowerCase())
   if (isAllowToEdit) {
     return (
-      <div className='pr-5 mt-4 flex justify-end'>
+      <div className='pr-5 flex items-center justify-end'>
         <button onClick={() => setModalDeleteIssue(true)} className='text-red-500 flex justify-end rounded-full p-1 border-2 border-red-500 hover:text-white hover:bg-red-500'>
           <TrashIcon />
         </button>
@@ -38,7 +44,7 @@ const ViewerView = ({ description }) => {
     : <p className='text-slate-500'>Editar descripcion</p>
 }
 
-const Modal = ({ setModalShow, itemSelect }) => {
+const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const dispatch = useDispatch()
   const AllComments = useSelector(state => state.commentIssuesById)
   const [comentarios, setComentarios] = useState([])
@@ -50,7 +56,11 @@ const Modal = ({ setModalShow, itemSelect }) => {
   const [editMode, setEditMode] = useState(false)
   const [imageView, setImageView] = useState('')
   const [modalDeleteIssue, setModalDeleteIssue] = useState(false)
+<<<<<<< HEAD
   const [file, setFile] = useState([]);
+=======
+  const [worklogShow, setWorklogShow] = useState(false)
+>>>>>>> 94d8a843e1cde5b8b16b394c3d57f9cd5ca00472
 
   /**
    * 
@@ -60,9 +70,11 @@ const Modal = ({ setModalShow, itemSelect }) => {
   const editorRef = useRef(null)
   const viewUpdateRef = useRef(null)
 
+  // console.log('AllComments.reverse()', AllComments[0].body)
+
   useEffect(() => {
     setItem(itemSelect)
-    setComentarios(AllComments.reverse())
+    setComentarios(AllComments)
     setTimeout(() => { setLoading(false) }, 2000)
   }, [item, AllComments.length])
 
@@ -71,15 +83,14 @@ const Modal = ({ setModalShow, itemSelect }) => {
     AllComments.length > 0 && setComentarios(AllComments.reverse())
   }, [dispatch])
 
-
   /**
    * Crear una funcion que formatee lo que devuelve el editor a un formato que jira entienda.
    */
+
   const handleEditDesc = async () => {
     setLoading(true)
-    const newValue = viewUpdateRef.current.getMarkdown().split('\n')
-    const formatValue = newValue.join('\\n\\n')
-    await editDescription(item.key, formatValue)(dispatch)
+    const newValue = viewUpdateRef.current.getMarkdown()
+    await editDescription(item.key, parseTextToJiraFormatt(newValue))(dispatch)
     await postAttachments(file, item.key)(dispatch)
     setLoading(false)
     setEditMode(false)
@@ -104,7 +115,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
     setLoading(true)
     setTimeout(() => { setLoading(false) }, 2500)
     const descripcion = editorRef.current.getMarkdown()
-    dispatch(postComments(descripcion, key))
+    dispatch(postComments(parseTextToJiraFormatt(descripcion), key))
     editorRef.current.reset()
   }
 
@@ -114,13 +125,20 @@ const Modal = ({ setModalShow, itemSelect }) => {
     setModalShow(false)
   }
 
+  const clientName = (str) => {
+    return str.substring(1)
+  }
+
   return (
     <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-10px]  bg-bgModal flex justify-center items-center">
+      {worklogShow && <Worklog setWorklogShow={setWorklogShow} itemSelect={itemSelect} />}
       <div className="bg-white h-4/5 w-4/5 rounded-lg p-3">
         {openImage && <ImgModal openImageState={setOpenImage} imageView={imageView} />}
         {modalDeleteIssue && <ModalDelete setDeleteIssue={setModalDeleteIssue} item={itemSelect} deleteIssue={deleteInfoIssue} />}
         <div className='flex justify-end'>
-          <button onClick={() => { dispatch(clearAllCommentState()); setModalShow(false) }}><span className="p-1 rounded-full">X</span></button>
+          <button onClick={() => { dispatch(clearAllCommentState()); setModalShow(false) }}>
+            <span className="p-1 rounded-full">X</span>
+          </button>
         </div>
         {item && (<>
           <div className="flex items-center gap-2">
@@ -205,8 +223,8 @@ const Modal = ({ setModalShow, itemSelect }) => {
                 comentarios.map((cm, i) => (
                   <div key={i} className='flex pt-2 mb-3' >
                     <div className='mr-4'>
-                      {cm.updateAuthor.avatarUrls ?
-                        <img
+                      {cm.updateAuthor.avatarUrls
+                        ? <img
                           className="w-6 h-6"
                           src={cm.updateAuthor.avatarUrls['16x16']}
                           alt={`persona asignada ${cm.updateAuthor.displayName}`}
@@ -216,10 +234,17 @@ const Modal = ({ setModalShow, itemSelect }) => {
                     </div>
                     <div className='w-full'>
                       <div className='flex justify-between'>
-                        <p className='font-bold text-base'>{cm.updateAuthor.displayName}</p>
-                        <span className='text-fontPlaceholder text-sm'>{commentTime(cm.updated)}</span>
+                        {cm.body.content[0].content.length > 1
+                          ? <p className='font-bold text-base'>{clientName(cm.body.content[0].content[0].attrs.text)}</p>
+                          : <p className='font-bold text-base'>{cm.updateAuthor.displayName}</p>
+                        }
+
+                        <span className='text-fontPlaceholder text-sm'>{commentTime(cm.updated)} </span>
                       </div>
-                      <p>{cm.body}</p>
+                      {cm.body.content[0].content.length > 1
+                        ? <p>{cm.body.content[0].content[1].text}</p>
+                        : <p>{cm.body.content[0].content[0].text}</p>
+                      }
                     </div>
                   </div>
                 ))
@@ -259,9 +284,19 @@ const Modal = ({ setModalShow, itemSelect }) => {
                 <div className='mb-5'>
                   <p>Seguimiento de tiempo:</p>
                   <div className='w-96 h-1 bg-buttonBg'></div>
-                  <p className='font-bold text-buttonBg'><span className='text-fontPlaceholder'>Registrado:</span>{item.fields.timetracking.timeSpent}</p>
+                  <p className='font-bold text-buttonBg'>
+                    <span className='text-fontPlaceholder'>Registrado:</span>{item.fields.timetracking.timeSpent}
+                  </p>
                 </div>
-                : null}
+                : null
+              }
+              {worklog &&
+                <button className="group relative h-87 w-30 overflow-hidden rounded-lg bg-white text-lg shadow mb-5">
+                  <div className="absolute inset-0 w-3 bg-buttonBg transition-all duration-[250ms] ease-out group-hover:w-full">
+                  </div>
+                  <span className="relative text-black group-hover:text-white px-3">Registrar trabajo</span>
+                </button>
+              }
               <div className='max-h-96'>
                 <p>Registro de trabajo:</p>
 
