@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unknown-property */
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,12 +24,16 @@ const Tablero = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const { pathname } = location;
-  const keyPathname = pathname.split('/').slice(-1)
+  const keyPathname = pathname.split('/').slice(-1);
   const navigate = useNavigate();
+  const [worklog, setWorklog] = useState(false);
 
 
   useEffect(() => {
     getIssue()
+    if (keyPathname[0] == "ERP"){
+      setWorklog(true);
+    }
   }, [])
 
   useEffect(() => {
@@ -48,15 +53,10 @@ const Tablero = () => {
     const list = getList(result.source.droppableId);
 
     if ((result.source.droppableId == BOARD_STATUS.SIN_PRIORIZAR|| result.source.droppableId == BOARD_STATUS.PRIORIZADO)
-       && (result.destination.droppableId == BOARD_STATUS.SIN_PRIORIZAR || result.destination.droppableId == BOARD_STATUS.PRIORIZADO)) {
+      && (result.destination.droppableId == BOARD_STATUS.SIN_PRIORIZAR || result.destination.droppableId == BOARD_STATUS.PRIORIZADO)) {
 
       const idList = list.map((item) => item.key)
 
-
-      // Optimistic UI
-
-      
-      
       if (result.source.droppableId != result.destination.droppableId) {
         console.log('result.destination.droppableId', result.destination.droppableId)
         console.log('result.draggableId', result.draggableId)
@@ -102,13 +102,12 @@ const Tablero = () => {
   }
 
   const move = (list, actualIndex, newIndex) => {
-    const keys = new Set(list)
-    const filteredKeys = incidents.filter((incident) => keys.has(incident.key))
+    const keys = new Set(list);
+    const filteredKeys = incidents.filter((incident) => keys.has(incident.key));
 
     const [elemento] = filteredKeys.splice(actualIndex, 1);
     const [el] = list.splice(actualIndex, 1)
 
-    // Inserta el elemento en la nueva posición
     filteredKeys.splice(newIndex, 0, elemento);
     list.splice(newIndex, 0, el)
 
@@ -126,7 +125,6 @@ const Tablero = () => {
 
     incidents.push(...[...filteredKeys, ...othersValues])
 
-    // Devuelve la lista modificada
     return list;
   }
 
@@ -156,7 +154,7 @@ const Tablero = () => {
 
   return (
     <div className="flex flex-col w-full mx-5">
-      {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} />}
+      {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} worklog={worklog} />}
       <div className="flex my-5 justify-between">
         <button onClick={() => { handleNotify() }} className="bg-buttonBg w-44 h-10 rounded-md">Notificar Incidencias</button>
         {/* <button onClick={() => { handleReload() }} className="">
