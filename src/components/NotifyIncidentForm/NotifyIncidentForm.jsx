@@ -6,9 +6,7 @@ import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Select, SelectItem } from '@tremor/react'
-
 import { DocFiles, ImgFiles } from '../Icons';
-import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
 import { Editor as TuiEditor } from '../Editor/index'
 
 const NotifyIncidentForm = () => {
@@ -28,12 +26,10 @@ const NotifyIncidentForm = () => {
 
 
   useEffect(() => {
-
     (async () => {
       const [projectName] = pathname.split('/').slice(-2)
       await getIssueTypes(projectName)(dispatch)
     })()
-
   }, [])
 
   const handleSubmit = async (e) => {
@@ -61,39 +57,12 @@ const NotifyIncidentForm = () => {
 
     // Restablece los mensajes de error en caso de éxito
     setErrors({ titleDesc: '', email: '', descripcion: '' });
-    const data = { IssueKey, titleDesc, email, descripcion, projectId: id, issueId: selectedIssue }
-
-    if (file.length > 0) {
-      // if (response.status == 200){
-      // console.log('response', response)
-      const formData = new FormData();
-      formData.append('file', file[0]);
-      console.log('file', file[0])
-
-      let keyAttachment = "CMS-20";
-      console.log('formData', formData)
-
-      await postAttachments(formData, keyAttachment)(dispatch).then((response) => {
-        console.log('response', response)
-      }).then((error) => console.log('error', error))
-
-      // }
-    }
-
-    await issuePost(data)(dispatch).then(async (response) => {
-      console.log('response', response)
-      if (response.status == 200) {
-        console.log('response', response)
-      }
-    }).then((error) => {
-      console.log('error', error)
-    })
+    const data = { IssueKey, titleDesc, email, descripcion, projectId: id, issueId: selectedIssue, file }
+    dispatch(issuePost(data))
   }
 
   const handleFileChange = (event) => {
-    const files = event.target.files;
-    console.log('files', files)
-    setfile([...event.target.files]);
+    setfile([...file, event.target.files[0]]);
   };
 
   return (
@@ -103,7 +72,7 @@ const NotifyIncidentForm = () => {
       </div>
       <div className='flex justify-center mx-3 lg:px-16'>
         <div className='flex flex-col w-full lg:w-2/4'>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} encType='multipart/form-data' >
             {/* <div className="text-red-500">
             {errors.usuario && <div>{errors.usuario}</div>}
             {errors.email && <div>{errors.email}</div>}

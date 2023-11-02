@@ -3,7 +3,7 @@ import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRef } from 'react';
 import { useState, useEffect } from 'react';
-import { AdjIcon, IconFiles, SimpleArrowUp, TrashIcon } from '../Icons';
+import { IconFiles, SimpleArrowUp, TrashIcon } from '../Icons';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { WithoutPhoto } from '../Icon';
 import ImgModal from '../ImgModal/ImgModal';
@@ -13,31 +13,11 @@ import { Viewer, Editor as TuiEditor } from '../Editor/index';
 
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { parseTextToMarkdown } from '../../utils/index'
+import AdjuntarArchivos from '../adjuntarArchivos/AdjuntarArchivos';
+import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
 
 
 const ALLOW_COLUMS_TO_EDIT = ['priorizado', 'sin priorizar']
-
-/* const DescriptionField = ({
-  editMode,
-  description,
-  editorRef,
-  onClick,
-  currentColum
-}) => {
-
-  const isAllowToEdit = ALLOW_COLUMS_TO_EDIT.includes(currentColum.toLowerCase())
-
-  if (!isAllowToEdit || !editMode) {
-    return description
-      ? <Viewer initialValue={parseTextToMarkdown(description)} />
-      : <p className='text-slate-500'>Editar descripcion</p>
-  }
-
-  return <>
-    <TuiEditor markdownRef={editorRef} initialValue={parseTextToMarkdown(description)} />
-    <button onClick={() => onClick()} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>Guardar</button>
-  </>
-} */
 
 const ActionDeleteIncident = ({ currentColum, setModalDeleteIssue }) => {
   const isAllowToEdit = ALLOW_COLUMS_TO_EDIT.includes(currentColum.toLowerCase())
@@ -70,6 +50,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
   const [editMode, setEditMode] = useState(false)
   const [imageView, setImageView] = useState('')
   const [modalDeleteIssue, setModalDeleteIssue] = useState(false)
+  const [file, setFile] = useState([]);
 
   /**
    * 
@@ -99,6 +80,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
     const newValue = viewUpdateRef.current.getMarkdown().split('\n')
     const formatValue = newValue.join('\\n\\n')
     await editDescription(item.key, formatValue)(dispatch)
+    await postAttachments(file, item.key)(dispatch)
     setLoading(false)
     setEditMode(false)
   }
@@ -151,9 +133,6 @@ const Modal = ({ setModalShow, itemSelect }) => {
               <div className='text-2xl mb-5 '>
                 <p>{item.fields.summary}</p>
               </div>
-              <div className='my-1 w-8 h-8 bg-bgCard rounded-lg '>
-              <AdjIcon/>
-            </div>
               <div className='my-5 max-h-80 w-full pr-3 overflow-auto'>
                 <p>Descripción:</p>
                 {ALLOW_COLUMS_TO_EDIT.includes(item.fields.status.name.toLowerCase()) ?
@@ -161,7 +140,10 @@ const Modal = ({ setModalShow, itemSelect }) => {
                     onClick={() => setEditMode(true)}
                     className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
                     {editMode ?
-                      <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(item.fields.description)} />
+                      <>
+                        <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(item.fields.description)} />
+                        <AdjuntarArchivos file={file} setFile={setFile} />
+                      </>
                       :
                       <ViewerView description={item.fields.description} />
                     }
