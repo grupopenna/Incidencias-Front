@@ -211,7 +211,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                   <>
                     <TuiEditor markdownRef={editorRef} />
                     <div className='mt-2'>
-                      <button onClick={() => sendNewComment(item.key)} className="bg-buttonBg p-1 rounded text-white">Guardar</button>
+                      <button onClick={() => { sendNewComment(item.key); setOpenEditor(false) }} className="bg-buttonBg p-1 rounded text-white">Guardar</button>
                     </div>
                   </>
                   :
