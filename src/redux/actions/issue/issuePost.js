@@ -3,9 +3,8 @@ import { BASE_URL } from '../../action-type';
 import { getIssue } from "./getIssue";
 import { postAttachments } from "../issueAttachment/postAttachments";
 
-export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file }) => {
+export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey }, userId) => {
 
-  const userId = "712020:8a4ac3e0-8800-405a-96a0-a09c82e1a727"
 
   const bodyData = {
     "fields": {
@@ -40,16 +39,12 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
     try {
       const response = await axios.post(`${BASE_URL}/incident/api/notify-incident`, bodyData)
       if (response.status === 200) {
-        let key = response.data.key
-        try {
-          if (file.length > 0) await postAttachments(file, key)(dispatch)
-          await getIssue(`${IssueKey}`)(dispatch)
-          alert("Su incidencia fue creada con exito")
-          window.history.back()
-        } catch (error) {
-          console.error('Error al realizar la solicitud postAttachments:', error);
-        }
 
+        let key = response.data.key
+        if (file.length > 0) await postAttachments(file, key)(dispatch)
+        await getIssue(`${IssueKey}`, userId)(dispatch)
+        alert("Su incidencia fue creada con exito")
+        window.history.back()
       }
 
     } catch (error) {

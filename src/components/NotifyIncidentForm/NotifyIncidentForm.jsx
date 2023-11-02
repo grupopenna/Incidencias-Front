@@ -14,6 +14,7 @@ const NotifyIncidentForm = () => {
   const editorRef = useRef(null)
   const dispatch = useDispatch()
   const { issuesType, id } = useSelector(state => state.issuesTypes)
+  const { jiraAccountId } = useSelector(state => state.user)
   const [titleDesc, setTitleDesc] = useState('');
   const [email, setEmail] = useState('');
   const [file, setfile] = useState([]);
@@ -57,8 +58,33 @@ const NotifyIncidentForm = () => {
 
     // Restablece los mensajes de error en caso de éxito
     setErrors({ titleDesc: '', email: '', descripcion: '' });
-    const data = { IssueKey, titleDesc, email, descripcion, projectId: id, issueId: selectedIssue, file }
-    dispatch(issuePost(data))
+    const data = { IssueKey, titleDesc, email, descripcion, projectId: id, issueId: selectedIssue }
+
+    if (file.length > 0) {
+      // if (response.status == 200){
+      // console.log('response', response)
+      const formData = new FormData();
+      formData.append('file', file[0]);
+      console.log('file', file[0])
+
+      let keyAttachment = "CMS-20";
+      console.log('formData', formData)
+
+      await postAttachments(formData, keyAttachment)(dispatch).then((response) => {
+        console.log('response', response)
+      }).then((error) => console.log('error', error))
+
+      // }
+    }
+
+    await issuePost(data, jiraAccountId)(dispatch).then(async (response) => {
+      console.log('response', response)
+      if (response.status == 200) {
+        console.log('response', response)
+      }
+    }).then((error) => {
+      console.log('error', error)
+    })
   }
 
   const handleFileChange = (event) => {

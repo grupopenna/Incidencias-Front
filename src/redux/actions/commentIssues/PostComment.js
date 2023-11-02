@@ -1,9 +1,9 @@
 import axios from "axios";
 import { BASE_URL, NEW_COMMENT } from '../../action-type';
 
-export const postComments = (comment, key) => {
+export const postComments = (comment, key, userId) => {
 
-  const userId = "712020:bc1d0c78-c825-468f-8ca0-e6cfaee060d5"
+  console.log('comment', comment)
   const bodyData = {
     "body": {
         "version": 1,
@@ -27,7 +27,7 @@ export const postComments = (comment, key) => {
             }
         ]
     }
-}
+  }
 
   return async (dispatch) => {
     try {

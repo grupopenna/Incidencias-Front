@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
 import { getIssue, getTransitions } from '../../redux/actions'
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom"
 
 const SelectedIncident = ({ projects }) => {
@@ -9,13 +9,14 @@ const SelectedIncident = ({ projects }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false)
   const [select, setSelect] = useState('')
+  const { jiraAccountId } = useSelector((state) => state.user)
 
   const handleRedirect = async (key) => {
     setLoading(true)
     setSelect(key)
     setTimeout(() => { setLoading(false) }, 2500);
 
-    await getIssue(key)(dispatch).then((response) => {
+    await getIssue(key, jiraAccountId)(dispatch).then((response) => {
       if (response) {
         if (response.length > 0) {
           searchTransition(response[0].key);

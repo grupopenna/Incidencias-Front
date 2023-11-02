@@ -89,6 +89,8 @@ export const parseTextToJiraFormatt = (input) => {
             continue
         }
 
+        jiraLines.push(line)
+
     }
 
     const jiraText = jiraLines.join('\\n\\n')
