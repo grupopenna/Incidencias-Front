@@ -20,6 +20,7 @@ const Tablero = () => {
   const [itemSelect, setItemSelect] = useState({});
   const incidents = useSelector((state) => state.incients);
   const transitions = useSelector((state) => state.transitions);
+  const { jiraAccountId } = useSelector((state) => state.user);
   const [reload, setReload] = useState(false);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -30,7 +31,7 @@ const Tablero = () => {
 
 
   useEffect(() => {
-    getIssue()
+    getIssue(keyPathname[0], jiraAccountId)
     if (keyPathname[0] == "ERP"){
       setWorklog(true);
     }
@@ -38,7 +39,7 @@ const Tablero = () => {
 
   useEffect(() => {
     if (reload) {
-      getIssue()
+      getIssue(keyPathname[0], jiraAccountId)
       setReload
     }
   }, [reload])
@@ -68,7 +69,7 @@ const Tablero = () => {
 
         await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then(async (response) => {
           console.log('response', response)
-          await getIssue(keyPathname[0])(dispatch).then((response) => {
+          await getIssue(keyPathname[0], jiraAccountId)(dispatch).then((response) => {
             console.log('response', response)
             return console.log('response SelectedIncident getIssue', response);
           }).catch((error) => { throw error });

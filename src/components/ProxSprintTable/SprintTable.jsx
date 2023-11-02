@@ -10,6 +10,7 @@ const SprintTable = () => {
   const dispatch = useDispatch()
   const incidents = useSelector((state) => state.incients);
   const transitions = useSelector((state) => state.transitions);
+  const { jiraAccountId } = useSelector((state) => state.user);
   const [view, setView] = useState(false)
   const [modalShow, setModalShow] = useState(false)
   const [itemSelect, setItemSelect] = useState({})
@@ -23,7 +24,7 @@ const SprintTable = () => {
   }, [])
 
   const solicitud = async () => {
-    await getIssueByUser(`${issueDev}D`)(dispatch).then(async (response) => {
+    await getIssueByUser(`${issueDev}D`, jiraAccountId)(dispatch).then(async (response) => {
       if (response === undefined || response.length === 0) setView(true)
       await getTransitions(response[0].key)(dispatch)
     })

@@ -44,6 +44,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const dispatch = useDispatch()
   const AllComments = useSelector(state => state.commentIssuesById)
   const IssueInfo = useSelector(state => state.issueByKey)
+  const { jiraAccountId } = useSelector(state => state.user)
   const [comentarios, setComentarios] = useState([])
   const [item, setItem] = useState(null)
   const [openEditor, setOpenEditor] = useState(false)
@@ -111,12 +112,12 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     setLoading(true)
     setTimeout(() => { setLoading(false) }, 2500)
     const descripcion = editorRef.current.getMarkdown()
-    dispatch(postComments(parseTextToJiraFormatt(descripcion), key))
+    dispatch(postComments(parseTextToJiraFormatt(descripcion), key, jiraAccountId))
     editorRef.current.reset()
   }
 
   const deleteInfoIssue = (key) => {
-    dispatch(deleteIssues(key))
+    dispatch(deleteIssues(key, jiraAccountId))
     setModalDeleteIssue(false)
     setModalShow(false)
   }
@@ -235,7 +236,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                     <div className='w-full'>
                       <div className='flex justify-between'>
                         {cm.body.content[0].content.length > 1
-                          ? <p className='font-bold text-base'>{clientName(cm.body.content[0].content[0].attrs.text)}</p>
+                          ? <p className='font-bold text-base'>{clientName(cm.body.content[0].content[0].attrs?.text)}</p>
                           : <p className='font-bold text-base'>{cm.updateAuthor.displayName}</p>
                         }
 

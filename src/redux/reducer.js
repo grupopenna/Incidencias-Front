@@ -34,12 +34,12 @@ const initialState = {
   board: [],
 
   user: {
-    fullName: "Juana De prueba",
-    email: "juanaDeprueba@penna.com.ar",
+    fullName: "Sebastian Almiron",
+    email: "sistemas4@penna.com.ar",
     company: "",
     area: "",
     rol: "",
-    jiraAccountId: "qm:c0387339-02b1-4e0d-8f36-3232066900ca:b5398dba-f790-4ee2-a5cc-1acc95bf39a9"
+    jiraAccountId: "712020:75da847b-f656-4020-a3fd-84d8811cd76f"
   },
 
   transitions: [],

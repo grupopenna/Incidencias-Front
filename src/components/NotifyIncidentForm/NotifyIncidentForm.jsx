@@ -14,6 +14,7 @@ const NotifyIncidentForm = () => {
   const editorRef = useRef(null)
   const dispatch = useDispatch()
   const { issuesType, id } = useSelector(state => state.issuesTypes)
+  const { jiraAccountId } = useSelector(state => state.user)
   const [titleDesc, setTitleDesc] = useState('');
   const [email, setEmail] = useState('');
   const [file, setfile] = useState([]);
@@ -58,7 +59,7 @@ const NotifyIncidentForm = () => {
     // Restablece los mensajes de error en caso de éxito
     setErrors({ titleDesc: '', email: '', descripcion: '' });
     const data = { IssueKey, titleDesc, email, descripcion, projectId: id, issueId: selectedIssue, file }
-    dispatch(issuePost(data))
+    dispatch(issuePost(data, jiraAccountId))
   }
 
   const handleFileChange = (event) => {

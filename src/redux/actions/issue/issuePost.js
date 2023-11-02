@@ -3,9 +3,7 @@ import { BASE_URL } from '../../action-type';
 import { getIssue } from "./getIssue";
 import { postAttachments } from "../issueAttachment/postAttachments";
 
-export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file }) => {
-
-  const userId = "712020:8a4ac3e0-8800-405a-96a0-a09c82e1a727"
+export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file, }, userId) => {
 
   const bodyData = {
     "fields": {
@@ -43,7 +41,7 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
         let key = response.data.key
         try {
           if (file.length > 0) await postAttachments(file, key)(dispatch)
-          await getIssue(`${IssueKey}`)(dispatch)
+          await getIssue(`${IssueKey}`, userId)(dispatch)
           alert("Su incidencia fue creada con exito")
           window.history.back()
         } catch (error) {

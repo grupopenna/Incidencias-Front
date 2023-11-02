@@ -1,9 +1,7 @@
 import axios from "axios";
 import { BASE_URL, GET_ISSUES } from '../../action-type';
 
-export const getIssueByUser = (key) => {
-
-  const idUser = "712020:75da847b-f656-4020-a3fd-84d8811cd76f"
+export const getIssueByUser = (key, idUser) => {
 
   let bodyData = {
     "expand": [
