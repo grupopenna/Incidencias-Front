@@ -11,16 +11,11 @@ import ImgModal from '../ImgModal/ImgModal';
 import ModalDelete from './ModalDelete';
 import { deleteIssues } from '../../redux/actions/issue/deleteIssue';
 import { Viewer, Editor as TuiEditor } from '../Editor/index';
-
 import '@toast-ui/editor/dist/toastui-editor.css';
-<<<<<<< HEAD
-import { parseTextToMarkdown } from '../../utils/index'
-import AdjuntarArchivos from '../adjuntarArchivos/AdjuntarArchivos';
-import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
-=======
 import { parseTextToJiraFormatt, parseTextToMarkdown } from '../../utils/index'
 import Worklog from '../Worklog/Worklog';
->>>>>>> 94d8a843e1cde5b8b16b394c3d57f9cd5ca00472
+import AdjuntarArchivos from '../adjuntarArchivos/AdjuntarArchivos';
+import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
 
 
 const ALLOW_COLUMS_TO_EDIT = ['priorizado', 'sin priorizar']
@@ -56,11 +51,8 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const [editMode, setEditMode] = useState(false)
   const [imageView, setImageView] = useState('')
   const [modalDeleteIssue, setModalDeleteIssue] = useState(false)
-<<<<<<< HEAD
   const [file, setFile] = useState([]);
-=======
   const [worklogShow, setWorklogShow] = useState(false)
->>>>>>> 94d8a843e1cde5b8b16b394c3d57f9cd5ca00472
 
   /**
    * 
