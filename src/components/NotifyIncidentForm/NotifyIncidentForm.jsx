@@ -6,9 +6,7 @@ import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Select, SelectItem } from '@tremor/react'
-
 import { DocFiles, ImgFiles } from '../Icons';
-import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
 import { Editor as TuiEditor } from '../Editor/index'
 
 const NotifyIncidentForm = () => {
@@ -29,12 +27,10 @@ const NotifyIncidentForm = () => {
 
 
   useEffect(() => {
-
     (async () => {
       const [projectName] = pathname.split('/').slice(-2)
       await getIssueTypes(projectName)(dispatch)
     })()
-
   }, [])
 
   const handleSubmit = async (e) => {
@@ -92,9 +88,7 @@ const NotifyIncidentForm = () => {
   }
 
   const handleFileChange = (event) => {
-    const files = event.target.files;
-    console.log('files', files)
-    setfile([...event.target.files]);
+    setfile([...file, event.target.files[0]]);
   };
 
   return (
@@ -104,7 +98,7 @@ const NotifyIncidentForm = () => {
       </div>
       <div className='flex justify-center mx-3 lg:px-16'>
         <div className='flex flex-col w-full lg:w-2/4'>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} encType='multipart/form-data' >
             {/* <div className="text-red-500">
             {errors.usuario && <div>{errors.usuario}</div>}
             {errors.email && <div>{errors.email}</div>}

@@ -4,42 +4,21 @@ import { PropTypes } from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRef } from 'react';
 import { useState, useEffect } from 'react';
-import { AdjIcon, IconFiles, SimpleArrowUp, TrashIcon } from '../Icons';
+import { IconFiles, SimpleArrowUp, TrashIcon } from '../Icons';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { WithoutPhoto } from '../Icon';
 import ImgModal from '../ImgModal/ImgModal';
 import ModalDelete from './ModalDelete';
 import { deleteIssues } from '../../redux/actions/issue/deleteIssue';
 import { Viewer, Editor as TuiEditor } from '../Editor/index';
-
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { parseTextToJiraFormatt, parseTextToMarkdown } from '../../utils/index'
 import Worklog from '../Worklog/Worklog';
+import AdjuntarArchivos from '../adjuntarArchivos/AdjuntarArchivos';
+import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
 
 
 const ALLOW_COLUMS_TO_EDIT = ['priorizado', 'sin priorizar']
-
-/* const DescriptionField = ({
-  editMode,
-  description,
-  editorRef,
-  onClick,
-  currentColum
-}) => {
-
-  const isAllowToEdit = ALLOW_COLUMS_TO_EDIT.includes(currentColum.toLowerCase())
-
-  if (!isAllowToEdit || !editMode) {
-    return description
-      ? <Viewer initialValue={parseTextToMarkdown(description)} />
-      : <p className='text-slate-500'>Editar descripcion</p>
-  }
-
-  return <>
-    <TuiEditor markdownRef={editorRef} initialValue={parseTextToMarkdown(description)} />
-    <button onClick={() => onClick()} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>Guardar</button>
-  </>
-} */
 
 const ActionDeleteIncident = ({ currentColum, setModalDeleteIssue }) => {
   const isAllowToEdit = ALLOW_COLUMS_TO_EDIT.includes(currentColum.toLowerCase())
@@ -73,6 +52,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const [editMode, setEditMode] = useState(false)
   const [imageView, setImageView] = useState('')
   const [modalDeleteIssue, setModalDeleteIssue] = useState(false)
+  const [file, setFile] = useState([]);
   const [worklogShow, setWorklogShow] = useState(false)
 
   /**
@@ -104,6 +84,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     setLoading(true)
     const newValue = viewUpdateRef.current.getMarkdown()
     await editDescription(item.key, parseTextToJiraFormatt(newValue))(dispatch)
+    await postAttachments(file, item.key)(dispatch)
     setLoading(false)
     setEditMode(false)
   }
@@ -127,7 +108,6 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     setLoading(true)
     setTimeout(() => { setLoading(false) }, 2500)
     const descripcion = editorRef.current.getMarkdown()
-    console.log('descripcion', descripcion)
     dispatch(postComments( parseTextToJiraFormatt(descripcion), key, jiraAccountId))
     editorRef.current.reset()
   }
@@ -144,7 +124,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
 
   return (
     <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-10px]  bg-bgModal flex justify-center items-center">
-      {worklogShow && <Worklog setWorklogShow={setWorklogShow} itemSelect={itemSelect}/>}
+      {worklogShow && <Worklog setWorklogShow={setWorklogShow} itemSelect={itemSelect} />}
       <div className="bg-white h-4/5 w-4/5 rounded-lg p-3">
         {openImage && <ImgModal openImageState={setOpenImage} imageView={imageView} />}
         {modalDeleteIssue && <ModalDelete setDeleteIssue={setModalDeleteIssue} item={itemSelect} deleteIssue={deleteInfoIssue} />}
@@ -164,9 +144,6 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
               <div className='text-2xl mb-5 '>
                 <p>{item.fields.summary}</p>
               </div>
-              <div className='my-1 w-8 h-8 bg-bgCard rounded-lg '>
-                <AdjIcon/>
-              </div>
               <div className='my-5 max-h-80 w-full pr-3 overflow-auto'>
                 <p>Descripción:</p>
                 {ALLOW_COLUMS_TO_EDIT.includes(item.fields.status.name.toLowerCase()) ?
@@ -174,7 +151,10 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                     onClick={() => setEditMode(true)}
                     className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
                     {editMode ?
-                      <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(item.fields.description)} />
+                      <>
+                        <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(item.fields.description)} />
+                        <AdjuntarArchivos file={file} setFile={setFile} />
+                      </>
                       :
                       <ViewerView description={item.fields.description} />
                     }
@@ -236,7 +216,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                 comentarios.map((cm, i) => (
                   <div key={i} className='flex pt-2 mb-3' >
                     <div className='mr-4'>
-                      {cm.updateAuthor.avatarUrls 
+                      {cm.updateAuthor.avatarUrls
                         ? <img
                           className="w-6 h-6"
                           src={cm.updateAuthor.avatarUrls['16x16']}
@@ -251,10 +231,10 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                           ? <p className='font-bold text-base'>{clientName(cm.body.content[0].content[0].attrs?.text)}</p>
                           : <p className='font-bold text-base'>{cm.updateAuthor.displayName}</p>
                         }
-                        
+
                         <span className='text-fontPlaceholder text-sm'>{commentTime(cm.updated)} </span>
                       </div>
-                      {cm.body.content[0].content.length > 1 
+                      {cm.body.content[0].content.length > 1
                         ? <p>{cm.body.content[0].content[1].text}</p>
                         : <p>{cm.body.content[0].content[0].text}</p>
                       }
