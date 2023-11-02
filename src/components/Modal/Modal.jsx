@@ -16,6 +16,7 @@ import { parseTextToJiraFormatt, parseTextToMarkdown } from '../../utils/index'
 import Worklog from '../Worklog/Worklog';
 import AdjuntarArchivos from '../adjuntarArchivos/AdjuntarArchivos';
 import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
+import { clearIssueByKey, getIssueByKey } from '../../redux/actions/issue/getIssueByKey';
 
 
 const ALLOW_COLUMS_TO_EDIT = ['priorizado', 'sin priorizar']
@@ -42,6 +43,7 @@ const ViewerView = ({ description }) => {
 const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const dispatch = useDispatch()
   const AllComments = useSelector(state => state.commentIssuesById)
+  const IssueInfo = useSelector(state => state.issueByKey)
   const [comentarios, setComentarios] = useState([])
   const [item, setItem] = useState(null)
   const [openEditor, setOpenEditor] = useState(false)
@@ -67,13 +69,14 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   useEffect(() => {
     setItem(itemSelect)
     setComentarios(AllComments)
+    dispatch(getIssueByKey(itemSelect.key))
     setTimeout(() => { setLoading(false) }, 2000)
   }, [item, AllComments.length])
 
   useEffect(() => {
     dispatch(getCommentIssues(itemSelect.key))
     AllComments.length > 0 && setComentarios(AllComments.reverse())
-  }, [dispatch])
+  }, [dispatch, IssueInfo.length])
 
   /**
    * Crear una funcion que formatee lo que devuelve el editor a un formato que jira entienda.
@@ -84,6 +87,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     const newValue = viewUpdateRef.current.getMarkdown()
     await editDescription(item.key, parseTextToJiraFormatt(newValue))(dispatch)
     await postAttachments(file, item.key)(dispatch)
+    await getIssueByKey(item.key)(dispatch)
     setLoading(false)
     setEditMode(false)
   }
@@ -128,7 +132,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
         {openImage && <ImgModal openImageState={setOpenImage} imageView={imageView} />}
         {modalDeleteIssue && <ModalDelete setDeleteIssue={setModalDeleteIssue} item={itemSelect} deleteIssue={deleteInfoIssue} />}
         <div className='flex justify-end'>
-          <button onClick={() => { dispatch(clearAllCommentState()); setModalShow(false) }}>
+          <button onClick={() => { dispatch(clearAllCommentState()); dispatch(clearIssueByKey()); setModalShow(false) }}>
             <span className="p-1 rounded-full">X</span>
           </button>
         </div>
@@ -145,56 +149,60 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
               </div>
               <div className='my-5 max-h-80 w-full pr-3 overflow-auto'>
                 <p>Descripción:</p>
-                {ALLOW_COLUMS_TO_EDIT.includes(item.fields.status.name.toLowerCase()) ?
-                  <section
-                    onClick={() => setEditMode(true)}
-                    className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
-                    {editMode ?
-                      <>
-                        <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(item.fields.description)} />
-                        <AdjuntarArchivos file={file} setFile={setFile} />
-                      </>
+                {Object.keys(IssueInfo).length > 0 && (
+                  <>
+                    {ALLOW_COLUMS_TO_EDIT.includes(IssueInfo.fields.status.name.toLowerCase()) ?
+                      <section
+                        onClick={() => setEditMode(true)}
+                        className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
+                        {editMode ?
+                          <>
+                            <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(IssueInfo.fields.description)} />
+                            <AdjuntarArchivos file={file} setFile={setFile} />
+                          </>
+                          :
+                          <ViewerView description={IssueInfo.fields.description} />
+                        }
+                      </section>
                       :
-                      <ViewerView description={item.fields.description} />
+                      <ViewerView description={IssueInfo.fields.description} />
                     }
-                  </section>
-                  :
-                  <ViewerView description={item.fields.description} />
-                }
 
-                {editMode && <div className='flex gap-3 p-4'>
-                  <button onClick={handleEditDesc} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>
-                    {loading
-                      ? <div className='w-6 animate-spin border-2  border-white border-l-transparent rounded-full h-6' />
-                      : 'Guardar'
-                    }
-                  </button>
-                  <button
-                    type='button'
-                    onClick={() => setEditMode(false)}
-                    className='bg-slate-300 z-50 py-2 px-4 mt-4 hover:bg-slate-300/80'>Cancelar
-                  </button>
-                </div>}
-                {item.fields.attachment.length > 0 ?
-                  <div className='mt-6'>
-                    {item.fields.attachment.map((el, i) =>
-                      el.mimeType === "image/png" ?
-                        <button className='mr-3 border-2' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
-                          <img
-                            className="w-64 h-48"
-                            src={el.content}
-                            alt={`persona asignada ${el.author.displayName}`}
-                            aria-label={`persona asignada ${el.author.displayName}`} />
-                        </button>
-                        :
-                        <a href={el.content} key={i} >
-                          <button className='border-2 overflow-auto w-48 flex flex-col items-center m-1'>
-                            <IconFiles />
-                            <span>{el.filename}</span>
-                          </button>
-                        </a>
-                    )}
-                  </div> : null}
+                    {editMode && <div className='flex gap-3 p-4'>
+                      <button onClick={handleEditDesc} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>
+                        {loading
+                          ? <div className='w-6 animate-spin border-2  border-white border-l-transparent rounded-full h-6' />
+                          : 'Guardar'
+                        }
+                      </button>
+                      <button
+                        type='button'
+                        onClick={() => setEditMode(false)}
+                        className='bg-slate-300 z-50 py-2 px-4 mt-4 hover:bg-slate-300/80'>Cancelar
+                      </button>
+                    </div>}
+                    {IssueInfo.fields.attachment.length > 0 ?
+                      <div className='mt-6'>
+                        {IssueInfo.fields.attachment.map((el, i) =>
+                          el.mimeType === "image/png" ?
+                            <button className='mr-3 border-2' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
+                              <img
+                                className="w-64 h-48"
+                                src={el.content}
+                                alt={`persona asignada ${el.author.displayName}`}
+                                aria-label={`persona asignada ${el.author.displayName}`} />
+                            </button>
+                            :
+                            <a href={el.content} key={i} >
+                              <button className='border-2 overflow-auto w-48 flex flex-col items-center m-1'>
+                                <IconFiles />
+                                <span>{el.filename}</span>
+                              </button>
+                            </a>
+                        )}
+                      </div> : null}
+                  </>
+                )}
               </div>
               <div className='mb-3'>
                 <p>Comentarios:</p>

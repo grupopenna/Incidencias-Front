@@ -9,7 +9,7 @@ export const GET_All_ISSUES = "GET_All_ISSUES";
 
 export const GET_ISSUETYPE = 'GET_ISSUETYPE'
 
-export const GET_PROJECTS = "GET_PROJECTS"; 
+export const GET_PROJECTS = "GET_PROJECTS";
 
 export const GET_BOARD = "GET_BOARD";
 
@@ -30,3 +30,7 @@ export const SET_USER_DATA = 'SET_USER_DATA'
 export const GET_WORKLOG = 'GET_WORKLOG'
 
 export const GET_ISSUE_BY_USER = 'GET_ISSUE_BY_USER'
+
+export const GET_ISSUE_BY_KEY = 'GET_ISSUE_BY_KEY'
+
+export const CLEAR_ISSUE_BY_KEY = 'CLEAR_ISSUE_BY_KEY'

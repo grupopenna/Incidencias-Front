@@ -18,7 +18,9 @@ import {
   GET_ISSUETYPE,
 
   GET_WORKLOG,
-  
+  GET_ISSUE_BY_KEY,
+  CLEAR_ISSUE_BY_KEY,
+
 
 } from "./action-type";
 
@@ -47,6 +49,8 @@ const initialState = {
   issuesTypes: [],
 
   worklogs: [],
+
+  issueByKey: []
 
 };
 const reducer = (state = initialState, { type, payload }) => {
@@ -83,8 +87,15 @@ const reducer = (state = initialState, { type, payload }) => {
 
     case GET_WORKLOG:
       return { ...state, worklogs: payload }
+
+    case GET_ISSUE_BY_KEY:
+      return { ...state, issueByKey: payload }
+
+    case CLEAR_ISSUE_BY_KEY:
+      return { ...state, issueByKey: [] }
+
     default:
-      return { ...state, worklogs: payload};
+      return { ...state, worklogs: payload };
   }
 };
 
