@@ -59,8 +59,6 @@ const Tablero = () => {
       const idList = list.map((item) => item.key)
 
       if (result.source.droppableId != result.destination.droppableId) {
-        console.log('result.destination.droppableId', result.destination.droppableId)
-        console.log('result.draggableId', result.draggableId)
 
         const originalDepature = result.source.droppableId
         const issueIndex = incidents.findIndex((incident) => incident.key === result.draggableId)
@@ -92,10 +90,18 @@ const Tablero = () => {
 
     } else if (result.source.droppableId == "Validar" && result.destination.droppableId == "Validado") {
 
+      
+      const originalDepature = result.source.droppableId
+      const issueIndex = incidents.findIndex((incident) => incident.key === result.draggableId)
+
+      incidents[issueIndex].fields.status.name = result.destination.droppableId
+
+      incidents[issueIndex].fields.status.name = result.destination.droppableId
       await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then((response) => {
         console.log('response', response)
       }).catch((error) => {
         console.log('error', error)
+        incidents[issueIndex].fields.status.name = originalDepature
       })
     } else {
       alert('movivmiento no permitido')
