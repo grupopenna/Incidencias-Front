@@ -20,6 +20,7 @@ import {
   GET_WORKLOG,
   GET_ISSUE_BY_KEY,
   CLEAR_ISSUE_BY_KEY,
+  SET_USER_DATA,
 
 
 } from "./action-type";
@@ -33,14 +34,7 @@ const initialState = {
 
   board: [],
 
-  user: {
-    fullName: "Sebastian Almiron",
-    email: "sistemas4@penna.com.ar",
-    company: "",
-    area: "",
-    rol: "",
-    jiraAccountId: "712020:75da847b-f656-4020-a3fd-84d8811cd76f"
-  },
+  user: {},
 
   transitions: [],
 
@@ -93,6 +87,9 @@ const reducer = (state = initialState, { type, payload }) => {
 
     case CLEAR_ISSUE_BY_KEY:
       return { ...state, issueByKey: [] }
+
+    case SET_USER_DATA:
+      return { ...state, user: payload }
 
     default:
       return { ...state, worklogs: payload };
