@@ -18,12 +18,11 @@ import AdjuntarArchivos from '../adjuntarArchivos/AdjuntarArchivos';
 import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
 import { clearIssueByKey, getIssueByKey } from '../../redux/actions/issue/getIssueByKey';
 import { deleteAttachments } from '../../redux/actions/issueAttachment/deleteAttachments';
+import { WRITABLE_COLUMS } from '../../const';
 
-
-const ALLOW_COLUMS_TO_EDIT = ['priorizado', 'sin priorizar']
 
 const ActionDeleteIncident = ({ currentColum, setModalDeleteIssue }) => {
-  const isAllowToEdit = ALLOW_COLUMS_TO_EDIT.includes(currentColum.toLowerCase())
+  const isAllowToEdit = WRITABLE_COLUMS.includes(currentColum.toLowerCase())
   if (isAllowToEdit) {
     return (
       <div className='pr-5 flex items-center justify-end'>
@@ -149,7 +148,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                 <p>Descripción:</p>
                 {Object.keys(IssueInfo).length > 0 && (
                   <>
-                    {ALLOW_COLUMS_TO_EDIT.includes(IssueInfo.fields.status.name.toLowerCase()) ?
+                    {WRITABLE_COLUMS.includes(IssueInfo.fields.status.name.toLowerCase()) ?
                       <section
                         onClick={() => setEditMode(true)}
                         className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
