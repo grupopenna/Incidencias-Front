@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Select, SelectItem } from '@tremor/react'
 import { DocFiles, ImgFiles } from '../Icons';
 import { Editor as TuiEditor } from '../Editor/index'
+import { parseTextToJiraFormatt } from '../../utils';
 
 const NotifyIncidentForm = () => {
 
@@ -16,7 +17,6 @@ const NotifyIncidentForm = () => {
   const { issuesType, id } = useSelector(state => state.issuesTypes)
   const { jiraAccountId } = useSelector(state => state.user)
   const [titleDesc, setTitleDesc] = useState('');
-  const [email, setEmail] = useState('');
   const [file, setfile] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState('')
   const [loading, setLoading] = useState(false)
@@ -36,7 +36,7 @@ const NotifyIncidentForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const descripcion = editorRef.current.getMarkdown()
+    const descripcion = parseTextToJiraFormatt(editorRef.current.getMarkdown())
 
     // Validación de nombre no vacío
     if (!titleDesc.trim()) {
@@ -45,29 +45,28 @@ const NotifyIncidentForm = () => {
       return;
     }
 
-    // Validación de correo electrónico
-    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    if (!emailPattern.test(email)) {
-      setErrors({ ...errors, email: 'Ingresa un correo electrónico válido' });
-      alert('Ingresa un correo electrónico válido')
-      return;
-    }
-
     // Validación de descripción no vacía
-    if (!descripcion.trim()) {
+    if (descripcion.length < 1) {
       setErrors({ ...errors, descripcion: 'La descripción no puede estar vacía' });
       alert('La descripción no puede estar vacía')
       return;
     }
 
     // Restablece los mensajes de error en caso de éxito
-    setErrors({ titleDesc: '', email: '', descripcion: '' });
+    setErrors({ titleDesc: '', descripcion: '' });
     setLoading(true)
-    const data = { IssueKey, titleDesc, email, descripcion, projectId: id, issueId: selectedIssue, file }
+    const data = { IssueKey, titleDesc, descripcion, projectId: id, issueId: selectedIssue, file }
     dispatch(issuePost(data, jiraAccountId))
   }
 
+  const deleteItemFile = (name) => {
+    const arrfile = file.filter(f => f.name !== name)
+    setfile(arrfile)
+  }
+
   const handleFileChange = (event) => {
+    // if (file.some(fi => fi.name === event.target.files[0].name)) setfile([...file, event.target.files[0]]);
+
     setfile([...file, event.target.files[0]]);
   };
 
@@ -95,21 +94,6 @@ const NotifyIncidentForm = () => {
                         className="px-3 block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-fontPlaceholder focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         value={titleDesc}
                         onChange={(e) => setTitleDesc(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div className="">
-                    <label htmlFor="email" className="block text-sm font-medium leading-6 text-slate-100">
-                      Email*
-                    </label>
-                    <div className="mt-1">
-                      <input
-                        id="email"
-                        name="email"
-                        autoComplete="email"
-                        className="px-3 block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-fontPlaceholder focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
                       />
                     </div>
                   </div>
@@ -156,17 +140,24 @@ const NotifyIncidentForm = () => {
                         <div className='grid grid-cols-2'>
                           {file.map((el, i) => (
                             el.type === "image/png" ?
-                              <button className='bg-bgCard rounded-lg overflow-auto w-48 flex flex-col items-center m-1 h-28' key={i} >
-                                <ImgFiles />
-                                <span className="text-font font-semibold">{el.name}</span>
-                              </button>
-                              :
-                              <a href={el.content} key={i} >
-                                <button className='bg-bgCard  rounded-lg overflow-auto w-48 flex flex-col items-center m-1 h-28'>
-                                  <DocFiles />
+                              <div className='relative' key={i} >
+                                <span onClick={() => deleteItemFile(el.name)} className='bg-red-500 z-50 text-white flex justify-center cursor-pointer items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</span>
+                                <div className='bg-bgCard rounded-lg overflow-auto w-48 flex flex-col items-center m-1 h-28' >
+                                  <ImgFiles />
                                   <span className="text-font font-semibold">{el.name}</span>
-                                </button>
-                              </a>
+                                </div>
+                              </div>
+
+                              :
+                              <div className='relative' key={i}>
+                                <span onClick={() => deleteItemFile(el.name)} className='bg-red-500 z-50 text-white flex justify-center cursor-pointer items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</span>
+                                <a href={el.content}  >
+                                  <div className='bg-bgCard  rounded-lg overflow-auto w-48 flex flex-col items-center m-1 h-28'>
+                                    <DocFiles />
+                                    <span className="text-font font-semibold">{el.name}</span>
+                                  </div>
+                                </a>
+                              </div>
                           ))}
                         </div> : null
                       }
