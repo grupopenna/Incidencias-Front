@@ -41,7 +41,7 @@ const SelectedIncident = ({ projects }) => {
     <div className="flex flex-col justify-center items-center h-[100vh]">
       <div className="!z-5 relative flex flex-col rounded-[20px] max-w-[300px] bg-white bg-clip-border shadow-3xl shadow-shadow-500  w-full !p-6 3xl:p-![18px] undefined">
         <div className="w-full relative flex flex-row justify-center">
-          <h4 className="text-xl font-bold text-navy-700 dark:text-white">
+          <h4 className="text-xl font-bold text-navy-700 text-black">
             Seleccione módulo
           </h4>
         </div>
