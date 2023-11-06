@@ -16,7 +16,6 @@ const NotifyIncidentForm = () => {
   const { issuesType, id } = useSelector(state => state.issuesTypes)
   const { jiraAccountId } = useSelector(state => state.user)
   const [titleDesc, setTitleDesc] = useState('');
-  const [email, setEmail] = useState('');
   const [file, setfile] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState('')
   const [loading, setLoading] = useState(false)
@@ -45,14 +44,6 @@ const NotifyIncidentForm = () => {
       return;
     }
 
-    // Validación de correo electrónico
-    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    if (!emailPattern.test(email)) {
-      setErrors({ ...errors, email: 'Ingresa un correo electrónico válido' });
-      alert('Ingresa un correo electrónico válido')
-      return;
-    }
-
     // Validación de descripción no vacía
     if (!descripcion.trim()) {
       setErrors({ ...errors, descripcion: 'La descripción no puede estar vacía' });
@@ -61,9 +52,9 @@ const NotifyIncidentForm = () => {
     }
 
     // Restablece los mensajes de error en caso de éxito
-    setErrors({ titleDesc: '', email: '', descripcion: '' });
+    setErrors({ titleDesc: '', descripcion: '' });
     setLoading(true)
-    const data = { IssueKey, titleDesc, email, descripcion, projectId: id, issueId: selectedIssue, file }
+    const data = { IssueKey, titleDesc, descripcion, projectId: id, issueId: selectedIssue, file }
     dispatch(issuePost(data, jiraAccountId))
   }
 
@@ -95,21 +86,6 @@ const NotifyIncidentForm = () => {
                         className="px-3 block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-fontPlaceholder focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         value={titleDesc}
                         onChange={(e) => setTitleDesc(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div className="">
-                    <label htmlFor="email" className="block text-sm font-medium leading-6 text-slate-100">
-                      Email*
-                    </label>
-                    <div className="mt-1">
-                      <input
-                        id="email"
-                        name="email"
-                        autoComplete="email"
-                        className="px-3 block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-fontPlaceholder focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
                       />
                     </div>
                   </div>

@@ -76,6 +76,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   useEffect(() => {
     dispatch(getCommentIssues(itemSelect.key))
     AllComments.length > 0 && setComentarios(AllComments.reverse())
+    console.log('EJECT')
   }, [dispatch, IssueInfo.length])
 
   /**
@@ -86,10 +87,17 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     setLoading(true)
     const newValue = viewUpdateRef.current.getMarkdown()
     await editDescription(item.key, parseTextToJiraFormatt(newValue))(dispatch)
-    await postAttachments(file, item.key)(dispatch)
     await getIssueByKey(item.key)(dispatch)
     setLoading(false)
     setEditMode(false)
+  }
+
+  const Attachfiles = async () => {
+    setLoading(true)
+    await postAttachments(file, item.key)(dispatch)
+    await getIssueByKey(item.key)(dispatch)
+    setFile([])
+    setLoading(false)
   }
 
   const commentTime = (data) => {
@@ -150,18 +158,20 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                 {Object.keys(IssueInfo).length > 0 && (
                   <>
                     {ALLOW_COLUMS_TO_EDIT.includes(IssueInfo.fields.status.name.toLowerCase()) ?
-                      <section
-                        onClick={() => setEditMode(true)}
-                        className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
-                        {editMode ?
-                          <>
-                            <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(IssueInfo.fields.description)} />
-                            <AdjuntarArchivos file={file} setFile={setFile} />
-                          </>
-                          :
-                          <ViewerView description={IssueInfo.fields.description} />
-                        }
-                      </section>
+                      <>
+                        <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={Attachfiles} loading={loading} />
+                        <section
+                          onClick={() => setEditMode(true)}
+                          className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
+                          {editMode ?
+                            <>
+                              <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(IssueInfo.fields.description)} />
+                            </>
+                            :
+                            <ViewerView description={IssueInfo.fields.description} />
+                          }
+                        </section>
+                      </>
                       :
                       <ViewerView description={IssueInfo.fields.description} />
                     }
@@ -184,7 +194,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                         {IssueInfo.fields.attachment.map((el, i) =>
                           el.mimeType === "image/png" ?
                             <div key={i} className='border-4 relative w-56 m-1'>
-                              <button onClick={() => dispatch(deleteAttachments(item.key, el.id))} className='bg-red-500 z-50 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
+                              <button onClick={() => { dispatch(deleteAttachments(item.key, el.id)) }} className='bg-red-500 z-50 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
                               <button className='mr-3 border-2 overflow-auto' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
                                 <img
                                   className="w-56 h-48"
@@ -195,7 +205,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                             </div>
                             :
                             <div key={i} className='border-4 relative w-48 m-1'>
-                              <button onClick={() => dispatch(deleteAttachments(item.key, el.id))} className='bg-red-500 z-50 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
+                              {/* <button onClick={() => dispatch(deleteAttachments(item.key, el.id))} className='bg-red-500 z-50 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button> */}
                               <a href={el.content} key={i} >
                                 <button className='border-2 overflow-auto flex flex-col items-center m-1'>
                                   <IconFiles />

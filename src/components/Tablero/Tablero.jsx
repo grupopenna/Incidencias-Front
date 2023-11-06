@@ -32,7 +32,7 @@ const Tablero = () => {
 
   useEffect(() => {
     getIssue(keyPathname[0], jiraAccountId)
-    if (keyPathname[0] == "ERP"){
+    if (keyPathname[0] == "ERP") {
       setWorklog(true);
     }
   }, [])
@@ -44,7 +44,7 @@ const Tablero = () => {
     }
   }, [reload])
 
-  
+
   const getList = (list) => {
     let filterList = incidents.filter((incident) => incident.fields.status.name == list)
     return filterList
@@ -53,7 +53,7 @@ const Tablero = () => {
   const onDragEnd = async (result) => {
     const list = getList(result.source.droppableId);
 
-    if ((result.source.droppableId == BOARD_STATUS.SIN_PRIORIZAR|| result.source.droppableId == BOARD_STATUS.PRIORIZADO)
+    if ((result.source.droppableId == BOARD_STATUS.SIN_PRIORIZAR || result.source.droppableId == BOARD_STATUS.PRIORIZADO)
       && (result.destination.droppableId == BOARD_STATUS.SIN_PRIORIZAR || result.destination.droppableId == BOARD_STATUS.PRIORIZADO)) {
 
       const idList = list.map((item) => item.key)
@@ -112,16 +112,16 @@ const Tablero = () => {
     filteredKeys.splice(newIndex, 0, elemento);
     list.splice(newIndex, 0, el)
 
-    const othersValues = [] 
+    const othersValues = []
 
     const copyValues = [...incidents]
 
-    for (let index = 0; index < copyValues.length ; index++ ) {
-          if (!keys.has(copyValues[index].key)) {
-            othersValues.push(copyValues[index])
-          }
+    for (let index = 0; index < copyValues.length; index++) {
+      if (!keys.has(copyValues[index].key)) {
+        othersValues.push(copyValues[index])
+      }
 
-        incidents.pop()
+      incidents.pop()
     }
 
     incidents.push(...[...filteredKeys, ...othersValues])
