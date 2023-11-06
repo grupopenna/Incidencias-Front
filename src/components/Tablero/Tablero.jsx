@@ -9,41 +9,33 @@ import { getIssue } from "../../redux/actions/issue/getIssue";
 import { postTransition, putOrder } from "../../redux/actions";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AlertIcon } from "../Icons";
+import { BOARD_STATUS } from "../../const";
+import { useIncidents } from "../../hooks/useIncidents";
+import { useContext } from "react";
+import { GlobalContext } from "../../context";
+import Loader from "../Loader";
 
-const BOARD_STATUS = {
-  SIN_PRIORIZAR: "Sin Priorizar",
-  PRIORIZADO: "Priorizado"
-}
 
 const Tablero = () => {
   const [modalShow, setModalShow] = useState(false);
   const [itemSelect, setItemSelect] = useState({});
-  const incidents = useSelector((state) => state.incients);
-  const transitions = useSelector((state) => state.transitions);
-  const { jiraAccountId } = useSelector((state) => state.user);
-  const [reload, setReload] = useState(false);
-  const dispatch = useDispatch();
   const location = useLocation();
   const { pathname } = location;
   const keyPathname = pathname.split('/').slice(-1);
+  const { incidents } = useIncidents(keyPathname[0])
+  const { isLoading } = useContext(GlobalContext)
+  const transitions = useSelector((state) => state.transitions);
+  const { jiraAccountId } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [worklog, setWorklog] = useState(false);
 
 
   useEffect(() => {
-    getIssue(keyPathname[0], jiraAccountId)
     if (keyPathname[0] == "ERP") {
       setWorklog(true);
     }
   }, [])
-
-  useEffect(() => {
-    if (reload) {
-      getIssue(keyPathname[0], jiraAccountId)
-      setReload
-    }
-  }, [reload])
-
 
   const getList = (list) => {
     let filterList = incidents.filter((incident) => incident.fields.status.name == list)
@@ -59,8 +51,6 @@ const Tablero = () => {
       const idList = list.map((item) => item.key)
 
       if (result.source.droppableId != result.destination.droppableId) {
-        console.log('result.destination.droppableId', result.destination.droppableId)
-        console.log('result.draggableId', result.draggableId)
 
         const originalDepature = result.source.droppableId
         const issueIndex = incidents.findIndex((incident) => incident.key === result.draggableId)
@@ -92,10 +82,18 @@ const Tablero = () => {
 
     } else if (result.source.droppableId == "Validar" && result.destination.droppableId == "Validado") {
 
+
+      const originalDepature = result.source.droppableId
+      const issueIndex = incidents.findIndex((incident) => incident.key === result.draggableId)
+
+      incidents[issueIndex].fields.status.name = result.destination.droppableId
+
+      incidents[issueIndex].fields.status.name = result.destination.droppableId
       await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then((response) => {
         console.log('response', response)
       }).catch((error) => {
         console.log('error', error)
+        incidents[issueIndex].fields.status.name = originalDepature
       })
     } else {
       alert('movivmiento no permitido')
@@ -153,16 +151,16 @@ const Tablero = () => {
     }
   }
 
+
+  if (isLoading) {
+    return <Loader />
+  }
+
   return (
     <div className="flex flex-col w-full mx-5">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} worklog={worklog} />}
       <div className="flex my-5 justify-between">
         <button onClick={() => { handleNotify() }} className="bg-buttonBg w-44 h-10 rounded-md">Notificar Incidencias</button>
-        {/* <button onClick={() => { handleReload() }} className="">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-slate-100 w-6 h-6 bg-buttonBg p-3">
-              <path d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-          </svg>
-        </button> */}
         <AlertMessage />
 
       </div>
