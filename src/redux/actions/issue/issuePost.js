@@ -14,17 +14,7 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
       "description": {
         "type": "doc",
         "version": 1,
-        "content": [
-          {
-            "type": "paragraph",
-            "content": [
-              {
-                "text": descripcion,
-                "type": "text"
-              }
-            ]
-          }
-        ]
+        "content": descripcion
       },
       "reporter": {
         "id": `${userId}`
