@@ -1,24 +1,25 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unknown-property */
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import Modal from "../Modal/Modal";
-import Incident from "../Incident/Incident";
-import { getIssue } from "../../redux/actions/issue/getIssue";
-import { postTransition, putOrder } from "../../redux/actions";
-import { useLocation, useNavigate } from "react-router-dom";
-import { AlertIcon } from "../Icons";
+
 import { BOARD_STATUS } from "../../const";
-import { useIncidents } from "../../hooks/useIncidents";
-import { useContext } from "react";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { getIssue } from "../../redux/actions/issue/getIssue";
 import { GlobalContext } from "../../context";
+import { postTransition, putOrder } from "../../redux/actions";
+import { ReloadIcon } from "../Icons";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState, useContext } from "react";
+import { useIncidents } from "../../hooks/useIncidents";
+import { useLocation, useNavigate } from "react-router-dom";
+import Incident from "../Incident/Incident";
 import Loader from "../Loader";
+import Modal from "../Modal/Modal";
 
 
 const Tablero = () => {
   const [modalShow, setModalShow] = useState(false);
   const [itemSelect, setItemSelect] = useState({});
+  const { setReload } = useContext(GlobalContext)
   const location = useLocation();
   const { pathname } = location;
   const keyPathname = pathname.split('/').slice(-1);
@@ -137,20 +138,6 @@ const Tablero = () => {
     navigate(`/createIssue/form/${keyPathname[0]}/`)
   }
 
-  const AlertMessage = () => {
-    if (keyPathname[0] === 'CFS' || keyPathname[0] === 'CMS') {
-      return (
-        <div className="flex items-center rounded-lg pl-2 bg-bgIncident">
-          <AlertIcon />
-          <span className="text-white">Si su tarjeta no esta revise los mail ó</span>
-          <button onClick={() => navigate(`/proxSprint/${keyPathname}`)} className="px-3 py-1">
-            <span className="text-buttonBg hover:underline">Haga click aqui</span>
-          </button>
-        </div>
-      )
-    }
-  }
-
 
   if (isLoading) {
     return <Loader />
@@ -159,11 +146,24 @@ const Tablero = () => {
   return (
     <div className="flex flex-col w-full mx-5">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} worklog={worklog} />}
-      <div className="flex my-5 justify-between">
-        <button onClick={() => { handleNotify() }} className="bg-buttonBg w-44 h-10 rounded-md text-white">Notificar Incidencias</button>
-        <AlertMessage />
 
+      <div className="flex items-center gap-x-2  my-5">
+        <button onClick={() => { handleNotify() }} className="bg-indigo-600 w-44 py-2 rounded-md text-white">Notificar Incidencias</button>
+        {!pathname.includes('view-all-incidents') && <button
+          onClick={() => navigate("/view-all-incidents/12")}
+          className="rounded-md bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-2 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
+          Ver todas las incidencias
+        </button>}
+
+         {pathname.includes('board') &&
+        <button
+          onClick={() => setReload(true)} 
+          aria-label="reload"
+          className=" bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-4 py-2  rounded-md text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
+          <ReloadIcon />
+        </button>}
       </div>
+
       {incidents?.length > 0 ?
         <div className="flex gap-x-2">
           {keyPathname == "NR" ? (
