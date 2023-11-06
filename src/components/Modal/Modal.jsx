@@ -17,12 +17,12 @@ import Worklog from '../Worklog/Worklog';
 import AdjuntarArchivos from '../adjuntarArchivos/AdjuntarArchivos';
 import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
 import { clearIssueByKey, getIssueByKey } from '../../redux/actions/issue/getIssueByKey';
+import { deleteAttachments } from '../../redux/actions/issueAttachment/deleteAttachments';
+import { WRITABLE_COLUMS } from '../../const';
 
-
-const ALLOW_COLUMS_TO_EDIT = ['priorizado', 'sin priorizar']
 
 const ActionDeleteIncident = ({ currentColum, setModalDeleteIssue }) => {
-  const isAllowToEdit = ALLOW_COLUMS_TO_EDIT.includes(currentColum.toLowerCase())
+  const isAllowToEdit = WRITABLE_COLUMS.includes(currentColum.toLowerCase())
   if (isAllowToEdit) {
     return (
       <div className='pr-5 flex items-center justify-end'>
@@ -65,8 +65,6 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const editorRef = useRef(null)
   const viewUpdateRef = useRef(null)
 
-  // console.log('AllComments.reverse()', AllComments[0].body)
-
   useEffect(() => {
     setItem(itemSelect)
     setComentarios(AllComments)
@@ -97,11 +95,9 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     let fechaAntigua = new Date(data);
     let fechaActual = new Date();
     let diferenciaEnMilisegundos = fechaActual - fechaAntigua;
-
     let minutos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
     let horas = Math.floor(minutos / 60);
     let dias = Math.floor(horas / 24);
-
     return dias > 0 ? `Hace ${dias} dias` :
       horas > 0 ? `Hace ${horas} horas` :
         minutos > 1 ? `Hace ${minutos} minutos` :
@@ -152,7 +148,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                 <p>Descripción:</p>
                 {Object.keys(IssueInfo).length > 0 && (
                   <>
-                    {ALLOW_COLUMS_TO_EDIT.includes(IssueInfo.fields.status.name.toLowerCase()) ?
+                    {WRITABLE_COLUMS.includes(IssueInfo.fields.status.name.toLowerCase()) ?
                       <section
                         onClick={() => setEditMode(true)}
                         className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
@@ -186,20 +182,26 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                       <div className='mt-6'>
                         {IssueInfo.fields.attachment.map((el, i) =>
                           el.mimeType === "image/png" ?
-                            <button className='mr-3 border-2' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
-                              <img
-                                className="w-64 h-48"
-                                src={el.content}
-                                alt={`persona asignada ${el.author.displayName}`}
-                                aria-label={`persona asignada ${el.author.displayName}`} />
-                            </button>
-                            :
-                            <a href={el.content} key={i} >
-                              <button className='border-2 overflow-auto w-48 flex flex-col items-center m-1'>
-                                <IconFiles />
-                                <span>{el.filename}</span>
+                            <div key={i} className='border-4 relative w-56 m-1'>
+                              <button onClick={() => dispatch(deleteAttachments(item.key, el.id))} className='bg-red-500 z-50 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
+                              <button className='mr-3 border-2 overflow-auto' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
+                                <img
+                                  className="w-56 h-48"
+                                  src={el.content}
+                                  alt={`persona asignada ${el.author.displayName}`}
+                                  aria-label={`persona asignada ${el.author.displayName}`} />
                               </button>
-                            </a>
+                            </div>
+                            :
+                            <div key={i} className='border-4 relative w-48 m-1'>
+                              <button onClick={() => dispatch(deleteAttachments(item.key, el.id))} className='bg-red-500 z-50 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
+                              <a href={el.content} key={i} >
+                                <button className='border-2 overflow-auto flex flex-col items-center m-1'>
+                                  <IconFiles />
+                                  <span>{el.filename}</span>
+                                </button>
+                              </a>
+                            </div>
                         )}
                       </div> : null}
                   </>
