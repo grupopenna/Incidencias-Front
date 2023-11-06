@@ -18,7 +18,7 @@ import AdjuntarArchivos from '../adjuntarArchivos/AdjuntarArchivos';
 import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
 import { clearIssueByKey, getIssueByKey } from '../../redux/actions/issue/getIssueByKey';
 import { deleteAttachments } from '../../redux/actions/issueAttachment/deleteAttachments';
-import { WRITABLE_COLUMS } from '../../const';
+import { ATTACHABLE_COLUMNS, WRITABLE_COLUMS } from '../../const';
 
 
 const ActionDeleteIncident = ({ currentColum, setModalDeleteIssue }) => {
@@ -168,24 +168,26 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                 <p>Descripción:</p>
                 {Object.keys(IssueInfo).length > 0 && (
                   <>
-                    {WRITABLE_COLUMS.includes(IssueInfo.fields.status.name.toLowerCase()) ?
+                    {ATTACHABLE_COLUMNS.includes(IssueInfo.fields.status.name.toLowerCase()) &&
                       <>
                         <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={HandlerAttachfiles} loading={loading} />
-                        <section
-                          onClick={() => setEditMode(true)}
-                          className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
-                          {editMode ?
-                            <>
-                              <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(IssueInfo.fields.description)} />
+                        {WRITABLE_COLUMS.includes(IssueInfo.fields.status.name.toLowerCase()) ?
+                          <section
+                            onClick={() => setEditMode(true)}
+                            className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
+                            {editMode ?
+                              <>
+                                <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(IssueInfo.fields.description)} />
 
-                            </>
-                            :
-                            <ViewerView description={IssueInfo.fields.description} />
-                          }
-                        </section>
+                              </>
+                              :
+                              <ViewerView description={IssueInfo.fields.description} />
+                            }
+                          </section>
+                          :
+                          <ViewerView description={IssueInfo.fields.description} />
+                        }
                       </>
-                      :
-                      <ViewerView description={IssueInfo.fields.description} />
                     }
 
                     {editMode && <div className='flex gap-3 p-4'>
