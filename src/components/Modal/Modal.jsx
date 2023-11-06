@@ -136,8 +136,11 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
         {openImage && <ImgModal openImageState={setOpenImage} imageView={imageView} />}
         {modalDeleteIssue && <ModalDelete setDeleteIssue={setModalDeleteIssue} item={itemSelect} deleteIssue={deleteInfoIssue} />}
         <div className='flex justify-end'>
-          <button onClick={() => { dispatch(clearAllCommentState()); dispatch(clearIssueByKey()); setModalShow(false) }}>
-            <span className="p-1 rounded-full">X</span>
+          <button
+            className='text-red-500 flex rounded-full p-1 border-2 border-red-500 hover:text-white hover:bg-red-500'
+            onClick={() => { dispatch(clearAllCommentState()); dispatch(clearIssueByKey()); setModalShow(false) }}
+          >
+            <span className="h-4 w-4 flex justify-center items-center font-semibold pt-0">X</span>
           </button>
         </div>
         {item && (<>
@@ -193,8 +196,8 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                         {IssueInfo.fields.attachment.map((el, i) =>
                           el.mimeType === "image/png" ?
                             <div key={i} className='border-4 relative w-56 m-1'>
-                              <button onClick={() => { dispatch(deleteAttachments(item.key, el.id)) }} className='bg-red-500 z-50 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
-                              <button className='mr-3 border-2 overflow-auto' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
+                              <button onClick={() => { dispatch(deleteAttachments(item.key, el.id)) }} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
+                              <button className='border-2 overflow-auto' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
                                 <img
                                   className="w-56 h-48"
                                   src={el.content}
@@ -204,7 +207,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                             </div>
                             :
                             <div key={i} className='border-4 relative w-48 m-1'>
-                              <button onClick={() => dispatch(deleteAttachments(item.key, el.id))} className='bg-red-500 z-50 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
+                              <button onClick={() => dispatch(deleteAttachments(item.key, el.id))} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
                               <a href={el.content} key={i} >
                                 <button className='border-2 overflow-auto w-full flex flex-col items-center m-1'>
                                   <IconFiles />

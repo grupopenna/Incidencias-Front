@@ -45,11 +45,11 @@ const NotifyIncidentForm = () => {
     }
 
     // Validación de descripción no vacía
-    if (!descripcion.trim()) {
-      setErrors({ ...errors, descripcion: 'La descripción no puede estar vacía' });
-      alert('La descripción no puede estar vacía')
-      return;
-    }
+    /*  if (!descripcion.trim()) {
+       setErrors({ ...errors, descripcion: 'La descripción no puede estar vacía' });
+       alert('La descripción no puede estar vacía')
+       return;
+     } */
 
     // Restablece los mensajes de error en caso de éxito
     setErrors({ titleDesc: '', descripcion: '' });
@@ -58,7 +58,14 @@ const NotifyIncidentForm = () => {
     dispatch(issuePost(data, jiraAccountId))
   }
 
+  const deleteItemFile = (name) => {
+    const arrfile = file.filter(f => f.name !== name)
+    setfile(arrfile)
+  }
+
   const handleFileChange = (event) => {
+    // if (file.some(fi => fi.name === event.target.files[0].name)) setfile([...file, event.target.files[0]]);
+
     setfile([...file, event.target.files[0]]);
   };
 
@@ -132,17 +139,24 @@ const NotifyIncidentForm = () => {
                         <div className='grid grid-cols-2'>
                           {file.map((el, i) => (
                             el.type === "image/png" ?
-                              <button className='bg-bgCard rounded-lg overflow-auto w-48 flex flex-col items-center m-1 h-28' key={i} >
-                                <ImgFiles />
-                                <span className="text-font font-semibold">{el.name}</span>
-                              </button>
-                              :
-                              <a href={el.content} key={i} >
-                                <button className='bg-bgCard  rounded-lg overflow-auto w-48 flex flex-col items-center m-1 h-28'>
-                                  <DocFiles />
+                              <div className='relative' key={i} >
+                                <span onClick={() => deleteItemFile(el.name)} className='bg-red-500 z-50 text-white flex justify-center cursor-pointer items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</span>
+                                <div className='bg-bgCard rounded-lg overflow-auto w-48 flex flex-col items-center m-1 h-28' >
+                                  <ImgFiles />
                                   <span className="text-font font-semibold">{el.name}</span>
-                                </button>
-                              </a>
+                                </div>
+                              </div>
+
+                              :
+                              <div className='relative' key={i}>
+                                <span onClick={() => deleteItemFile(el.name)} className='bg-red-500 z-50 text-white flex justify-center cursor-pointer items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</span>
+                                <a href={el.content}  >
+                                  <div className='bg-bgCard  rounded-lg overflow-auto w-48 flex flex-col items-center m-1 h-28'>
+                                    <DocFiles />
+                                    <span className="text-font font-semibold">{el.name}</span>
+                                  </div>
+                                </a>
+                              </div>
                           ))}
                         </div> : null
                       }
