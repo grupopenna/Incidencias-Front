@@ -36,68 +36,219 @@ export const parseTextToJiraFormatt = (input) => {
 
         // h1
         if (/^#[^#]./.test(line)) {
-            console.log(`h1.${line.split(' ')[1]}`)
-            jiraLines.push(`h1.  ${line.split(' ')[1]}`)
+            const value = {
+                "type": "heading",
+                "attrs": {
+                    "level": 1
+                },
+                "content": [{
+                    "type": "text",
+                    "text": line.split(' ')[1]   
+                }]
+            }
+            
+            jiraLines.push(value)
             continue
         }
 
          // h2
          if (/^##[^#]./.test(line)) {
-            jiraLines.push(`h2.  ${line.split(' ')[1]}`)
+            const value = {
+                "type": "heading",
+                "attrs": {
+                    "level": 2
+                },
+                "content": [{
+                    "type": "text",
+                    "text": line.split(' ')[1]   
+                }]
+            }
+            
+            jiraLines.push(value)
             continue
 
         }
 
          // h3
          if (/^###[^#]./.test(line)) {
-            jiraLines.push(`h3.  ${line.split(' ')[1]}`)
+            const value = {
+                "type": "heading",
+                "attrs": {
+                    "level": 3
+                },
+                "content": [{
+                    "type": "text",
+                    "text": line.split(' ')[1]   
+                }]
+            }
+
+            jiraLines.push(value)
+
             continue
 
         }
 
          // h4
          if (/^####[^#]./.test(line)) {
-            jiraLines.push(`h4.  ${line.split(' ')[1]}`)
+                 const value = {
+                "type": "heading",
+                "attrs": {
+                    "level": 4
+                },
+                "content": [{
+                    "type": "text",
+                    "text": line.split(' ')[1]   
+                }]
+            }
+            
+            jiraLines.push(value)
             continue
 
         }
 
          // h5
          if (/^#####[^#]./.test(line)) {
-            jiraLines.push(`h5.  ${line.split(' ')[1]}`)
+            const value = {
+                "type": "heading",
+                "attrs": {
+                    "level": 5
+                },
+                "content": [{
+                    "type": "text",
+                    "text": line.split(' ')[1]   
+                }]
+            }
+            
+            jiraLines.push(value)
             continue
 
         }
 
          // h6
          if (/^######[^#]./.test(line)) {
-            jiraLines.push(`h6.  ${line.split(' ')[1]}`)
+            const value = {
+                "type": "heading",
+                "attrs": {
+                    "level": 6
+                },
+                "content": [{
+                    "type": "text",
+                    "text": line.split(' ')[1]   
+                }]
+            }
+            
+            jiraLines.push(value)
             continue
 
         }
 
         // bold
         if (/^\*\*[a-zA-Z0-9]+\*\*$/.test(line)) {
-            jiraLines.push(line.replaceAll('**', '*'))
+            const value = {
+                "type": "paragraph",
+                "content": [
+                    {
+                    "type": "text",
+                    "text": line.replaceAll('**', ''),
+                    "marks": [
+                        {
+                            "type": "strong"
+                        }
+                    ]   
+                }
+            ]
+            }
+            
+            jiraLines.push(value)
             continue
         }
 
         // italic
 
         if (/^\*[a-zA-Z0-9]+\*$/.test(line)) {
-            jiraLines.push(line.replaceAll('*', '_'))
+            const value = {
+                "type": "paragraph",
+                "content": [
+                    {
+                    "type": "text",
+                    "text": line.replaceAll('*', ''),
+                    "marks": [
+                        {
+                            "type": "em"
+                        }
+                    ]   
+                }
+            ]
+            }
+            
+            jiraLines.push(value)
             continue
         }
 
-        jiraLines.push(line)
+        // strike
+        if (/^~~[a-zA-Z0-9]+~~$/.test(line)) {
+            const value = {
+                "type": "paragraph",
+                "content": [
+                    {
+                    "type": "text",
+                    "text": line.replaceAll('~', ''),
+                    "marks": [
+                        {
+                            "type": "strike"
+                        }
+                    ]   
+                }
+            ]
+            }
+            
+            jiraLines.push(value)
+            continue
+        }
+
+         // quote
+        if (line.startsWith('> ')) {
+            const value = {
+                "type": "blockquote",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": line.split(' ')[1]
+                            }
+                        ]
+                    }
+                ]
+            }
+            
+            jiraLines.push(value)
+            continue
+        }
+
+        if (line !== '') {
+
+            const value = {
+                "type": "paragraph",
+                "content": [
+                    {
+                    "type": "text",
+                    "text": line,  
+                }
+            ]
+            }
+            
+            jiraLines.push(value)
+        }
 
     }
 
-    const jiraText = jiraLines.join('\\n\\n')
 
-    return jiraText
+    return jiraLines
 
 }
+
 
 /**
  * 
