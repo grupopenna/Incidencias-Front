@@ -43,7 +43,7 @@ export const parseTextToJiraFormatt = (input) => {
                 },
                 "content": [{
                     "type": "text",
-                    "text": line.split(' ')[1]   
+                    "text": line.slice(2)    
                 }]
             }
             
@@ -60,7 +60,7 @@ export const parseTextToJiraFormatt = (input) => {
                 },
                 "content": [{
                     "type": "text",
-                    "text": line.split(' ')[1]   
+                    "text": line.slice(3)  
                 }]
             }
             
@@ -78,7 +78,7 @@ export const parseTextToJiraFormatt = (input) => {
                 },
                 "content": [{
                     "type": "text",
-                    "text": line.split(' ')[1]   
+                    "text": line.slice(4)
                 }]
             }
 
@@ -97,7 +97,7 @@ export const parseTextToJiraFormatt = (input) => {
                 },
                 "content": [{
                     "type": "text",
-                    "text": line.split(' ')[1]   
+                    "text": line.slice(5)
                 }]
             }
             
@@ -115,7 +115,7 @@ export const parseTextToJiraFormatt = (input) => {
                 },
                 "content": [{
                     "type": "text",
-                    "text": line.split(' ')[1]   
+                    "text": line.slice(6)
                 }]
             }
             
@@ -133,7 +133,7 @@ export const parseTextToJiraFormatt = (input) => {
                 },
                 "content": [{
                     "type": "text",
-                    "text": line.split(' ')[1]   
+                    "text": line.slice(7)
                 }]
             }
             
@@ -216,7 +216,7 @@ export const parseTextToJiraFormatt = (input) => {
                         "content": [
                             {
                                 "type": "text",
-                                "text": line.split(' ')[1]
+                                "text": line.slice(2)
                             }
                         ]
                     }
@@ -243,7 +243,6 @@ export const parseTextToJiraFormatt = (input) => {
         }
 
     }
-
 
     return jiraLines
 
