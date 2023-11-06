@@ -14,6 +14,7 @@ import { useIncidents } from "../../hooks/useIncidents";
 import { useContext } from "react";
 import { GlobalContext } from "../../context";
 import Loader from "../Loader";
+import Swal from "sweetalert2";
 
 
 const Tablero = () => {
@@ -96,7 +97,11 @@ const Tablero = () => {
         incidents[issueIndex].fields.status.name = originalDepature
       })
     } else {
-      alert('movivmiento no permitido')
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Movimiento no permitido!!",
+      });
     }
   }
 

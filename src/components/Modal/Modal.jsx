@@ -66,6 +66,8 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const editorRef = useRef(null)
   const viewUpdateRef = useRef(null)
 
+  console.log(worklog)
+
   useEffect(() => {
     setItem(itemSelect)
     setComentarios(AllComments)
@@ -314,13 +316,13 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                 </div>
                 : null
               }
-              {worklog &&
+              {/*  {worklog &&
                 <button className="group relative h-87 w-30 overflow-hidden rounded-lg bg-white text-lg shadow mb-5">
                   <div className="absolute inset-0 w-3 bg-buttonBg transition-all duration-[250ms] ease-out group-hover:w-full">
                   </div>
                   <span className="relative text-black group-hover:text-white px-3">Registrar trabajo</span>
                 </button>
-              }
+              } */}
               <div className='max-h-96'>
                 <p>Registro de trabajo:</p>
 
