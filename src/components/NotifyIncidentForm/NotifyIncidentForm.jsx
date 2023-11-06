@@ -9,6 +9,7 @@ import { Select, SelectItem } from '@tremor/react'
 import { DocFiles, ImgFiles } from '../Icons';
 import { Editor as TuiEditor } from '../Editor/index'
 import { parseTextToJiraFormatt } from '../../utils';
+import Swal from 'sweetalert2';
 
 const NotifyIncidentForm = () => {
 
@@ -26,7 +27,6 @@ const NotifyIncidentForm = () => {
   const { pathname } = location;
   const [IssueKey] = pathname.split('/').slice(-2)
 
-
   useEffect(() => {
     (async () => {
       const [projectName] = pathname.split('/').slice(-2)
@@ -41,14 +41,32 @@ const NotifyIncidentForm = () => {
     // Validación de nombre no vacío
     if (!titleDesc.trim()) {
       setErrors({ ...errors, titleDesc: 'El titulo no puede estar vacío' });
-      alert('El titulo no puede estar vacío')
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "El titulo no puede estar vacío!!",
+      });
+      return;
+    }
+
+    if (selectedIssue === '') {
+      setErrors({ ...errors, descripcion: 'El tipo de incidencia no puede estar vacío' });
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "El tipo de incidencia no puede estar vacío!!",
+      });
       return;
     }
 
     // Validación de descripción no vacía
     if (descripcion.length < 1) {
       setErrors({ ...errors, descripcion: 'La descripción no puede estar vacía' });
-      alert('La descripción no puede estar vacía')
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "La descripción no puede estar vacía!!",
+      });
       return;
     }
 
@@ -65,9 +83,9 @@ const NotifyIncidentForm = () => {
   }
 
   const handleFileChange = (event) => {
-    // if (file.some(fi => fi.name === event.target.files[0].name)) setfile([...file, event.target.files[0]]);
+    let fl = file.some(fi => fi.name === event.target.files[0].name)
 
-    setfile([...file, event.target.files[0]]);
+    if (!fl) setfile([...file, event.target.files[0]]);
   };
 
   return (
@@ -98,7 +116,7 @@ const NotifyIncidentForm = () => {
                     </div>
                   </div>
                   <label className='text-white'>
-                    Issue type
+                    Tipo de incidencia*
                     <Select
                       onValueChange={(value) => setSelectedIssue(value)}
                       className='z-50 mt-2'

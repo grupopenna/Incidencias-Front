@@ -14,6 +14,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Incident from "../Incident/Incident";
 import Loader from "../Loader";
 import Modal from "../Modal/Modal";
+import Swal from "sweetalert2";
 
 
 const Tablero = () => {
@@ -97,7 +98,11 @@ const Tablero = () => {
         incidents[issueIndex].fields.status.name = originalDepature
       })
     } else {
-      alert('movivmiento no permitido')
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Movimiento no permitido!!",
+      });
     }
   }
 
@@ -155,13 +160,13 @@ const Tablero = () => {
           Ver todas las incidencias
         </button>}
 
-         {pathname.includes('board') &&
-        <button
-          onClick={() => setReload(true)} 
-          aria-label="reload"
-          className=" bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-4 py-2  rounded-md text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
-          <ReloadIcon />
-        </button>}
+        {pathname.includes('board') &&
+          <button
+            onClick={() => setReload(true)}
+            aria-label="reload"
+            className=" bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-4 py-2  rounded-md text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
+            <ReloadIcon />
+          </button>}
       </div>
 
       {incidents?.length > 0 ?
