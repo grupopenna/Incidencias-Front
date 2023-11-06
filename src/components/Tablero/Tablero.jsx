@@ -10,37 +10,32 @@ import { postTransition, putOrder } from "../../redux/actions";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AlertIcon } from "../Icons";
 import { BOARD_STATUS } from "../../const";
+import { useIncidents } from "../../hooks/useIncidents";
+import { useContext } from "react";
+import { GlobalContext } from "../../context";
+import Loader from "../Loader";
 
 
 const Tablero = () => {
   const [modalShow, setModalShow] = useState(false);
   const [itemSelect, setItemSelect] = useState({});
-  const incidents = useSelector((state) => state.incients);
-  const transitions = useSelector((state) => state.transitions);
-  const { jiraAccountId } = useSelector((state) => state.user);
-  const [reload, setReload] = useState(false);
-  const dispatch = useDispatch();
   const location = useLocation();
   const { pathname } = location;
   const keyPathname = pathname.split('/').slice(-1);
+  const { incidents } = useIncidents(keyPathname[0])
+  const { isLoading } = useContext(GlobalContext)
+  const transitions = useSelector((state) => state.transitions);
+  const { jiraAccountId } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [worklog, setWorklog] = useState(false);
 
 
   useEffect(() => {
-    getIssue(keyPathname[0], jiraAccountId)
     if (keyPathname[0] == "ERP"){
       setWorklog(true);
     }
   }, [])
-
-  useEffect(() => {
-    if (reload) {
-      getIssue(keyPathname[0], jiraAccountId)
-      setReload
-    }
-  }, [reload])
-
   
   const getList = (list) => {
     let filterList = incidents.filter((incident) => incident.fields.status.name == list)
@@ -154,6 +149,11 @@ const Tablero = () => {
         </div>
       )
     }
+  }
+
+
+  if (isLoading) {
+    return <Loader />
   }
 
   return (
