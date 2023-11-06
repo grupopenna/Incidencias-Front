@@ -20,7 +20,7 @@ const SprintTableLazy = lazy(() => import('./components/ProxSprintTable/SprintTa
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'))
 
 const Loader = () => {
-  return <section className='w-full min-h-screen flex justify-center items-center'>
+  return <section className='w-full min-h-screen flex bg-background justify-center items-center'>
     <div className='w-6 h-6 rounded-full border-2 border-white border-l-transparent animate-spin'/>
   </section>
 }

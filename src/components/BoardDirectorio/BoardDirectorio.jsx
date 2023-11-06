@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getTopFive } from "../../redux/actions/issue/getTopFive";
 import { getApprove } from "../../redux/actions/issue/getApprove";
+import Loader from "../Loader";
 
 const BoardDirectorio = () => {
   const [modalShow, setModalShow] = useState(false);
@@ -14,17 +15,27 @@ const BoardDirectorio = () => {
   const responsables = ["Carolina", "David", "Luciano", "Matias", "Julian", "Leandro", "Sebastian"];
 
   const dispatch = useDispatch();
-  
-  useEffect(()=> {
-    getTopFive()(dispatch)
-    getApprove()(dispatch)
-  }, [])
+  const [isLoading, setIsloding] = useState(true)
+
+  useEffect(() => {
+
+    (async () => {
+        await getTopFive()(dispatch)
+        await getApprove()(dispatch)
+        setIsloding(false)
+    })()
+
+}, [])
+
+if (isLoading) {
+    return <Loader />
+}
 
   return (
     <div className="w-full flex justify-center py-5">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} />}
         <div className={`gap-x-2 w-full grid grid-cols-${responsables.length} mx-3`}>
-            {responsables.map((transition, i) => (
+            {responsables?.map((transition, i) => (
               <div key={i} className=" bg-bgColumn  rounded-lg w-full min-h-screen">
                 <div className="flex flex-col w-full h-full">
                   <h1 className="px-3 pt-1 font-bold text-font text-2xl">{transition}</h1>

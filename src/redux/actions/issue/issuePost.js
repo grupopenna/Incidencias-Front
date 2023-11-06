@@ -2,6 +2,7 @@ import axios from "axios";
 import { BASE_URL } from '../../action-type';
 import { getIssue } from "./getIssue";
 import { postAttachments } from "../issueAttachment/postAttachments";
+import Swal from "sweetalert2";
 
 export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file, }, userId) => {
 
@@ -14,17 +15,7 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
       "description": {
         "type": "doc",
         "version": 1,
-        "content": [
-          {
-            "type": "paragraph",
-            "content": [
-              {
-                "text": descripcion,
-                "type": "text"
-              }
-            ]
-          }
-        ]
+        "content": descripcion
       },
       "reporter": {
         "id": `${userId}`
@@ -42,7 +33,13 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
         try {
           if (file.length > 0) await postAttachments(file, key)(dispatch)
           await getIssue(`${IssueKey}`, userId)(dispatch)
-          alert("Su incidencia fue creada con exito")
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Su incidencia fue creada con exito!!",
+            showConfirmButton: false,
+            timer: 1800
+          });
           window.history.back()
         } catch (error) {
           console.error('Error al realizar la solicitud postAttachments:', error);

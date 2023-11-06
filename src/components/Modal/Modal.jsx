@@ -17,12 +17,12 @@ import Worklog from '../Worklog/Worklog';
 import AdjuntarArchivos from '../adjuntarArchivos/AdjuntarArchivos';
 import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
 import { clearIssueByKey, getIssueByKey } from '../../redux/actions/issue/getIssueByKey';
+import { deleteAttachments } from '../../redux/actions/issueAttachment/deleteAttachments';
+import { WRITABLE_COLUMS } from '../../const';
 
-
-const ALLOW_COLUMS_TO_EDIT = ['priorizado', 'sin priorizar']
 
 const ActionDeleteIncident = ({ currentColum, setModalDeleteIssue }) => {
-  const isAllowToEdit = ALLOW_COLUMS_TO_EDIT.includes(currentColum.toLowerCase())
+  const isAllowToEdit = WRITABLE_COLUMS.includes(currentColum.toLowerCase())
   if (isAllowToEdit) {
     return (
       <div className='pr-5 flex items-center justify-end'>
@@ -56,6 +56,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const [modalDeleteIssue, setModalDeleteIssue] = useState(false)
   const [file, setFile] = useState([]);
   const [worklogShow, setWorklogShow] = useState(false)
+  const [allAttachment, setAllAttachment] = useState([])
 
   /**
    * 
@@ -65,7 +66,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const editorRef = useRef(null)
   const viewUpdateRef = useRef(null)
 
-  // console.log('AllComments.reverse()', AllComments[0].body)
+  console.log(worklog)
 
   useEffect(() => {
     setItem(itemSelect)
@@ -77,7 +78,8 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   useEffect(() => {
     dispatch(getCommentIssues(itemSelect.key))
     AllComments.length > 0 && setComentarios(AllComments.reverse())
-  }, [dispatch, IssueInfo.length])
+    Object.keys(IssueInfo).length > 0 && setAllAttachment(IssueInfo.fields.attachment)
+  }, [dispatch, IssueInfo.length, file.length])
 
   /**
    * Crear una funcion que formatee lo que devuelve el editor a un formato que jira entienda.
@@ -87,21 +89,32 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     setLoading(true)
     const newValue = viewUpdateRef.current.getMarkdown()
     await editDescription(item.key, parseTextToJiraFormatt(newValue))(dispatch)
-    await postAttachments(file, item.key)(dispatch)
     await getIssueByKey(item.key)(dispatch)
     setLoading(false)
     setEditMode(false)
+  }
+
+  const HandlerAttachfiles = async () => {
+    setLoading(true)
+    await postAttachments(file, item.key)(dispatch)
+    await getIssueByKey(item.key)(dispatch)
+    setFile([])
+    setLoading(false)
+    Object.keys(IssueInfo).length > 0 && setAllAttachment(IssueInfo.fields.attachment)
+  }
+
+  const deleteAttachmentsView = (key, id) => {
+    dispatch(deleteAttachments(key, id))
+    setAllAttachment(allAttachment.filter(at => at.id !== id))
   }
 
   const commentTime = (data) => {
     let fechaAntigua = new Date(data);
     let fechaActual = new Date();
     let diferenciaEnMilisegundos = fechaActual - fechaAntigua;
-
     let minutos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
     let horas = Math.floor(minutos / 60);
     let dias = Math.floor(horas / 24);
-
     return dias > 0 ? `Hace ${dias} dias` :
       horas > 0 ? `Hace ${horas} horas` :
         minutos > 1 ? `Hace ${minutos} minutos` :
@@ -133,8 +146,11 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
         {openImage && <ImgModal openImageState={setOpenImage} imageView={imageView} />}
         {modalDeleteIssue && <ModalDelete setDeleteIssue={setModalDeleteIssue} item={itemSelect} deleteIssue={deleteInfoIssue} />}
         <div className='flex justify-end'>
-          <button onClick={() => { dispatch(clearAllCommentState()); dispatch(clearIssueByKey()); setModalShow(false) }}>
-            <span className="p-1 rounded-full">X</span>
+          <button
+            className='text-red-500 flex rounded-full p-1 border-2 border-red-500 hover:text-white hover:bg-red-500'
+            onClick={() => { dispatch(clearAllCommentState()); dispatch(clearIssueByKey()); setModalShow(false) }}
+          >
+            <span className="h-4 w-4 flex justify-center items-center font-semibold pt-0">X</span>
           </button>
         </div>
         {item && (<>
@@ -152,19 +168,22 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                 <p>Descripción:</p>
                 {Object.keys(IssueInfo).length > 0 && (
                   <>
-                    {ALLOW_COLUMS_TO_EDIT.includes(IssueInfo.fields.status.name.toLowerCase()) ?
-                      <section
-                        onClick={() => setEditMode(true)}
-                        className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
-                        {editMode ?
-                          <>
-                            <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(IssueInfo.fields.description)} />
-                            <AdjuntarArchivos file={file} setFile={setFile} />
-                          </>
-                          :
-                          <ViewerView description={IssueInfo.fields.description} />
-                        }
-                      </section>
+                    {WRITABLE_COLUMS.includes(IssueInfo.fields.status.name.toLowerCase()) ?
+                      <>
+                        <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={HandlerAttachfiles} loading={loading} />
+                        <section
+                          onClick={() => setEditMode(true)}
+                          className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
+                          {editMode ?
+                            <>
+                              <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(IssueInfo.fields.description)} />
+
+                            </>
+                            :
+                            <ViewerView description={IssueInfo.fields.description} />
+                          }
+                        </section>
+                      </>
                       :
                       <ViewerView description={IssueInfo.fields.description} />
                     }
@@ -184,22 +203,28 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                     </div>}
                     {IssueInfo.fields.attachment.length > 0 ?
                       <div className='mt-6'>
-                        {IssueInfo.fields.attachment.map((el, i) =>
+                        {allAttachment.map((el, i) =>
                           el.mimeType === "image/png" ?
-                            <button className='mr-3 border-2' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
-                              <img
-                                className="w-64 h-48"
-                                src={el.content}
-                                alt={`persona asignada ${el.author.displayName}`}
-                                aria-label={`persona asignada ${el.author.displayName}`} />
-                            </button>
-                            :
-                            <a href={el.content} key={i} >
-                              <button className='border-2 overflow-auto w-48 flex flex-col items-center m-1'>
-                                <IconFiles />
-                                <span>{el.filename}</span>
+                            <div key={i} className='border-4 relative w-56 m-1'>
+                              <button onClick={() => deleteAttachmentsView(item.key, el.id)} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
+                              <button className='border-2 overflow-auto' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
+                                <img
+                                  className="w-56 h-48"
+                                  src={el.content}
+                                  alt={`persona asignada ${el.author.displayName}`}
+                                  aria-label={`persona asignada ${el.author.displayName}`} />
                               </button>
-                            </a>
+                            </div>
+                            :
+                            <div key={i} className='border-4 relative w-48 m-1'>
+                              <button onClick={() => deleteAttachmentsView(item.key, el.id)} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
+                              <a href={el.content} key={i} >
+                                <button className='border-2 overflow-auto w-full flex flex-col items-center m-1'>
+                                  <IconFiles />
+                                  <span>{el.filename}</span>
+                                </button>
+                              </a>
+                            </div>
                         )}
                       </div> : null}
                   </>
@@ -243,8 +268,8 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                         <span className='text-fontPlaceholder text-sm'>{commentTime(cm.updated)} </span>
                       </div>
                       {cm.body.content[0].content.length > 1
-                        ? <p>{cm.body.content[0].content[1].text}</p>
-                        : <p>{cm.body.content[0].content[0].text}</p>
+                        ? <p>{parseTextToMarkdown(cm.body.content[0].content[1].text)}</p>
+                        : <p>{parseTextToMarkdown(cm.body.content[0].content[0].text)}</p>
                       }
                     </div>
                   </div>
@@ -291,13 +316,13 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                 </div>
                 : null
               }
-              {worklog &&
+              {/*  {worklog &&
                 <button className="group relative h-87 w-30 overflow-hidden rounded-lg bg-white text-lg shadow mb-5">
                   <div className="absolute inset-0 w-3 bg-buttonBg transition-all duration-[250ms] ease-out group-hover:w-full">
                   </div>
                   <span className="relative text-black group-hover:text-white px-3">Registrar trabajo</span>
                 </button>
-              }
+              } */}
               <div className='max-h-96'>
                 <p>Registro de trabajo:</p>
 
