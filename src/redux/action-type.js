@@ -1,5 +1,6 @@
 export const BASE_URL = "http://ec2-52-90-154-234.compute-1.amazonaws.com:3002";
-export const BACK_AUTH_URL = "http://ec2-52-90-154-234.compute-1.amazonaws.com:3001"
+export const BACK_AUTH_URL = "http://ec2-54-163-213-148.compute-1.amazonaws.com:3001"
+
 
 export const POST_ISSUE = "POST_ISSUE";
 
