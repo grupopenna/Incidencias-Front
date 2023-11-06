@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Select, SelectItem } from '@tremor/react'
 import { DocFiles, ImgFiles } from '../Icons';
 import { Editor as TuiEditor } from '../Editor/index'
+import { parseTextToJiraFormatt } from '../../utils';
 
 const NotifyIncidentForm = () => {
 
@@ -36,7 +37,7 @@ const NotifyIncidentForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const descripcion = editorRef.current.getMarkdown()
+    const descripcion = parseTextToJiraFormatt(editorRef.current.getMarkdown())
 
     // Validación de nombre no vacío
     if (!titleDesc.trim()) {
@@ -54,7 +55,7 @@ const NotifyIncidentForm = () => {
     }
 
     // Validación de descripción no vacía
-    if (!descripcion.trim()) {
+    if (descripcion.length < 1) {
       setErrors({ ...errors, descripcion: 'La descripción no puede estar vacía' });
       alert('La descripción no puede estar vacía')
       return;
