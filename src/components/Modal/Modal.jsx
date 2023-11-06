@@ -75,7 +75,6 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   useEffect(() => {
     dispatch(getCommentIssues(itemSelect.key))
     AllComments.length > 0 && setComentarios(AllComments.reverse())
-    console.log('EJECT')
   }, [dispatch, IssueInfo.length])
 
   /**
@@ -205,9 +204,9 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                             </div>
                             :
                             <div key={i} className='border-4 relative w-48 m-1'>
-                              {/* <button onClick={() => dispatch(deleteAttachments(item.key, el.id))} className='bg-red-500 z-50 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button> */}
+                              <button onClick={() => dispatch(deleteAttachments(item.key, el.id))} className='bg-red-500 z-50 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
                               <a href={el.content} key={i} >
-                                <button className='border-2 overflow-auto flex flex-col items-center m-1'>
+                                <button className='border-2 overflow-auto w-full flex flex-col items-center m-1'>
                                   <IconFiles />
                                   <span>{el.filename}</span>
                                 </button>
