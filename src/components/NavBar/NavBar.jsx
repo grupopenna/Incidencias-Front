@@ -15,6 +15,9 @@ const NavBar = () => {
         <button onClick={() => navigate("/view-all-incidents/12")} className="rounded-xl bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-3 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
           Ver todas las incidencias
         </button>
+        <button onClick={() => navigate("/general-sistemas")} className="rounded-xl mx-2 bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-3 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
+          Control sistemas
+        </button>
       </div>
     </div>
   )
