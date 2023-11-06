@@ -56,6 +56,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const [modalDeleteIssue, setModalDeleteIssue] = useState(false)
   const [file, setFile] = useState([]);
   const [worklogShow, setWorklogShow] = useState(false)
+  const [allAttachment, setAllAttachment] = useState([])
 
   /**
    * 
@@ -75,7 +76,8 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   useEffect(() => {
     dispatch(getCommentIssues(itemSelect.key))
     AllComments.length > 0 && setComentarios(AllComments.reverse())
-  }, [dispatch, IssueInfo.length])
+    Object.keys(IssueInfo).length > 0 && setAllAttachment(IssueInfo.fields.attachment)
+  }, [dispatch, IssueInfo.length, file.length])
 
   /**
    * Crear una funcion que formatee lo que devuelve el editor a un formato que jira entienda.
@@ -90,12 +92,18 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     setEditMode(false)
   }
 
-  const Attachfiles = async () => {
+  const HandlerAttachfiles = async () => {
     setLoading(true)
     await postAttachments(file, item.key)(dispatch)
     await getIssueByKey(item.key)(dispatch)
     setFile([])
     setLoading(false)
+    Object.keys(IssueInfo).length > 0 && setAllAttachment(IssueInfo.fields.attachment)
+  }
+
+  const deleteAttachmentsView = (key, id) => {
+    dispatch(deleteAttachments(key, id))
+    setAllAttachment(allAttachment.filter(at => at.id !== id))
   }
 
   const commentTime = (data) => {
@@ -160,7 +168,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                   <>
                     {WRITABLE_COLUMS.includes(IssueInfo.fields.status.name.toLowerCase()) ?
                       <>
-                        <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={Attachfiles} loading={loading} />
+                        <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={HandlerAttachfiles} loading={loading} />
                         <section
                           onClick={() => setEditMode(true)}
                           className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
@@ -193,10 +201,10 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                     </div>}
                     {IssueInfo.fields.attachment.length > 0 ?
                       <div className='mt-6'>
-                        {IssueInfo.fields.attachment.map((el, i) =>
+                        {allAttachment.map((el, i) =>
                           el.mimeType === "image/png" ?
                             <div key={i} className='border-4 relative w-56 m-1'>
-                              <button onClick={() => { dispatch(deleteAttachments(item.key, el.id)) }} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
+                              <button onClick={() => deleteAttachmentsView(item.key, el.id)} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
                               <button className='border-2 overflow-auto' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
                                 <img
                                   className="w-56 h-48"
@@ -207,7 +215,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                             </div>
                             :
                             <div key={i} className='border-4 relative w-48 m-1'>
-                              <button onClick={() => dispatch(deleteAttachments(item.key, el.id))} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
+                              <button onClick={() => deleteAttachmentsView(item.key, el.id)} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
                               <a href={el.content} key={i} >
                                 <button className='border-2 overflow-auto w-full flex flex-col items-center m-1'>
                                   <IconFiles />

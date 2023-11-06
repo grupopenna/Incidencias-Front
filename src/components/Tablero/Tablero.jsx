@@ -160,7 +160,7 @@ const Tablero = () => {
     <div className="flex flex-col w-full mx-5">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} worklog={worklog} />}
       <div className="flex my-5 justify-between">
-        <button onClick={() => { handleNotify() }} className="bg-buttonBg w-44 h-10 rounded-md">Notificar Incidencias</button>
+        <button onClick={() => { handleNotify() }} className="bg-buttonBg w-44 h-10 rounded-md text-white">Notificar Incidencias</button>
         <AlertMessage />
 
       </div>
