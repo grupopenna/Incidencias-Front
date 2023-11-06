@@ -245,8 +245,8 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                         <span className='text-fontPlaceholder text-sm'>{commentTime(cm.updated)} </span>
                       </div>
                       {cm.body.content[0].content.length > 1
-                        ? <p>{cm.body.content[0].content[1].text}</p>
-                        : <p>{cm.body.content[0].content[0].text}</p>
+                        ? <p>{parseTextToMarkdown(cm.body.content[0].content[1].text)}</p>
+                        : <p>{parseTextToMarkdown(cm.body.content[0].content[0].text)}</p>
                       }
                     </div>
                   </div>
