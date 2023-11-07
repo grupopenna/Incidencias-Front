@@ -8,7 +8,6 @@ import { IconFiles, SimpleArrowUp, TrashIcon } from '../Icons';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { WithoutPhoto } from '../Icon';
 import ImgModal from '../ImgModal/ImgModal';
-import ModalDelete from './ModalDelete';
 import { deleteIssues } from '../../redux/actions/issue/deleteIssue';
 import { Viewer, Editor as TuiEditor } from '../Editor/index';
 import '@toast-ui/editor/dist/toastui-editor.css';
@@ -19,20 +18,7 @@ import { postAttachments } from '../../redux/actions/issueAttachment/postAttachm
 import { clearIssueByKey, getIssueByKey } from '../../redux/actions/issue/getIssueByKey';
 import { deleteAttachments } from '../../redux/actions/issueAttachment/deleteAttachments';
 import { ATTACHABLE_COLUMNS, WRITABLE_COLUMS } from '../../const';
-
-
-const ActionDeleteIncident = ({ currentColum, setModalDeleteIssue }) => {
-  const isAllowToEdit = WRITABLE_COLUMS.includes(currentColum.toLowerCase())
-  if (isAllowToEdit) {
-    return (
-      <div className='pr-5 flex items-center justify-end'>
-        <button onClick={() => setModalDeleteIssue(true)} className='text-red-500 flex justify-end rounded-full p-1 border-2 border-red-500 hover:text-white hover:bg-red-500'>
-          <TrashIcon />
-        </button>
-      </div>
-    )
-  }
-}
+import Swal from 'sweetalert2';
 
 const ViewerView = ({ description }) => {
   return description
@@ -53,7 +39,6 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const [openImage, setOpenImage] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [imageView, setImageView] = useState('')
-  const [modalDeleteIssue, setModalDeleteIssue] = useState(false)
   const [file, setFile] = useState([]);
   const [worklogShow, setWorklogShow] = useState(false)
   const [allAttachment, setAllAttachment] = useState([])
@@ -104,8 +89,17 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   }
 
   const deleteAttachmentsView = (key, id) => {
-    dispatch(deleteAttachments(key, id))
-    setAllAttachment(allAttachment.filter(at => at.id !== id))
+    Swal.fire({
+      title: "Seguro deseá eliminar este adjunto?",
+      showDenyButton: true,
+      confirmButtonText: "ACEPTAR",
+      denyButtonText: `CANCELAR`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteAttachments(key, id))
+        setAllAttachment(allAttachment.filter(at => at.id !== id))
+      }
+    });
   }
 
   const commentTime = (data) => {
@@ -129,10 +123,31 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     editorRef.current.reset()
   }
 
-  const deleteInfoIssue = (key) => {
-    dispatch(deleteIssues(key, jiraAccountId))
-    setModalDeleteIssue(false)
-    setModalShow(false)
+  const ActionDeleteIncident = ({ currentColum, item }) => {
+    const isAllowToEdit = WRITABLE_COLUMS.includes(currentColum.toLowerCase())
+
+    const confirmdelete = () => {
+      Swal.fire({
+        title: "Seguro deseá eliminar esta tarea?",
+        showDenyButton: true,
+        confirmButtonText: "ACEPTAR",
+        denyButtonText: `CANCELAR`
+      }).then((result) => {
+        if (result.isConfirmed) {
+          dispatch(deleteIssues(item.key, jiraAccountId))
+          setModalShow(false)
+        }
+      });
+    }
+    if (isAllowToEdit) {
+      return (
+        <div className='pr-5 flex items-center justify-end'>
+          <button onClick={() => confirmdelete()} className='text-red-500 flex justify-end rounded-full p-1 border-2 border-red-500 hover:text-white hover:bg-red-500'>
+            <TrashIcon />
+          </button>
+        </div>
+      )
+    }
   }
 
   const clientName = (str) => {
@@ -144,7 +159,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
       {worklogShow && <Worklog setWorklogShow={setWorklogShow} itemSelect={itemSelect} />}
       <div className="bg-white h-4/5 w-4/5 rounded-lg p-3">
         {openImage && <ImgModal openImageState={setOpenImage} imageView={imageView} />}
-        {modalDeleteIssue && <ModalDelete setDeleteIssue={setModalDeleteIssue} item={itemSelect} deleteIssue={deleteInfoIssue} />}
+
         <div className='flex justify-end'>
           <button
             className='text-red-500 flex rounded-full p-1 border-2 border-red-500 hover:text-white hover:bg-red-500'
@@ -208,7 +223,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                         {allAttachment.map((el, i) =>
                           el.mimeType === "image/png" ?
                             <div key={i} className='border-4 relative w-56 m-1'>
-                              <button onClick={() => deleteAttachmentsView(item.key, el.id)} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
+                              <button onClick={() => deleteAttachmentsView(item.key, el.id)} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-6 w-6 p-0.5 rounded-full'><TrashIcon /></button>
                               <button className='border-2 overflow-auto' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
                                 <img
                                   className="w-56 h-48"
@@ -219,7 +234,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                             </div>
                             :
                             <div key={i} className='border-4 relative w-48 m-1'>
-                              <button onClick={() => deleteAttachmentsView(item.key, el.id)} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
+                              <button onClick={() => deleteAttachmentsView(item.key, el.id)} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-6 w-6 p-0.5 rounded-full'><TrashIcon /></button>
                               <a href={el.content} key={i} >
                                 <button className='border-2 overflow-auto w-full flex flex-col items-center m-1'>
                                   <IconFiles />
@@ -365,7 +380,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
           </div>
         </>
         )}
-        <ActionDeleteIncident currentColum={itemSelect.fields.status.name} setModalDeleteIssue={setModalDeleteIssue} />
+        <ActionDeleteIncident currentColum={itemSelect.fields.status.name} item={itemSelect} />
       </div>
     </div >
   )
