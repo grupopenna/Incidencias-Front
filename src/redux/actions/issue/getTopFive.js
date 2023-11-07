@@ -15,7 +15,7 @@ export const getTopFive = () => {
     "expand": [
       "names",
       "schema",
-      "operations"
+      "operations", "changelog"
     ],
     "fields": [
       "description",
@@ -30,8 +30,10 @@ export const getTopFive = () => {
       "aggregatetimespent",
       "customfield_10019",
       "worklog",
-      "attachment"
-
+      "attachment",
+      "project",
+      "created",
+      "updated"
     ],
     "jql": `(labels = TOP1 OR labels = TOP2 OR labels = TOP3 OR labels = TOP4 OR labels = TOP5) AND (${sebaId} ${caroId} ${matiId} ${JuliId} ${davidId} ${lucianoId} ${leanId})`
   }
@@ -39,7 +41,6 @@ export const getTopFive = () => {
 
   return async (dispatch) => {
     try {
-      console.log('holi')
       const response = (await axios.post(`${BASE_URL}/incident/getTop`, bodyData)).data;
       console.log('response', response)
 

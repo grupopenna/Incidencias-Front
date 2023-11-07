@@ -13,9 +13,7 @@ export const getApprove = () => {
 
   const bodyData = {
     "expand": [
-      "names",
-      "schema",
-      "operations"
+      "names", "schema", "operations", "changelog"
     ],
     "fields": [
       "description",
@@ -30,8 +28,10 @@ export const getApprove = () => {
       "aggregatetimespent",
       "customfield_10019",
       "worklog",
-      "attachment"
-
+      "attachment",
+      "project",
+      "created",
+      "updated"
     ],
     "jql": `(labels = APROBADO AND (not labels = TOP2 AND not labels = TOP3 AND not labels = TOP4 AND not labels = TOP5)) AND (${sebaId} ${caroId} ${matiId} ${JuliId} ${davidId} ${lucianoId} ${leanId})`
   }
