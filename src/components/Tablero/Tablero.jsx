@@ -149,12 +149,12 @@ const Tablero = () => {
   }
 
   return (
-    <div className="flex  w-full justify-center">
+    <div className="grid grid-cols-6 w-full justify-center">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} worklog={worklog} />}
 
       <SideBar setReload={setReload} handleNotify={handleNotify} navigate={navigate} pathname={pathname}/>
       {incidents?.length > 0 ?
-        <div className="flex gap-x-2 w-[70%]">
+        <div className="flex gap-x-2 w-[90%] m-auto col-span-5">
           {keyPathname == "NR" ? (
             transitions.map((transition, i) => (
               <div key={i} className=" bg-bgColumn rounded-lg w-1/3 flex flex-col px-1">
