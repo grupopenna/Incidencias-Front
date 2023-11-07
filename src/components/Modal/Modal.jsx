@@ -283,7 +283,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                           : <p className='font-bold text-base'>{cm.author.displayName}</p>
                         }
 
-                        <span className='text-fontPlaceholder text-sm'>{commentTime(cm.updated)} </span>
+                        <span className='text-black text-sm'>{commentTime(cm.updated)} </span>
                       </div>
                       {cm?.comment?.length > 1
                         && <Viewer initialValue={parseTextToMarkdown(cm.comment)} />
