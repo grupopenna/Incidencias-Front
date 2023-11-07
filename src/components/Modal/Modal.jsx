@@ -50,6 +50,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const [openEditor, setOpenEditor] = useState(false)
   const [verRegistro, setVerRegistro] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [descriptionLoading, setDescriptionLoadin] = useState(false)
   const [openImage, setOpenImage] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [imageView, setImageView] = useState('')
@@ -72,7 +73,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     setItem(itemSelect)
     setComentarios(AllComments)
     dispatch(getIssueByKey(itemSelect.key))
-    setTimeout(() => { setLoading(false) }, 2000)
+    setTimeout(() => { setLoading(false), setDescriptionLoadin(false) }, 2000)
   }, [item, AllComments.length])
 
   useEffect(() => {
@@ -86,11 +87,11 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
    */
 
   const handleEditDesc = async () => {
-    setLoading(true)
+    setDescriptionLoadin(true)
     const newValue = viewUpdateRef.current.getMarkdown()
     await editDescription(item.key, parseTextToJiraFormatt(newValue))(dispatch)
     await getIssueByKey(item.key)(dispatch)
-    setLoading(false)
+    setDescriptionLoadin(false)
     setEditMode(false)
   }
 
@@ -170,7 +171,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                   <>
                     {WRITABLE_COLUMS.includes(IssueInfo.fields.status.name.toLowerCase()) ?
                       <>
-                        <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={HandlerAttachfiles} loading={loading} />
+                        <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={HandlerAttachfiles}  />
                         <section
                           onClick={() => setEditMode(true)}
                           className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
@@ -190,7 +191,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
 
                     {editMode && <div className='flex gap-3 p-4'>
                       <button onClick={handleEditDesc} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>
-                        {loading
+                        {descriptionLoading
                           ? <div className='w-6 animate-spin border-2  border-white border-l-transparent rounded-full h-6' />
                           : 'Guardar'
                         }
@@ -268,7 +269,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                         <span className='text-fontPlaceholder text-sm'>{commentTime(cm.updated)} </span>
                       </div>
                       {cm?.comment?.length > 1
-                        && <Viewer initialValue={cm.comment} />
+                        && <Viewer initialValue={parseTextToMarkdown(cm.comment)} />
                       }
                     </div>
                   </div>
