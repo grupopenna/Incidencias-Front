@@ -6,7 +6,6 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { getIssue } from "../../redux/actions/issue/getIssue";
 import { GlobalContext } from "../../context";
 import { postTransition, putOrder } from "../../redux/actions";
-import { ReloadIcon } from "../Icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState, useContext } from "react";
 import { useIncidents } from "../../hooks/useIncidents";
@@ -15,6 +14,7 @@ import Incident from "../Incident/Incident";
 import Loader from "../Loader";
 import Modal from "../Modal/Modal";
 import Swal from "sweetalert2";
+import SideBar from "../Sidebar";
 
 
 const Tablero = () => {
@@ -149,28 +149,12 @@ const Tablero = () => {
   }
 
   return (
-    <div className="flex flex-col w-full mx-5">
+    <div className="flex  w-full justify-center">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} worklog={worklog} />}
 
-      <div className="flex items-center gap-x-2  my-5">
-        <button onClick={() => { handleNotify() }} className="bg-indigo-600 w-44 py-2 rounded-md text-white">Notificar Incidencias</button>
-        {!pathname.includes('view-all-incidents') && <button
-          onClick={() => navigate("/view-all-incidents/12")}
-          className="rounded-md bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-2 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
-          Ver todas las incidencias
-        </button>}
-
-        {pathname.includes('board') &&
-          <button
-            onClick={() => setReload(true)}
-            aria-label="reload"
-            className=" bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-4 py-2  rounded-md text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
-            <ReloadIcon />
-          </button>}
-      </div>
-
+      <SideBar setReload={setReload} handleNotify={handleNotify} navigate={navigate} pathname={pathname}/>
       {incidents?.length > 0 ?
-        <div className="flex gap-x-2">
+        <div className="flex gap-x-2 w-[70%]">
           {keyPathname == "NR" ? (
             transitions.map((transition, i) => (
               <div key={i} className=" bg-bgColumn rounded-lg w-1/3 flex flex-col px-1">
