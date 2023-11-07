@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { AdjIcon } from '../Icons';
 import { DocFiles, ImgFiles } from '../Icons';
 
-const AdjuntarArchivos = ({ file, setFile, Attachfiles, loading }) => {
+const AdjuntarArchivos = ({ file, setFile, Attachfiles }) => {
 
   useEffect(() => {
 
@@ -43,11 +43,7 @@ const AdjuntarArchivos = ({ file, setFile, Attachfiles, loading }) => {
             </div>
           }
         </div>
-        {loading ?
-          <main className='bg-white flex justify-center items-center'>
-            <div className='w-8 h-8 border-2 border-background rounded-full animate-spin border-r-transparent' />
-          </main>
-          :
+        {
           file.length > 0 ?
             <div className='grid grid-cols-2 mt-2'>
               {file.map((el, i) => (
