@@ -21,7 +21,7 @@ const SelectedIncident = ({ projects }) => {
         if (response.length > 0) {
           searchTransition(response[0].key);
         } else if (response.length < 0) {
-          alert("No hay incidencias");
+          console.log("No hay incidencias");
         }
       }
       return console.log('response SelectedIncident getIssue', response);
@@ -59,7 +59,7 @@ const SelectedIncident = ({ projects }) => {
                 }
               </button>)
           }
-          
+
           {/* <button onClick={() => handleRedirect("create-new")} className="rounded-xl bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-3 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
           Crear nuevo desarrollo
         </button> */}

@@ -1,3 +1,5 @@
+import { COMMENTS_TYPES, JIRA_MARKS } from "../const"
+
 /**
  * 
  * @param {Date} date 
@@ -43,7 +45,7 @@ export const parseTextToJiraFormatt = (input) => {
                 },
                 "content": [{
                     "type": "text",
-                    "text": line.split(' ')[1]   
+                    "text": line.slice(2)    
                 }]
             }
             
@@ -60,7 +62,7 @@ export const parseTextToJiraFormatt = (input) => {
                 },
                 "content": [{
                     "type": "text",
-                    "text": line.split(' ')[1]   
+                    "text": line.slice(3)  
                 }]
             }
             
@@ -78,7 +80,7 @@ export const parseTextToJiraFormatt = (input) => {
                 },
                 "content": [{
                     "type": "text",
-                    "text": line.split(' ')[1]   
+                    "text": line.slice(4)
                 }]
             }
 
@@ -97,7 +99,7 @@ export const parseTextToJiraFormatt = (input) => {
                 },
                 "content": [{
                     "type": "text",
-                    "text": line.split(' ')[1]   
+                    "text": line.slice(5)
                 }]
             }
             
@@ -115,7 +117,7 @@ export const parseTextToJiraFormatt = (input) => {
                 },
                 "content": [{
                     "type": "text",
-                    "text": line.split(' ')[1]   
+                    "text": line.slice(6)
                 }]
             }
             
@@ -133,7 +135,7 @@ export const parseTextToJiraFormatt = (input) => {
                 },
                 "content": [{
                     "type": "text",
-                    "text": line.split(' ')[1]   
+                    "text": line.slice(7)
                 }]
             }
             
@@ -216,7 +218,7 @@ export const parseTextToJiraFormatt = (input) => {
                         "content": [
                             {
                                 "type": "text",
-                                "text": line.split(' ')[1]
+                                "text": line.slice(2)
                             }
                         ]
                     }
@@ -244,7 +246,6 @@ export const parseTextToJiraFormatt = (input) => {
 
     }
 
-
     return jiraLines
 
 }
@@ -257,12 +258,11 @@ export const parseTextToJiraFormatt = (input) => {
  */
 export  const parseTextToMarkdown = (inputText) => {
   // Dividir el texto en líneas
-
   if (!inputText) return ''
-
+  
   const lines = inputText.split('\n');
   const markdownLines = [];
-
+  
   for (const line of lines) {
 
     let formattChar
@@ -354,4 +354,40 @@ export  const parseTextToMarkdown = (inputText) => {
   const markdownText = markdownLines.join('\n');
 
   return markdownText;
+}
+
+/**
+ * 
+ * @param {string} text 
+ * @param {string} type 
+ * @param {Object} attrs 
+ * @returns {string}
+ */
+export const convertTextToMarkdown = (text, type, attrs) => {
+    if (type === COMMENTS_TYPES.HEADING) {
+        return `${'#'.repeat(attrs.level)} ${text}`
+    }
+    
+    
+    if (type === COMMENTS_TYPES.BLOCKQUOTE) {
+        return `> ${text}`
+    }
+    
+    if (type === COMMENTS_TYPES.PARAGRAPH) {
+        if (attrs?.marks) {
+            if (attrs.marks === JIRA_MARKS.STRONG) {
+                return `**${text}**`
+            }
+
+            if (attrs.marks === JIRA_MARKS.EM) {
+                return `*${text}*`
+            }
+
+            if (attrs.marks === JIRA_MARKS.STRIKE) {
+                return `~~${text}~~`
+            }
+        }
+
+        return text
+    }
 }

@@ -17,12 +17,9 @@ export const postComments = (comment, key, userId) => {
                 "accessLevel": "CONTAINER"
               }
             },
-            {
-              "type": "text",
-              "text": comment
-            }
           ]
-        }
+        },
+        ...comment
       ]
     }
   }

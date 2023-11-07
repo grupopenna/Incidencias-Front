@@ -50,6 +50,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const [openEditor, setOpenEditor] = useState(false)
   const [verRegistro, setVerRegistro] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [descriptionLoading, setDescriptionLoadin] = useState(false)
   const [openImage, setOpenImage] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [imageView, setImageView] = useState('')
@@ -66,11 +67,13 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const editorRef = useRef(null)
   const viewUpdateRef = useRef(null)
 
+  console.log(worklog)
+
   useEffect(() => {
     setItem(itemSelect)
     setComentarios(AllComments)
     dispatch(getIssueByKey(itemSelect.key))
-    setTimeout(() => { setLoading(false) }, 2000)
+    setTimeout(() => { setLoading(false), setDescriptionLoadin(false) }, 2000)
   }, [item, AllComments.length])
 
   useEffect(() => {
@@ -84,11 +87,11 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
    */
 
   const handleEditDesc = async () => {
-    setLoading(true)
+    setDescriptionLoadin(true)
     const newValue = viewUpdateRef.current.getMarkdown()
     await editDescription(item.key, parseTextToJiraFormatt(newValue))(dispatch)
     await getIssueByKey(item.key)(dispatch)
-    setLoading(false)
+    setDescriptionLoadin(false)
     setEditMode(false)
   }
 
@@ -168,7 +171,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                   <>
                     {WRITABLE_COLUMS.includes(IssueInfo.fields.status.name.toLowerCase()) ?
                       <>
-                        <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={HandlerAttachfiles} loading={loading} />
+                        <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={HandlerAttachfiles}  />
                         <section
                           onClick={() => setEditMode(true)}
                           className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
@@ -188,7 +191,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
 
                     {editMode && <div className='flex gap-3 p-4'>
                       <button onClick={handleEditDesc} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>
-                        {loading
+                        {descriptionLoading
                           ? <div className='w-6 animate-spin border-2  border-white border-l-transparent rounded-full h-6' />
                           : 'Guardar'
                         }
@@ -247,27 +250,26 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                 comentarios.map((cm, i) => (
                   <div key={i} className='flex pt-2 mb-3' >
                     <div className='mr-4'>
-                      {cm.updateAuthor.avatarUrls
+                      {cm.author.avatarUrls
                         ? <img
                           className="w-6 h-6"
-                          src={cm.updateAuthor.avatarUrls['16x16']}
-                          alt={`persona asignada ${cm.updateAuthor.displayName}`}
-                          aria-label={`persona asignada ${cm.updateAuthor.displayName}`} />
+                          src={cm.author.avatarUrls['16x16']}
+                          alt={`persona asignada ${cm.author.displayName}`}
+                          aria-label={`persona asignada ${cm.author.displayName}`} />
                         : <WithoutPhoto />
                       }
                     </div>
                     <div className='w-full'>
                       <div className='flex justify-between'>
-                        {cm.body.content[0].content.length > 1
-                          ? <p className='font-bold text-base'>{clientName(cm.body.content[0].content[0].attrs?.text)}</p>
-                          : <p className='font-bold text-base'>{cm.updateAuthor.displayName}</p>
+                        {cm.isMention
+                          ? <p className='font-bold text-base'>{clientName(cm.mentionUser)}</p>
+                          : <p className='font-bold text-base'>{cm.author.displayName}</p>
                         }
 
                         <span className='text-fontPlaceholder text-sm'>{commentTime(cm.updated)} </span>
                       </div>
-                      {cm.body.content[0].content.length > 1
-                        ? <p>{parseTextToMarkdown(cm.body.content[0].content[1].text)}</p>
-                        : <p>{parseTextToMarkdown(cm.body.content[0].content[0].text)}</p>
+                      {cm?.comment?.length > 1
+                        && <Viewer initialValue={parseTextToMarkdown(cm.comment)} />
                       }
                     </div>
                   </div>
@@ -314,13 +316,13 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                 </div>
                 : null
               }
-              {worklog &&
+              {/*  {worklog &&
                 <button className="group relative h-87 w-30 overflow-hidden rounded-lg bg-white text-lg shadow mb-5">
                   <div className="absolute inset-0 w-3 bg-buttonBg transition-all duration-[250ms] ease-out group-hover:w-full">
                   </div>
                   <span className="relative text-black group-hover:text-white px-3">Registrar trabajo</span>
                 </button>
-              }
+              } */}
               <div className='max-h-96'>
                 <p>Registro de trabajo:</p>
 

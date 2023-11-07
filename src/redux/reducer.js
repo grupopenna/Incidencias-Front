@@ -3,6 +3,8 @@ import {
   POST_ISSUE,
   GET_ISSUES,
   GET_All_ISSUES,
+  GET_TOP,
+  GET_APPROVE,
 
   GET_PROJECTS,
 
@@ -29,6 +31,8 @@ const initialState = {
 
   incients: [],
   allIncients: [],
+  top: [],
+  approve: [],
 
   projects: [],
 
@@ -53,9 +57,13 @@ const reducer = (state = initialState, { type, payload }) => {
     case POST_ISSUE:
       return { ...state, incients: payload };
     case GET_ISSUES:
-      return { ...state, incients: payload }
+      return { ...state, incients: payload };
     case GET_All_ISSUES:
-      return { ...state, allIncients: payload }
+      return { ...state, allIncients: payload };
+    case GET_TOP:
+      return { ...state, top: payload };
+    case GET_APPROVE:
+      return { ...state, approve: payload }
 
     case GET_PROJECTS:
       return { ...state, projects: payload }
