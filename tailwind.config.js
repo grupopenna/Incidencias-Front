@@ -1,4 +1,4 @@
-/** @type {import('tailwindcss').Config} */ 
+/** @type {import('tailwindcss').Config} */
 
 export default {
   content: [
@@ -52,7 +52,8 @@ export default {
         bgModal: "rgba(130, 128, 127, 0.4)",
         bgColumn: "#161A1D",
         bgIncident: "#22272B",
-        bgCard: "#21272C"
+        bgCard: "#21272C",
+        white: "#f9faeb"
       },
       boxShadow: {
         // light

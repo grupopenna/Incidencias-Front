@@ -133,7 +133,6 @@ const Tablero = () => {
     return list;
   }
 
-
   const getItemStyle = (draggableStyle) => ({
     userSelect: "none",
     ...draggableStyle

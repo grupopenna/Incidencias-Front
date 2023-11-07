@@ -5,6 +5,8 @@ export const BOARD_STATUS = {
 
 export const WRITABLE_COLUMS = ['tareas por hacer', 'sin priorizar', 'priorizado']
 
+export const ATTACHABLE_COLUMNS = ['tareas por hacer', 'sin priorizar', 'priorizado', 'en proceso']
+
 export const COMMENTS_TYPES = {
     HEADING: 'heading',
     PARAGRAPH: 'paragraph',
@@ -16,5 +18,5 @@ export const JIRA_MARKS = {
     STRONG: 'strong',
     STRIKE: 'strike'
 }
-  
-  
+
+
