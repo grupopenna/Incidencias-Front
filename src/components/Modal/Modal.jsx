@@ -249,27 +249,26 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                 comentarios.map((cm, i) => (
                   <div key={i} className='flex pt-2 mb-3' >
                     <div className='mr-4'>
-                      {cm.updateAuthor.avatarUrls
+                      {cm.author.avatarUrls
                         ? <img
                           className="w-6 h-6"
-                          src={cm.updateAuthor.avatarUrls['16x16']}
-                          alt={`persona asignada ${cm.updateAuthor.displayName}`}
-                          aria-label={`persona asignada ${cm.updateAuthor.displayName}`} />
+                          src={cm.author.avatarUrls['16x16']}
+                          alt={`persona asignada ${cm.author.displayName}`}
+                          aria-label={`persona asignada ${cm.author.displayName}`} />
                         : <WithoutPhoto />
                       }
                     </div>
                     <div className='w-full'>
                       <div className='flex justify-between'>
-                        {cm.body.content[0].content.length > 1
-                          ? <p className='font-bold text-base'>{clientName(cm.body.content[0].content[0].attrs?.text)}</p>
-                          : <p className='font-bold text-base'>{cm.updateAuthor.displayName}</p>
+                        {cm.isMention
+                          ? <p className='font-bold text-base'>{clientName(cm.mentionUser)}</p>
+                          : <p className='font-bold text-base'>{cm.author.displayName}</p>
                         }
 
                         <span className='text-fontPlaceholder text-sm'>{commentTime(cm.updated)} </span>
                       </div>
-                      {cm.body.content[0].content.length > 1
-                        ? <p>{parseTextToMarkdown(cm.body.content[0].content[1].text)}</p>
-                        : <p>{parseTextToMarkdown(cm.body.content[0].content[0].text)}</p>
+                      {cm?.comment?.length > 1
+                        && <Viewer initialValue={parseTextToMarkdown(cm.comment)} />
                       }
                     </div>
                   </div>
