@@ -1,11 +1,7 @@
 import axios from "axios";
 import { BASE_URL, GET_COMMENT_ISSUES, CLEAR_COMMENT_STATE } from '../../action-type';
-
-const COMMENTS_TYPES = {
-  HEADING: 'heading',
-  PARAGRAPH: 'paragraph',
-  BLOCKQUOTE: 'blockquote'
-}
+import { COMMENTS_TYPES } from '../../../const'
+import { convertTextToMarkdown } from "../../../utils";
 
 export const getCommentIssues = (key) => {
   // const userId = "712020:8a4ac3e0-8800-405a-96a0-a09c82e1a727"
@@ -32,7 +28,6 @@ export const getCommentIssues = (key) => {
       const response = (await axios.post(`${BASE_URL}/incident/getComment/`, bodyData)).data;
       const res = response.issues[0].fields.comment.comments
       const comments = res.reverse();
-
       const values = comments.map((comment) => {
         const { body:{ content }, author, updated } = comment
 
@@ -47,17 +42,21 @@ export const getCommentIssues = (key) => {
 
           if (values.type === COMMENTS_TYPES.HEADING) {
             const { text } =  values.content[0]
-            return text
+            return convertTextToMarkdown(text, values.type, { level: values.attrs.level })
           }
 
           if (values.type === COMMENTS_TYPES.PARAGRAPH) {
-            const { text, type, attrs } =  values.content[0]
+            const { text, type, attrs, marks } =  values.content[0]
 
             if (type === 'mention') {
               commenToRender.isMention = true
               commenToRender.mentionUser = attrs.text
               return ''
             }
+            if (typeof marks !== 'undefined') {
+              return convertTextToMarkdown(text, values.type, { marks: marks[0].type })
+            }
+
             return text
           }
 
@@ -65,12 +64,11 @@ export const getCommentIssues = (key) => {
             const { content} =  values.content[0]
             const { text } =  content[0]
   
-            return text
+            return convertTextToMarkdown(text, values.type)
           }
         })
 
-
-        commenToRender.comment = commentValues?.join('\n')
+        commenToRender.comment = commentValues?.join(' \n ')
         return commenToRender
       })
 
