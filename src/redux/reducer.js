@@ -22,7 +22,7 @@ import {
   GET_WORKLOG,
   GET_ISSUE_BY_KEY,
   CLEAR_ISSUE_BY_KEY,
-
+  ERROR_GET_ISSUE_BY_KEY
 
 } from "./action-type";
 
@@ -54,7 +54,9 @@ const initialState = {
 
   worklogs: [],
 
-  issueByKey: []
+  issueByKey: [],
+
+  issueByKeyError: false
 
 };
 const reducer = (state = initialState, { type, payload }) => {
@@ -97,12 +99,16 @@ const reducer = (state = initialState, { type, payload }) => {
       return { ...state, worklogs: payload }
 
     case GET_ISSUE_BY_KEY:
-      return { ...state, issueByKey: payload }
+      return { ...state, issueByKey: payload, issueByKeyError: false  }
 
     case CLEAR_ISSUE_BY_KEY:
-      return { ...state, issueByKey: [] }
+      return { ...state, issueByKey: undefined, issueByKeyError: false }
 
-    default:
+    
+    case ERROR_GET_ISSUE_BY_KEY:
+      return { ...state, issueByKeyError: true }
+
+      default:
       return { ...state, worklogs: payload };
   }
 };

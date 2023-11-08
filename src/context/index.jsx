@@ -7,6 +7,7 @@ const GlobalContext = createContext()
 const GlobalProvider = ({ children }) => {
     const [reload, setReload] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [modalShow, setModalShow] = useState(false)
 
 
     return (
@@ -14,7 +15,9 @@ const GlobalProvider = ({ children }) => {
             reload,
             setReload,
             isLoading,
-            setIsLoading
+            setIsLoading,
+            modalShow,
+            setModalShow
         }}>
             { children }
         </GlobalContext.Provider>

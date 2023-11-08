@@ -18,6 +18,7 @@ const ViewAllIndicentLazy = lazy(() => import('./components/ViewAllIndicent/inde
 const BoardDirectorioLazy = lazy(() => import('./components/BoardDirectorio/BoardDirectorio'))
 const SprintTableLazy = lazy(() => import('./components/ProxSprintTable/SprintTable'))
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'))
+const SearchIssue = lazy(() => import('./components/SearchIssue'))
 
 const Loader = () => {
   return <section className='w-full min-h-screen flex bg-background justify-center items-center'>
@@ -41,6 +42,7 @@ const App = () => {
               <Route exac path="/view-all-incidents/:jiraAccountId" element={<ViewAllIndicentLazy />} />
               <Route exact path="/proxSprint/:key" element={<SprintTableLazy />} />
               <Route exact path="/general-sistemas" element={<BoardDirectorioLazy />} />
+              <Route exac path='/search-issue/' element={<SearchIssue />} />
             </Route>
           </Routes>
         </div>
