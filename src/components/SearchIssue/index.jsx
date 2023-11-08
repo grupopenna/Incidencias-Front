@@ -24,7 +24,8 @@ const SearchIssue = () => {
   const [openImage, setOpenImage] = useState(false)
   const {isLoading, setIsLoading} = useContext(GlobalContext)
   
-  const issue = useSelector(state => state.issueByKey)
+  const issueData = useSelector(state => state.issueByKey)
+  const [issue] = issueData
   const issueError = useSelector(state => state.issueByKeyError)
   const AllComments = useSelector(state => state.commentIssuesById)
   
@@ -40,12 +41,11 @@ const SearchIssue = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (issue !== undefined) {
+    if (issueData?.length > 0) {
         setIsLoading(false)
         getCommentIssues(issue.key)(dispatch)
     }
-  }, [issue])
-
+  }, [issueData])
 
   if (issueError) {
     return <div className='w-full h-[500px] flex justify-center items-center'> 
@@ -56,6 +56,7 @@ const SearchIssue = () => {
   if (isLoading) {
     return <div className='w-7 h-7 m-auto rounded-full border-2 border-l-transparent animate-spin'/>
   }
+
 
   return (
     <section className="w-full  flex items-center flex-col mb-12">
