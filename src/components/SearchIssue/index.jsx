@@ -1,85 +1,43 @@
 import { ATTACHABLE_COLUMNS, WRITABLE_COLUMS } from '../../const.js'
 import { Badge } from '@tremor/react'
-import { clientName, commentTime, parseTextToJiraFormatt, parseTextToMarkdown } from '../../utils/index.js'
+import { clientName, commentTime, parseTextToMarkdown } from '../../utils/index.js'
 import { IconFiles, SimpleArrowUp, TrashIcon } from '../Icons.jsx'
-import { postAttachments, getIssueByKey, deleteAttachments, editDescription, postComments, getCommentIssues } from '../../redux/actions'
+import { getCommentIssues } from '../../redux/actions'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
-import { useRef } from 'react'
-import { useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { Viewer, Editor as TuiEditor } from '../Editor/index.ts'
 import { WithoutPhoto } from '../Icon.jsx'
 import AdjuntarArchivos from '../adjuntarArchivos/AdjuntarArchivos.jsx'
 import Button from '../Button/index.jsx'
-import Swal from 'sweetalert2';
-import { useContext } from 'react'
 import { GlobalContext } from '../../context/index.jsx'
-
-
-const ViewerView = ({ description }) => {
-  return description
-    ? <Viewer initialValue={parseTextToMarkdown(description)} />
-    : <p className='text-slate-500'>Editar descripcion</p>
-}
+import useEditIssue from '../../hooks/useEditIssue.jsx'
+import ImgModal from '../ImgModal/ImgModal.jsx'
+import ViewerView from '../ViewerView/'
 
 const SearchIssue = () => {
-  const issue = useSelector(state => state.issueByKey)
   const [editMode, setEditMode] = useState(false)
   const [openEditor, setOpenEditor] = useState(false)
-  const [descriptionLoading,setDescriptionLoadin] = useState(false)
+  const [descriptionLoading, setDescriptionLoadin] = useState(false)
   const [file, setFile] = useState([]);
-  const [allAttachment, setAllAttachment] = useState([])
   const [verRegistro, setVerRegistro] = useState(false)
   const [imageView, setImageView] = useState('')
   const [openImage, setOpenImage] = useState(false)
   const {isLoading, setIsLoading} = useContext(GlobalContext)
-
-  const { jiraAccountId } = useSelector(state => state.user)
+  
+  const issue = useSelector(state => state.issueByKey)
   const issueError = useSelector(state => state.issueByKeyError)
   const AllComments = useSelector(state => state.commentIssuesById)
-
+  
+  const { 
+    handleEditDesc, 
+    sendNewComment, 
+    deleteAttachmentsView, 
+    handlerAttachfiles,
+    viewUpdateRef,
+    editorRef 
+  } = useEditIssue({ issue, setLoader: setDescriptionLoadin, setFile, file})
+  
   const dispatch = useDispatch()
-  const viewUpdateRef = useRef(null)
-  const editorRef = useRef(null)
-
-  const HandlerAttachfiles = async () => {
-    setIsLoading(true)
-    await postAttachments(file, issue.key)(dispatch)
-    setFile([])
-    setIsLoading(false)
-    Object.keys(issue).length > 0 && setAllAttachment(issue.fields.attachment)
-  }
-
-  const handleEditDesc = async () => {
-    setDescriptionLoadin(true)
-    const newValue = viewUpdateRef.current.getMarkdown()
-    await editDescription(issue.key, parseTextToJiraFormatt(newValue))(dispatch)
-    await getIssueByKey(issue.key)(dispatch)
-    setDescriptionLoadin(false)
-    setEditMode(false)
-  }
-
-  const deleteAttachmentsView = (key, id) => {
-    Swal.fire({
-      title: "Seguro deseá eliminar este adjunto?",
-      showDenyButton: true,
-      confirmButtonText: "ACEPTAR",
-      denyButtonText: `CANCELAR`
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dispatch(deleteAttachments(key, id))
-        setAllAttachment(allAttachment.filter(at => at.id !== id))
-      }
-    });
-  }
-
-  const sendNewComment = (key) => {
-    setIsLoading(true)
-    const descripcion = editorRef.current.getMarkdown()
-    dispatch(postComments(parseTextToJiraFormatt(descripcion), key, jiraAccountId))
-    setIsLoading(false)
-    editorRef.current.reset()
-  }
 
   useEffect(() => {
     if (issue !== undefined) {
@@ -101,6 +59,7 @@ const SearchIssue = () => {
 
   return (
     <section className="w-full  flex items-center flex-col mb-12">
+        {openImage && <ImgModal openImageState={setOpenImage} imageView={imageView} />}
         <article className='w-[60%] h-[700px] bg-white flex flex-col mt-4  p-5'>
         <header className='w-full p-1 mb-2'>
         <p className='flex items-center gap-2'>
@@ -117,43 +76,52 @@ const SearchIssue = () => {
                 <p className='my-1 p-1 text-slate-700'>Descripción</p>
                 {Object.keys(issue).length > 0 && (
                   <>
-                    {ATTACHABLE_COLUMNS.includes(issue.fields.status.name.toLowerCase()) &&
                       <>
-                        {WRITABLE_COLUMS.includes(issue.fields.status.name.toLowerCase()) ?
+                        {WRITABLE_COLUMS.includes(issue?.fields.status.name.toLowerCase()) ?
                           <section
                             onClick={() => setEditMode(true)}
-                            className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
+                            className={`w-full p-2 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
                             {editMode ?
                               <>
-                                <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(issue.fields.description)} />
+                                <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(issue?.fields.description)} />
 
                               </>
                               :
-                              <ViewerView description={issue.fields.description} />
+                              <ViewerView description={issue?.fields.description} />
                             }
                           </section>
                           :
-                          <ViewerView description={issue.fields.description} />
+                          <section className='w-full p-1'>
+                            <ViewerView description={issue?.fields.description} />
+                          </section>
                         }
                       </>
-                    }
-
+                    
                     {editMode && <div className='flex gap-3 p-2'>
-                      <Button  onClick={handleEditDesc} loader={descriptionLoading} Label={'Guardar'}/>
-                      <button
+                      <Button  
+                        onClick={() => handleEditDesc(setEditMode, viewUpdateRef)} 
+                        loader={descriptionLoading} 
+                        Label={'Guardar'}
+                      />
+                    <Button 
                         type='button'
                         onClick={() => setEditMode(false)}
-                        className='bg-slate-300 z-50 py-2 px-4 mt-4 hover:bg-slate-300/80'>Cancelar
-                      </button>
-                    </div>}
-                    <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={HandlerAttachfiles}  />
+                        Label={'Cancelar'}
+                        variante='secondary'
+                    />
+                    </div>
+                    }
+
+                    {ATTACHABLE_COLUMNS.includes(issue.fields.status.name.toLowerCase()) &&
+                     <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={handlerAttachfiles}  />
+                    }
 
                     {issue.fields.attachment.length > 0 ?
                       <div className='mt-6'>
                         {issue.fields.attachment?.map((el, i) =>
                           el.mimeType === "image/png" ?
                             <div key={i} className='border-4 relative w-56 m-1'>
-                              <button onClick={() => deleteAttachmentsView(issue.key, el.id)} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-6 w-6 p-0.5 rounded-full'><TrashIcon /></button>
+                              <button onClick={() => deleteAttachmentsView(el.id)} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-6 w-6 p-0.5 rounded-full'><TrashIcon /></button>
                               <button className='border-2 overflow-auto' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
                                 <img
                                   className="w-56 h-48"
@@ -184,7 +152,7 @@ const SearchIssue = () => {
                   <div className='flex flex-col h-52'>
                     <TuiEditor markdownRef={editorRef} height='200px'/>
                     <div className='w-full flex gap-2'>
-                      <Button onClick={() => { sendNewComment(issue.key); setOpenEditor(false) }} Label={'Guardar'} />
+                      <Button onClick={() => { sendNewComment(editorRef); setOpenEditor(false) }} Label={'Guardar'} />
                       <Button onClick={() => setOpenEditor(false)} variante='secondary' Label={'Cancelar'} />
                     </div>
                   </div>
