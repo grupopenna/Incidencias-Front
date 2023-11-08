@@ -99,10 +99,10 @@ const reducer = (state = initialState, { type, payload }) => {
       return { ...state, worklogs: payload }
 
     case GET_ISSUE_BY_KEY:
-      return { ...state, issueByKey: payload, issueByKeyError: false  }
+      return { ...state, issueByKey: [payload], issueByKeyError: false  }
 
     case CLEAR_ISSUE_BY_KEY:
-      return { ...state, issueByKey: undefined, issueByKeyError: false }
+      return { ...state, issueByKey: [], issueByKeyError: false }
 
     
     case ERROR_GET_ISSUE_BY_KEY:
