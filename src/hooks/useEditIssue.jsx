@@ -6,7 +6,7 @@ import { GlobalContext } from "../context"
 import Swal from 'sweetalert2';
 
 
- const useEditIssue = ({ setLoader, issue }) => {
+ const useEditIssue = ({ setLoader, issue, file, setFile }) => {
     const dispatch = useDispatch()
     const { setIsLoading } = useContext(GlobalContext)
 
@@ -48,7 +48,7 @@ import Swal from 'sweetalert2';
         });
       }
 
-      const handlerAttachfiles = async (file, setFile) => {
+      const handlerAttachfiles = async () => {
         setIsLoading(true)
         await postAttachments(file, issue.key)(dispatch)
         setFile([])

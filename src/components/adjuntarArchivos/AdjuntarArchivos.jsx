@@ -38,7 +38,7 @@ const AdjuntarArchivos = ({ file, setFile, Attachfiles }) => {
 
           {file.length > 0 &&
             <div className='ml-20'>
-              <button onClick={() => Attachfiles(file, setFile)} className='mr-3 cursor-pointer px-2 border-2 rounded-md bg-white font-semibold text-buttonBg hover:border-buttonBg uppercase'>agregar</button>
+              <button onClick={() => Attachfiles()} className='mr-3 cursor-pointer px-2 border-2 rounded-md bg-white font-semibold text-buttonBg hover:border-buttonBg uppercase'>agregar</button>
               <button onClick={() => setFile([])} className='cursor-pointer px-2 border-2 rounded-md bg-white font-semibold text-black hover:border-black uppercase'>cancelar</button>
             </div>
           }

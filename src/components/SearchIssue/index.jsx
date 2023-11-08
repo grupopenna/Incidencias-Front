@@ -35,7 +35,7 @@ const SearchIssue = () => {
     handlerAttachfiles,
     viewUpdateRef,
     editorRef 
-  } = useEditIssue({ issue, setLoader: setDescriptionLoadin })
+  } = useEditIssue({ issue, setLoader: setDescriptionLoadin, setFile, file})
   
   const dispatch = useDispatch()
 
