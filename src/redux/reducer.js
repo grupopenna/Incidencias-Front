@@ -3,6 +3,8 @@ import {
   POST_ISSUE,
   GET_ISSUES,
   GET_All_ISSUES,
+  GET_TOP,
+  GET_APPROVE,
 
   GET_PROJECTS,
 
@@ -22,6 +24,7 @@ import {
   CLEAR_ISSUE_BY_KEY,
   SET_USER_DATA,
 
+  ERROR_GET_ISSUE_BY_KEY
 
 } from "./action-type";
 
@@ -29,6 +32,8 @@ const initialState = {
 
   incients: [],
   allIncients: [],
+  top: [],
+  approve: [],
 
   projects: [],
 
@@ -44,7 +49,9 @@ const initialState = {
 
   worklogs: [],
 
-  issueByKey: []
+  issueByKey: [],
+
+  issueByKeyError: false
 
 };
 const reducer = (state = initialState, { type, payload }) => {
@@ -53,9 +60,13 @@ const reducer = (state = initialState, { type, payload }) => {
     case POST_ISSUE:
       return { ...state, incients: payload };
     case GET_ISSUES:
-      return { ...state, incients: payload }
+      return { ...state, incients: payload };
     case GET_All_ISSUES:
-      return { ...state, allIncients: payload }
+      return { ...state, allIncients: payload };
+    case GET_TOP:
+      return { ...state, top: payload };
+    case GET_APPROVE:
+      return { ...state, approve: payload }
 
     case GET_PROJECTS:
       return { ...state, projects: payload }
@@ -83,15 +94,18 @@ const reducer = (state = initialState, { type, payload }) => {
       return { ...state, worklogs: payload }
 
     case GET_ISSUE_BY_KEY:
-      return { ...state, issueByKey: payload }
+      return { ...state, issueByKey: [payload], issueByKeyError: false  }
 
     case CLEAR_ISSUE_BY_KEY:
-      return { ...state, issueByKey: [] }
+      return { ...state, issueByKey: [], issueByKeyError: false }
 
     case SET_USER_DATA:
       return { ...state, user: payload }
+    
+    case ERROR_GET_ISSUE_BY_KEY:
+      return { ...state, issueByKeyError: true }
 
-    default:
+      default:
       return { ...state, worklogs: payload };
   }
 };

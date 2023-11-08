@@ -1,31 +1,27 @@
 import axios from "axios";
 import { BASE_URL, NEW_COMMENT } from '../../action-type';
+import { formatJiraText } from "../../../utils";
 
 export const postComments = (comment, key, userId) => {
-
-  console.log('comment', comment)
   const bodyData = {
     "body": {
-        "version": 1,
-        "type": "doc",
-        "content": [
+      "version": 1,
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
             {
-                "type": "paragraph",
-                "content": [
-                    {
-                        "type": "mention",
-                        "attrs": {
-                            "id": userId,
-                            "accessLevel": "CONTAINER"
-                        }
-                    },
-                    {
-                        "type": "text",
-                        "text": comment
-                    }
-                ]
-            }
-        ]
+              "type": "mention",
+              "attrs": {
+                "id": userId,
+                "accessLevel": "CONTAINER"
+              }
+            },
+          ]
+        },
+        ...comment
+      ]
     }
   }
 
@@ -33,7 +29,9 @@ export const postComments = (comment, key, userId) => {
     try {
       const response = await axios.post(`${BASE_URL}/incident/newComments/${key}`, bodyData)
       if (response.status === 200) {
-        dispatch({ type: NEW_COMMENT, payload: response.data })
+        const { body:{ content }, author, updated  } = response.data
+        const payload = formatJiraText(content, author, updated)
+        dispatch({ type: NEW_COMMENT, payload: payload })
       }
 
     } catch (error) {

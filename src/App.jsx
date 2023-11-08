@@ -1,8 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { lazy } from 'react';
 import { Suspense } from 'react';
-// import { useSelector } from 'react-redux';
-
 
 /**
  * 
@@ -16,8 +15,10 @@ const NotifyIncidentFormLazy = lazy(() => import('./components/NotifyIncidentFor
 const NewRequirementsLazy = lazy(() => import('./view/IncidentTable/IncidentTable'))
 const IncidentTableLazy = lazy(() => import('./view/IncidentTable/IncidentTable'))
 const ViewAllIndicentLazy = lazy(() => import('./components/ViewAllIndicent/index'))
+const BoardDirectorioLazy = lazy(() => import('./components/BoardDirectorio/BoardDirectorio'))
 const SprintTableLazy = lazy(() => import('./components/ProxSprintTable/SprintTable'))
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'))
+const SearchIssue = lazy(() => import('./components/SearchIssue'))
 
 const Loader = () => {
   return <section className='w-full min-h-screen flex bg-background justify-center items-center'>
@@ -40,6 +41,8 @@ const App = () => {
               <Route exact path="/createIssue/form/:key/" element={<NotifyIncidentFormLazy />} />
               <Route exac path="/view-all-incidents/:jiraAccountId" element={<ViewAllIndicentLazy />} />
               <Route exact path="/proxSprint/:key" element={<SprintTableLazy />} />
+              <Route exact path="/general-sistemas" element={<BoardDirectorioLazy />} />
+              <Route exac path='/search-issue/' element={<SearchIssue />} />
             </Route>
           </Routes>
         </div>

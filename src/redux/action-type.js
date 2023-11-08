@@ -7,6 +7,8 @@ export const POST_ISSUE = "POST_ISSUE";
 export const GET_ISSUES = "GET_ISSUES";
 
 export const GET_All_ISSUES = "GET_All_ISSUES";
+export const GET_TOP = "GET_TOP";
+export const GET_APPROVE = "GET_APPROVE";
 
 export const GET_ISSUETYPE = 'GET_ISSUETYPE'
 
@@ -35,3 +37,5 @@ export const GET_ISSUE_BY_USER = 'GET_ISSUE_BY_USER'
 export const GET_ISSUE_BY_KEY = 'GET_ISSUE_BY_KEY'
 
 export const CLEAR_ISSUE_BY_KEY = 'CLEAR_ISSUE_BY_KEY'
+
+export const ERROR_GET_ISSUE_BY_KEY = 'ERROR_GET_ISSUE_BY_KEY'

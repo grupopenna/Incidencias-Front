@@ -1,3 +1,5 @@
+import { COMMENTS_TYPES, JIRA_MARKS } from "../const"
+
 /**
  * 
  * @param {Date} date 
@@ -36,68 +38,218 @@ export const parseTextToJiraFormatt = (input) => {
 
         // h1
         if (/^#[^#]./.test(line)) {
-            console.log(`h1.${line.split(' ')[1]}`)
-            jiraLines.push(`h1.  ${line.split(' ')[1]}`)
+            const value = {
+                "type": "heading",
+                "attrs": {
+                    "level": 1
+                },
+                "content": [{
+                    "type": "text",
+                    "text": line.slice(2)    
+                }]
+            }
+            
+            jiraLines.push(value)
             continue
         }
 
          // h2
          if (/^##[^#]./.test(line)) {
-            jiraLines.push(`h2.  ${line.split(' ')[1]}`)
+            const value = {
+                "type": "heading",
+                "attrs": {
+                    "level": 2
+                },
+                "content": [{
+                    "type": "text",
+                    "text": line.slice(3)  
+                }]
+            }
+            
+            jiraLines.push(value)
             continue
 
         }
 
          // h3
          if (/^###[^#]./.test(line)) {
-            jiraLines.push(`h3.  ${line.split(' ')[1]}`)
+            const value = {
+                "type": "heading",
+                "attrs": {
+                    "level": 3
+                },
+                "content": [{
+                    "type": "text",
+                    "text": line.slice(4)
+                }]
+            }
+
+            jiraLines.push(value)
+
             continue
 
         }
 
          // h4
          if (/^####[^#]./.test(line)) {
-            jiraLines.push(`h4.  ${line.split(' ')[1]}`)
+                 const value = {
+                "type": "heading",
+                "attrs": {
+                    "level": 4
+                },
+                "content": [{
+                    "type": "text",
+                    "text": line.slice(5)
+                }]
+            }
+            
+            jiraLines.push(value)
             continue
 
         }
 
          // h5
          if (/^#####[^#]./.test(line)) {
-            jiraLines.push(`h5.  ${line.split(' ')[1]}`)
+            const value = {
+                "type": "heading",
+                "attrs": {
+                    "level": 5
+                },
+                "content": [{
+                    "type": "text",
+                    "text": line.slice(6)
+                }]
+            }
+            
+            jiraLines.push(value)
             continue
 
         }
 
          // h6
          if (/^######[^#]./.test(line)) {
-            jiraLines.push(`h6.  ${line.split(' ')[1]}`)
+            const value = {
+                "type": "heading",
+                "attrs": {
+                    "level": 6
+                },
+                "content": [{
+                    "type": "text",
+                    "text": line.slice(7)
+                }]
+            }
+            
+            jiraLines.push(value)
             continue
 
         }
 
         // bold
         if (/^\*\*[a-zA-Z0-9]+\*\*$/.test(line)) {
-            jiraLines.push(line.replaceAll('**', '*'))
+            const value = {
+                "type": "paragraph",
+                "content": [
+                    {
+                    "type": "text",
+                    "text": line.replaceAll('**', ''),
+                    "marks": [
+                        {
+                            "type": "strong"
+                        }
+                    ]   
+                }
+            ]
+            }
+            
+            jiraLines.push(value)
             continue
         }
 
         // italic
 
         if (/^\*[a-zA-Z0-9]+\*$/.test(line)) {
-            jiraLines.push(line.replaceAll('*', '_'))
+            const value = {
+                "type": "paragraph",
+                "content": [
+                    {
+                    "type": "text",
+                    "text": line.replaceAll('*', ''),
+                    "marks": [
+                        {
+                            "type": "em"
+                        }
+                    ]   
+                }
+            ]
+            }
+            
+            jiraLines.push(value)
             continue
         }
 
-        jiraLines.push(line)
+        // strike
+        if (/^~~[a-zA-Z0-9]+~~$/.test(line)) {
+            const value = {
+                "type": "paragraph",
+                "content": [
+                    {
+                    "type": "text",
+                    "text": line.replaceAll('~', ''),
+                    "marks": [
+                        {
+                            "type": "strike"
+                        }
+                    ]   
+                }
+            ]
+            }
+            
+            jiraLines.push(value)
+            continue
+        }
+
+         // quote
+        if (line.startsWith('> ')) {
+            const value = {
+                "type": "blockquote",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": line.slice(2)
+                            }
+                        ]
+                    }
+                ]
+            }
+            
+            jiraLines.push(value)
+            continue
+        }
+
+        if (line !== '') {
+
+            const value = {
+                "type": "paragraph",
+                "content": [
+                    {
+                    "type": "text",
+                    "text": line,  
+                }
+            ]
+            }
+            
+            jiraLines.push(value)
+        }
 
     }
 
-    const jiraText = jiraLines.join('\\n\\n')
-
-    return jiraText
+    return jiraLines
 
 }
+
 
 /**
  * 
@@ -106,12 +258,11 @@ export const parseTextToJiraFormatt = (input) => {
  */
 export  const parseTextToMarkdown = (inputText) => {
   // Dividir el texto en líneas
-
   if (!inputText) return ''
-
+  
   const lines = inputText.split('\n');
   const markdownLines = [];
-
+  
   for (const line of lines) {
 
     let formattChar
@@ -203,4 +354,102 @@ export  const parseTextToMarkdown = (inputText) => {
   const markdownText = markdownLines.join('\n');
 
   return markdownText;
+}
+
+/**
+ * 
+ * @param {string} text 
+ * @param {string} type 
+ * @param {Object} attrs 
+ * @returns {string}
+ */
+export const convertTextToMarkdown = (text, type, attrs) => {
+    if (type === COMMENTS_TYPES.HEADING) {
+        return `${'#'.repeat(attrs.level)} ${text}`
+    }
+    
+    
+    if (type === COMMENTS_TYPES.BLOCKQUOTE) {
+        return `> ${text}`
+    }
+    
+    if (type === COMMENTS_TYPES.PARAGRAPH) {
+        if (attrs?.marks) {
+            if (attrs.marks === JIRA_MARKS.STRONG) {
+                return `**${text}**`
+            }
+
+            if (attrs.marks === JIRA_MARKS.EM) {
+                return `*${text}*`
+            }
+
+            if (attrs.marks === JIRA_MARKS.STRIKE) {
+                return `~~${text}~~`
+            }
+        }
+
+        return text
+    }
+}
+
+
+export const commentTime = (data) => {
+    let fechaAntigua = new Date(data);
+    let fechaActual = new Date();
+    let diferenciaEnMilisegundos = fechaActual - fechaAntigua;
+    let minutos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
+    let horas = Math.floor(minutos / 60);
+    let dias = Math.floor(horas / 24);
+    return dias > 0 ? `Hace ${dias} dias` :
+      horas > 0 ? `Hace ${horas} horas` :
+        minutos > 1 ? `Hace ${minutos} minutos` :
+          'Hace 1 minuto'
+  }
+
+
+export const clientName = (str) => {
+    return str.substring(1)
+}
+
+
+export const formatJiraText = (content, author, updated) => {
+    const commenToRender = {  
+        author,
+        isMention: false ,
+        mentionUser: null,
+        updated,
+        comment: ''
+      }
+      const commentValues = content.map((values) => {
+
+        if (values.type === COMMENTS_TYPES.HEADING) {
+          const { text } =  values.content[0]
+          return convertTextToMarkdown(text, values.type, { level: values.attrs.level })
+        }
+
+        if (values.type === COMMENTS_TYPES.PARAGRAPH) {
+          const { text, type, attrs, marks } =  values.content[0]
+
+          if (type === 'mention') {
+            commenToRender.isMention = true
+            commenToRender.mentionUser = attrs.text
+            return ''
+          }
+          if (typeof marks !== 'undefined') {
+            return convertTextToMarkdown(text, values.type, { marks: marks[0].type })
+          }
+
+          return text
+        }
+
+        if (values.type === COMMENTS_TYPES.BLOCKQUOTE) {
+          const { content} =  values.content[0]
+          const { text } =  content[0]
+
+          return convertTextToMarkdown(text, values.type)
+        }
+      })
+
+      commenToRender.comment = commentValues?.join(' \n ')
+      return commenToRender
 }

@@ -1,29 +1,29 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unknown-property */
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import Modal from "../Modal/Modal";
-import Incident from "../Incident/Incident";
-import { getIssue } from "../../redux/actions/issue/getIssue";
-import { postTransition, putOrder } from "../../redux/actions";
-import { useLocation, useNavigate } from "react-router-dom";
-import { AlertIcon } from "../Icons";
+
 import { BOARD_STATUS } from "../../const";
-import { useIncidents } from "../../hooks/useIncidents";
-import { useContext } from "react";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { getIssue } from "../../redux/actions/issue/getIssue";
 import { GlobalContext } from "../../context";
+import { postTransition, putOrder } from "../../redux/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState, useContext } from "react";
+import { useIncidents } from "../../hooks/useIncidents";
+import { useLocation, useNavigate } from "react-router-dom";
+import Incident from "../Incident/Incident";
 import Loader from "../Loader";
+import Modal from "../Modal/Modal";
+import Swal from "sweetalert2";
+import SideBar from "../Sidebar";
 
 
 const Tablero = () => {
-  const [modalShow, setModalShow] = useState(false);
   const [itemSelect, setItemSelect] = useState({});
+  const { setReload, isLoading, modalShow, setModalShow } = useContext(GlobalContext)
   const location = useLocation();
   const { pathname } = location;
   const keyPathname = pathname.split('/').slice(-1);
   const { incidents } = useIncidents(keyPathname[0])
-  const { isLoading } = useContext(GlobalContext)
   const transitions = useSelector((state) => state.transitions);
   const { jiraAccountId } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -32,11 +32,11 @@ const Tablero = () => {
 
 
   useEffect(() => {
-    if (keyPathname[0] == "ERP"){
+    if (keyPathname[0] == "ERP") {
       setWorklog(true);
     }
   }, [])
-  
+
   const getList = (list) => {
     let filterList = incidents.filter((incident) => incident.fields.status.name == list)
     return filterList
@@ -45,7 +45,7 @@ const Tablero = () => {
   const onDragEnd = async (result) => {
     const list = getList(result.source.droppableId);
 
-    if ((result.source.droppableId == BOARD_STATUS.SIN_PRIORIZAR|| result.source.droppableId == BOARD_STATUS.PRIORIZADO)
+    if ((result.source.droppableId == BOARD_STATUS.SIN_PRIORIZAR || result.source.droppableId == BOARD_STATUS.PRIORIZADO)
       && (result.destination.droppableId == BOARD_STATUS.SIN_PRIORIZAR || result.destination.droppableId == BOARD_STATUS.PRIORIZADO)) {
 
       const idList = list.map((item) => item.key)
@@ -82,7 +82,7 @@ const Tablero = () => {
 
     } else if (result.source.droppableId == "Validar" && result.destination.droppableId == "Validado") {
 
-      
+
       const originalDepature = result.source.droppableId
       const issueIndex = incidents.findIndex((incident) => incident.key === result.draggableId)
 
@@ -96,7 +96,11 @@ const Tablero = () => {
         incidents[issueIndex].fields.status.name = originalDepature
       })
     } else {
-      alert('movivmiento no permitido')
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Movimiento no permitido!!",
+      });
     }
   }
 
@@ -110,23 +114,22 @@ const Tablero = () => {
     filteredKeys.splice(newIndex, 0, elemento);
     list.splice(newIndex, 0, el)
 
-    const othersValues = [] 
+    const othersValues = []
 
     const copyValues = [...incidents]
 
-    for (let index = 0; index < copyValues.length ; index++ ) {
-          if (!keys.has(copyValues[index].key)) {
-            othersValues.push(copyValues[index])
-          }
+    for (let index = 0; index < copyValues.length; index++) {
+      if (!keys.has(copyValues[index].key)) {
+        othersValues.push(copyValues[index])
+      }
 
-        incidents.pop()
+      incidents.pop()
     }
 
     incidents.push(...[...filteredKeys, ...othersValues])
 
     return list;
   }
-
 
   const getItemStyle = (draggableStyle) => ({
     userSelect: "none",
@@ -137,35 +140,18 @@ const Tablero = () => {
     navigate(`/createIssue/form/${keyPathname[0]}/`)
   }
 
-  const AlertMessage = () => {
-    if (keyPathname[0] === 'CFS' || keyPathname[0] === 'CMS') {
-      return (
-        <div className="flex items-center rounded-lg pl-2 bg-bgIncident">
-          <AlertIcon />
-          <span className="text-white">Si su tarjeta no esta revise los mail ó</span>
-          <button onClick={() => navigate(`/proxSprint/${keyPathname}`)} className="px-3 py-1">
-            <span className="text-buttonBg hover:underline">Haga click aqui</span>
-          </button>
-        </div>
-      )
-    }
-  }
-
 
   if (isLoading) {
     return <Loader />
   }
 
   return (
-    <div className="flex flex-col w-full mx-5">
+    <div className="grid grid-cols-6 w-full justify-center">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} worklog={worklog} />}
-      <div className="flex my-5 justify-between">
-        <button onClick={() => { handleNotify() }} className="bg-buttonBg w-44 h-10 rounded-md">Notificar Incidencias</button>
-        <AlertMessage />
 
-      </div>
+      <SideBar setReload={setReload} handleNotify={handleNotify} navigate={navigate} pathname={pathname}/>
       {incidents?.length > 0 ?
-        <div className="flex gap-x-2">
+        <div className="flex gap-x-2 w-[90%] m-auto col-span-5">
           {keyPathname == "NR" ? (
             transitions.map((transition, i) => (
               <div key={i} className=" bg-bgColumn rounded-lg w-1/3 flex flex-col px-1">
