@@ -410,3 +410,46 @@ export const commentTime = (data) => {
 export const clientName = (str) => {
     return str.substring(1)
 }
+
+
+export const formatJiraText = (content, author, updated) => {
+    const commenToRender = {  
+        author,
+        isMention: false ,
+        mentionUser: null,
+        updated,
+        comment: ''
+      }
+      const commentValues = content.map((values) => {
+
+        if (values.type === COMMENTS_TYPES.HEADING) {
+          const { text } =  values.content[0]
+          return convertTextToMarkdown(text, values.type, { level: values.attrs.level })
+        }
+
+        if (values.type === COMMENTS_TYPES.PARAGRAPH) {
+          const { text, type, attrs, marks } =  values.content[0]
+
+          if (type === 'mention') {
+            commenToRender.isMention = true
+            commenToRender.mentionUser = attrs.text
+            return ''
+          }
+          if (typeof marks !== 'undefined') {
+            return convertTextToMarkdown(text, values.type, { marks: marks[0].type })
+          }
+
+          return text
+        }
+
+        if (values.type === COMMENTS_TYPES.BLOCKQUOTE) {
+          const { content} =  values.content[0]
+          const { text } =  content[0]
+
+          return convertTextToMarkdown(text, values.type)
+        }
+      })
+
+      commenToRender.comment = commentValues?.join(' \n ')
+      return commenToRender
+}
