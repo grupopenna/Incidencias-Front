@@ -11,7 +11,7 @@ import ImgModal from '../ImgModal/ImgModal';
 import { deleteIssues } from '../../redux/actions/issue/deleteIssue';
 import { Viewer, Editor as TuiEditor } from '../Editor/index';
 import '@toast-ui/editor/dist/toastui-editor.css';
-import { parseTextToJiraFormatt, parseTextToMarkdown } from '../../utils/index'
+import { parseTextToJiraFormatt, parseTextToMarkdown, commentTime, clientName } from '../../utils/index'
 import Worklog from '../Worklog/Worklog';
 import AdjuntarArchivos from '../adjuntarArchivos/AdjuntarArchivos';
 import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
@@ -103,18 +103,6 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     });
   }
 
-  const commentTime = (data) => {
-    let fechaAntigua = new Date(data);
-    let fechaActual = new Date();
-    let diferenciaEnMilisegundos = fechaActual - fechaAntigua;
-    let minutos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
-    let horas = Math.floor(minutos / 60);
-    let dias = Math.floor(horas / 24);
-    return dias > 0 ? `Hace ${dias} dias` :
-      horas > 0 ? `Hace ${horas} horas` :
-        minutos > 1 ? `Hace ${minutos} minutos` :
-          'Hace 1 minuto'
-  }
 
   const sendNewComment = (key) => {
     setLoading(true)
@@ -151,9 +139,6 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     }
   }
 
-  const clientName = (str) => {
-    return str.substring(1)
-  }
 
   return (
     <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-10px]  bg-bgModal flex justify-center items-center">

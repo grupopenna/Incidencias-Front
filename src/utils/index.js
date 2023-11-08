@@ -391,3 +391,22 @@ export const convertTextToMarkdown = (text, type, attrs) => {
         return text
     }
 }
+
+
+export const commentTime = (data) => {
+    let fechaAntigua = new Date(data);
+    let fechaActual = new Date();
+    let diferenciaEnMilisegundos = fechaActual - fechaAntigua;
+    let minutos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
+    let horas = Math.floor(minutos / 60);
+    let dias = Math.floor(horas / 24);
+    return dias > 0 ? `Hace ${dias} dias` :
+      horas > 0 ? `Hace ${horas} horas` :
+        minutos > 1 ? `Hace ${minutos} minutos` :
+          'Hace 1 minuto'
+  }
+
+
+export const clientName = (str) => {
+    return str.substring(1)
+}
