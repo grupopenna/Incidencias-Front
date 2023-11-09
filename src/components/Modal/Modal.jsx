@@ -63,7 +63,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
 
   useEffect(() => {
     dispatch(getCommentIssues(itemSelect.key))
-    AllComments.length > 0 && setComentarios(AllComments.reverse())
+    AllComments.length > 0 && setComentarios(AllComments)
     Object.keys(IssueInfo).length > 0 && setAllAttachment(IssueInfo.fields.attachment)
   }, [dispatch, IssueInfo.length, file.length])
 

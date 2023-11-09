@@ -13,27 +13,27 @@ export const getCommentIssues = (key) => {
   const bodyData = {
     "jql": `issue=${key}`,
     "fields": [
-        "key",
-        "summary",
-        "comment",
-        "updateAuthor",
-        "author",
-        "created",
-        "updated"
+      "key",
+      "summary",
+      "comment",
+      "updateAuthor",
+      "author",
+      "created",
+      "updated"
     ]
-}
+  }
 
   return async (dispatch) => {
     try {
       const response = (await axios.post(`${BASE_URL}/incident/getComment/`, bodyData)).data;
       const res = response.issues[0].fields.comment.comments
-      const comments = res.reverse();
+      const comments = res;
       const values = comments.map((comment) => {
-        const { body:{ content }, author, updated } = comment
+        const { body: { content }, author, updated } = comment
 
-        const commenToRender = {  
+        const commenToRender = {
           author,
-          isMention: false ,
+          isMention: false,
           mentionUser: null,
           updated,
           comment: ''
@@ -41,12 +41,12 @@ export const getCommentIssues = (key) => {
         const commentValues = content.map((values) => {
 
           if (values.type === COMMENTS_TYPES.HEADING) {
-            const { text } =  values.content[0]
+            const { text } = values.content[0]
             return convertTextToMarkdown(text, values.type, { level: values.attrs.level })
           }
 
           if (values.type === COMMENTS_TYPES.PARAGRAPH) {
-            const { text, type, attrs, marks } =  values.content[0]
+            const { text, type, attrs, marks } = values.content[0]
 
             if (type === 'mention') {
               commenToRender.isMention = true
@@ -61,9 +61,9 @@ export const getCommentIssues = (key) => {
           }
 
           if (values.type === COMMENTS_TYPES.BLOCKQUOTE) {
-            const { content} =  values.content[0]
-            const { text } =  content[0]
-  
+            const { content } = values.content[0]
+            const { text } = content[0]
+
             return convertTextToMarkdown(text, values.type)
           }
         })
