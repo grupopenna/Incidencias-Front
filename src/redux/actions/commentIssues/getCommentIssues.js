@@ -26,7 +26,7 @@ export const getCommentIssues = (key) => {
     try {
       const response = (await axios.post(`${BASE_URL}/incident/getComment/`, bodyData)).data;
       const res = response.issues[0].fields.comment.comments
-      const comments = res.reverse();
+      const comments = res;
 
       const values = comments.map((comment) => {
         const { body: { content }, author, updated } = comment
