@@ -15,7 +15,7 @@ import Loader from "../Loader";
 import Modal from "../Modal/Modal";
 import Swal from "sweetalert2";
 import SideBar from "../Sidebar";
-
+import { initializeJiraSocket } from "../../socketConection";
 
 const Tablero = () => {
   const [itemSelect, setItemSelect] = useState({});
@@ -30,11 +30,16 @@ const Tablero = () => {
   const navigate = useNavigate();
   const [worklog, setWorklog] = useState(false);
 
-
   useEffect(() => {
     if (keyPathname[0] == "ERP") {
       setWorklog(true);
     }
+
+    const socket = initializeJiraSocket(dispatch, jiraAccountId);
+
+    return () => {
+      socket.disconnect();
+    };
   }, [])
 
   const getList = (list) => {
@@ -149,7 +154,7 @@ const Tablero = () => {
     <div className="grid grid-cols-6 w-full justify-center">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} worklog={worklog} />}
 
-      <SideBar setReload={setReload} handleNotify={handleNotify} navigate={navigate} pathname={pathname}/>
+      <SideBar setReload={setReload} handleNotify={handleNotify} navigate={navigate} pathname={pathname} />
       {incidents?.length > 0 ?
         <div className="flex gap-x-2 w-[90%] m-auto col-span-5">
           {keyPathname == "NR" ? (
