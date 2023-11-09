@@ -1,7 +1,9 @@
 import { getCommentIssues, getIssue } from '../redux/actions';
 import io from 'socket.io-client';
 
-const socketUrl = import.meta.env.VITE_BASE_URL;
+const socketUrl = import.meta.env.VITE_SOCKET_URL;
+
+console.log({ socketUrl })
 
 export function initializeJiraSocket(dispatch, jiraAccountId) {
 
