@@ -3,9 +3,10 @@ import { BASE_URL, GET_TRANSITIONS } from "../../action-type";
 
 export const getTransitions = (key) => {
   return async (dispatch) => {
+    console.log('key', key)
     try {
       const response = (await axios.get(`${BASE_URL}/transitions/${key}`)).data;
-      //console.log('response.transitions', response.transitions)
+      console.log('response.transitions', response.transitions)
       const orderScrum = (trans) => {
 
         if (key.includes("NR")) {
@@ -13,9 +14,9 @@ export const getTransitions = (key) => {
         } else {
 
           return [
-            trans.find((t) => t.to.name.toUpperCase() == "Tareas por hacer".toUpperCase()),
+            trans.find((t) => t.to.name.toUpperCase() == "Por hacer".toUpperCase()),
             trans.find((t) => t.to.name.toUpperCase() == "En curso".toUpperCase()),
-            trans.find((t) => t.to.name.toUpperCase() == "Finalizada".toUpperCase())
+            trans.find((t) => t.to.name.toUpperCase() == "Listo".toUpperCase())
           ];
         }
       };
