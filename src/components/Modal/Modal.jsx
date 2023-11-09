@@ -170,25 +170,25 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                 <p>Descripción:</p>
                 {Object.keys(issueInfo || {}).length > 0 && (
                   <>
-                        {WRITABLE_COLUMS.includes(issueInfo.fields.status.name.toLowerCase()) ?
-                          <section
-                            onClick={() => setEditMode(true)}
-                            className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
-                            {editMode ?
-                              <>
-                                <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(issueInfo.fields.description)} />
+                    {WRITABLE_COLUMS.includes(issueInfo.fields.status.name.toLowerCase()) ?
+                      <section
+                        onClick={() => setEditMode(true)}
+                        className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
+                        {editMode ?
+                          <>
+                            <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(issueInfo.fields.description)} />
 
-                              </>
-                              :
-                              <ViewerView description={issueInfo.fields.description} />
-                            }
-                          </section>
+                          </>
                           :
-                          <section className='w-full p-2'>
-                            <ViewerView description={issueInfo.fields.description} />
-                          </section>
+                          <ViewerView description={issueInfo.fields.description} />
                         }
-                  
+                      </section>
+                      :
+                      <section className='w-full p-2'>
+                        <ViewerView description={issueInfo.fields.description} />
+                      </section>
+                    }
+
                     {editMode && <div className='flex gap-3 p-4'>
                       <button onClick={handleEditDesc} className='bg-buttonBg py-2 mt-4 rounded-sm text-white px-4 hover:bg-buttonBg/80'>
                         {descriptionLoading

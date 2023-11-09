@@ -12,24 +12,24 @@ export const getCommentIssues = (key) => {
   const bodyData = {
     "jql": `issue=${key}`,
     "fields": [
-        "key",
-        "summary",
-        "comment",
-        "updateAuthor",
-        "author",
-        "created",
-        "updated"
+      "key",
+      "summary",
+      "comment",
+      "updateAuthor",
+      "author",
+      "created",
+      "updated"
     ]
-}
+  }
 
   return async (dispatch) => {
     try {
       const response = (await axios.post(`${BASE_URL}/incident/getComment/`, bodyData)).data;
       const res = response.issues[0].fields.comment.comments
-      const comments = res.reverse();
+      const comments = res;
 
       const values = comments.map((comment) => {
-        const { body:{ content }, author, updated } = comment
+        const { body: { content }, author, updated } = comment
         return formatJiraText(content, author, updated)
       })
 
