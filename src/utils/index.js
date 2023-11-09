@@ -391,3 +391,65 @@ export const convertTextToMarkdown = (text, type, attrs) => {
         return text
     }
 }
+
+
+export const commentTime = (data) => {
+    let fechaAntigua = new Date(data);
+    let fechaActual = new Date();
+    let diferenciaEnMilisegundos = fechaActual - fechaAntigua;
+    let minutos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
+    let horas = Math.floor(minutos / 60);
+    let dias = Math.floor(horas / 24);
+    return dias > 0 ? `Hace ${dias} dias` :
+      horas > 0 ? `Hace ${horas} horas` :
+        minutos > 1 ? `Hace ${minutos} minutos` :
+          'Hace 1 minuto'
+  }
+
+
+export const clientName = (str) => {
+    return str.substring(1)
+}
+
+
+export const formatJiraText = (content, author, updated) => {
+    const commenToRender = {  
+        author,
+        isMention: false ,
+        mentionUser: null,
+        updated,
+        comment: ''
+      }
+      const commentValues = content.map((values) => {
+
+        if (values.type === COMMENTS_TYPES.HEADING) {
+          const { text } =  values.content[0]
+          return convertTextToMarkdown(text, values.type, { level: values.attrs.level })
+        }
+
+        if (values.type === COMMENTS_TYPES.PARAGRAPH) {
+          const { text, type, attrs, marks } =  values.content[0]
+
+          if (type === 'mention') {
+            commenToRender.isMention = true
+            commenToRender.mentionUser = attrs.text
+            return ''
+          }
+          if (typeof marks !== 'undefined') {
+            return convertTextToMarkdown(text, values.type, { marks: marks[0].type })
+          }
+
+          return text
+        }
+
+        if (values.type === COMMENTS_TYPES.BLOCKQUOTE) {
+          const { content} =  values.content[0]
+          const { text } =  content[0]
+
+          return convertTextToMarkdown(text, values.type)
+        }
+      })
+
+      commenToRender.comment = commentValues?.join(' \n ')
+      return commenToRender
+}

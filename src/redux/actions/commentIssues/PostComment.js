@@ -1,5 +1,6 @@
 import axios from "axios";
 import { BASE_URL, NEW_COMMENT } from '../../action-type';
+import { formatJiraText } from "../../../utils";
 
 export const postComments = (comment, key, userId) => {
   const bodyData = {
@@ -28,7 +29,9 @@ export const postComments = (comment, key, userId) => {
     try {
       const response = await axios.post(`${BASE_URL}/incident/newComments/${key}`, bodyData)
       if (response.status === 200) {
-        dispatch({ type: NEW_COMMENT, payload: response.data })
+        const { body:{ content }, author, updated  } = response.data
+        const payload = formatJiraText(content, author, updated)
+        dispatch({ type: NEW_COMMENT, payload: payload })
       }
 
     } catch (error) {

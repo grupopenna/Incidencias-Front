@@ -11,7 +11,7 @@ import ImgModal from '../ImgModal/ImgModal';
 import { deleteIssues } from '../../redux/actions/issue/deleteIssue';
 import { Viewer, Editor as TuiEditor } from '../Editor/index';
 import '@toast-ui/editor/dist/toastui-editor.css';
-import { parseTextToJiraFormatt, parseTextToMarkdown } from '../../utils/index'
+import { parseTextToJiraFormatt, parseTextToMarkdown, commentTime, clientName } from '../../utils/index'
 import Worklog from '../Worklog/Worklog';
 import AdjuntarArchivos from '../adjuntarArchivos/AdjuntarArchivos';
 import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
@@ -29,7 +29,8 @@ const ViewerView = ({ description }) => {
 const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const dispatch = useDispatch()
   const AllComments = useSelector(state => state.commentIssuesById)
-  const IssueInfo = useSelector(state => state.issueByKey)
+  const issueData = useSelector(state => state.issueByKey)
+  const [issueInfo] = issueData
   const { jiraAccountId } = useSelector(state => state.user)
   const [comentarios, setComentarios] = useState([])
   const [item, setItem] = useState(null)
@@ -63,9 +64,9 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
 
   useEffect(() => {
     dispatch(getCommentIssues(itemSelect.key))
-    AllComments.length > 0 && setComentarios(AllComments)
-    Object.keys(IssueInfo).length > 0 && setAllAttachment(IssueInfo.fields.attachment)
-  }, [dispatch, IssueInfo.length, file.length])
+    AllComments.length > 0 && setComentarios(AllComments.reverse())
+    Object.keys(issueInfo || {}).length > 0 && setAllAttachment(issueInfo.fields.attachment)
+  }, [dispatch, issueData.length, file.length])
 
   /**
    * Crear una funcion que formatee lo que devuelve el editor a un formato que jira entienda.
@@ -86,7 +87,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     await getIssueByKey(item.key)(dispatch)
     setFile([])
     setLoading(false)
-    Object.keys(IssueInfo).length > 0 && setAllAttachment(IssueInfo.fields.attachment)
+    Object.keys(issueInfo || {}).length > 0 && setAllAttachment(issueInfo.fields.attachment)
   }
 
   const deleteAttachmentsView = (key, id) => {
@@ -103,18 +104,6 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     });
   }
 
-  const commentTime = (data) => {
-    let fechaAntigua = new Date(data);
-    let fechaActual = new Date();
-    let diferenciaEnMilisegundos = fechaActual - fechaAntigua;
-    let minutos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
-    let horas = Math.floor(minutos / 60);
-    let dias = Math.floor(horas / 24);
-    return dias > 0 ? `Hace ${dias} dias` :
-      horas > 0 ? `Hace ${horas} horas` :
-        minutos > 1 ? `Hace ${minutos} minutos` :
-          'Hace 1 minuto'
-  }
 
   const sendNewComment = (key) => {
     setLoading(true)
@@ -151,9 +140,6 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     }
   }
 
-  const clientName = (str) => {
-    return str.substring(1)
-  }
 
   return (
     <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-10px]  bg-bgModal flex justify-center items-center">
@@ -182,28 +168,25 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
               </div>
               <div className='my-5 max-h-80 w-full pr-3 overflow-auto'>
                 <p>Descripción:</p>
-                {Object.keys(IssueInfo).length > 0 && (
+                {Object.keys(issueInfo || {}).length > 0 && (
                   <>
-                    {ATTACHABLE_COLUMNS.includes(IssueInfo.fields.status.name.toLowerCase()) &&
-                      <>
-                        <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={HandlerAttachfiles} loading={loading} />
-                        {WRITABLE_COLUMS.includes(IssueInfo.fields.status.name.toLowerCase()) ?
-                          <section
-                            onClick={() => setEditMode(true)}
-                            className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
-                            {editMode ?
-                              <>
-                                <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(IssueInfo.fields.description)} />
+                    {WRITABLE_COLUMS.includes(issueInfo.fields.status.name.toLowerCase()) ?
+                      <section
+                        onClick={() => setEditMode(true)}
+                        className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
+                        {editMode ?
+                          <>
+                            <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(issueInfo.fields.description)} />
 
-                              </>
-                              :
-                              <ViewerView description={IssueInfo.fields.description} />
-                            }
-                          </section>
+                          </>
                           :
-                          <ViewerView description={IssueInfo.fields.description} />
+                          <ViewerView description={issueInfo.fields.description} />
                         }
-                      </>
+                      </section>
+                      :
+                      <section className='w-full p-2'>
+                        <ViewerView description={issueInfo.fields.description} />
+                      </section>
                     }
 
                     {editMode && <div className='flex gap-3 p-4'>
@@ -219,7 +202,10 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                         className='bg-slate-300 z-50 py-2 px-4 mt-4 hover:bg-slate-300/80'>Cancelar
                       </button>
                     </div>}
-                    {IssueInfo.fields.attachment.length > 0 ?
+                    {ATTACHABLE_COLUMNS.includes(issueInfo.fields.status.name.toLowerCase()) &&
+                      <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={HandlerAttachfiles} loading={loading} />
+                    }
+                    {issueInfo.fields.attachment.length > 0 ?
                       <div className='mt-6'>
                         {allAttachment.map((el, i) =>
                           el.mimeType === "image/png" ?

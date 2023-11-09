@@ -18,14 +18,12 @@ import SideBar from "../Sidebar";
 import { initializeJiraSocket } from "../../socketConection";
 
 const Tablero = () => {
-  const [modalShow, setModalShow] = useState(false);
   const [itemSelect, setItemSelect] = useState({});
-  const { setReload } = useContext(GlobalContext)
+  const { setReload, isLoading, modalShow, setModalShow } = useContext(GlobalContext)
   const location = useLocation();
   const { pathname } = location;
   const keyPathname = pathname.split('/').slice(-1);
   const { incidents } = useIncidents(keyPathname[0])
-  const { isLoading } = useContext(GlobalContext)
   const transitions = useSelector((state) => state.transitions);
   const { jiraAccountId } = useSelector((state) => state.user);
   const dispatch = useDispatch();
