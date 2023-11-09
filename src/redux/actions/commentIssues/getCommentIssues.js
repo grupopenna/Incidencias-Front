@@ -12,15 +12,15 @@ export const getCommentIssues = (key) => {
   const bodyData = {
     "jql": `issue=${key}`,
     "fields": [
-        "key",
-        "summary",
-        "comment",
-        "updateAuthor",
-        "author",
-        "created",
-        "updated"
+      "key",
+      "summary",
+      "comment",
+      "updateAuthor",
+      "author",
+      "created",
+      "updated"
     ]
-}
+  }
 
   return async (dispatch) => {
     try {
@@ -29,7 +29,7 @@ export const getCommentIssues = (key) => {
       const comments = res.reverse();
 
       const values = comments.map((comment) => {
-        const { body:{ content }, author, updated } = comment
+        const { body: { content }, author, updated } = comment
         return formatJiraText(content, author, updated)
       })
 
