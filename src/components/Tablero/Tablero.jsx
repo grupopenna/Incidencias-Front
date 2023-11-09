@@ -15,28 +15,31 @@ import Loader from "../Loader";
 import Modal from "../Modal/Modal";
 import Swal from "sweetalert2";
 import SideBar from "../Sidebar";
-
+import { initializeJiraSocket } from "../../socketConection";
 
 const Tablero = () => {
-  const [modalShow, setModalShow] = useState(false);
   const [itemSelect, setItemSelect] = useState({});
-  const { setReload } = useContext(GlobalContext)
+  const { setReload, isLoading, modalShow, setModalShow } = useContext(GlobalContext)
   const location = useLocation();
   const { pathname } = location;
   const keyPathname = pathname.split('/').slice(-1);
   const { incidents } = useIncidents(keyPathname[0])
-  const { isLoading } = useContext(GlobalContext)
   const transitions = useSelector((state) => state.transitions);
   const { jiraAccountId } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [worklog, setWorklog] = useState(false);
 
-
   useEffect(() => {
     if (keyPathname[0] == "ERP") {
       setWorklog(true);
     }
+
+    const socket = initializeJiraSocket(dispatch, jiraAccountId);
+
+    return () => {
+      socket.disconnect();
+    };
   }, [])
 
   const getList = (list) => {
@@ -133,7 +136,6 @@ const Tablero = () => {
     return list;
   }
 
-
   const getItemStyle = (draggableStyle) => ({
     userSelect: "none",
     ...draggableStyle
@@ -149,12 +151,12 @@ const Tablero = () => {
   }
 
   return (
-    <div className="flex  w-full justify-center">
+    <div className="grid grid-cols-6 w-full justify-center">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} worklog={worklog} />}
 
-      <SideBar setReload={setReload} handleNotify={handleNotify} navigate={navigate} pathname={pathname}/>
+      <SideBar setReload={setReload} handleNotify={handleNotify} navigate={navigate} pathname={pathname} />
       {incidents?.length > 0 ?
-        <div className="flex gap-x-2 w-[70%]">
+        <div className="flex gap-x-2 w-[90%] m-auto col-span-5">
           {keyPathname == "NR" ? (
             transitions.map((transition, i) => (
               <div key={i} className=" bg-bgColumn rounded-lg w-1/3 flex flex-col px-1">

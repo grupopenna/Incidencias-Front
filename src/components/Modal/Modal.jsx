@@ -8,31 +8,17 @@ import { IconFiles, SimpleArrowUp, TrashIcon } from '../Icons';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { WithoutPhoto } from '../Icon';
 import ImgModal from '../ImgModal/ImgModal';
-import ModalDelete from './ModalDelete';
 import { deleteIssues } from '../../redux/actions/issue/deleteIssue';
 import { Viewer, Editor as TuiEditor } from '../Editor/index';
 import '@toast-ui/editor/dist/toastui-editor.css';
-import { parseTextToJiraFormatt, parseTextToMarkdown } from '../../utils/index'
+import { parseTextToJiraFormatt, parseTextToMarkdown, commentTime, clientName } from '../../utils/index'
 import Worklog from '../Worklog/Worklog';
 import AdjuntarArchivos from '../adjuntarArchivos/AdjuntarArchivos';
 import { postAttachments } from '../../redux/actions/issueAttachment/postAttachments';
 import { clearIssueByKey, getIssueByKey } from '../../redux/actions/issue/getIssueByKey';
 import { deleteAttachments } from '../../redux/actions/issueAttachment/deleteAttachments';
-import { WRITABLE_COLUMS } from '../../const';
-
-
-const ActionDeleteIncident = ({ currentColum, setModalDeleteIssue }) => {
-  const isAllowToEdit = WRITABLE_COLUMS.includes(currentColum.toLowerCase())
-  if (isAllowToEdit) {
-    return (
-      <div className='pr-5 flex items-center justify-end'>
-        <button onClick={() => setModalDeleteIssue(true)} className='text-red-500 flex justify-end rounded-full p-1 border-2 border-red-500 hover:text-white hover:bg-red-500'>
-          <TrashIcon />
-        </button>
-      </div>
-    )
-  }
-}
+import { ATTACHABLE_COLUMNS, WRITABLE_COLUMS } from '../../const';
+import Swal from 'sweetalert2';
 
 const ViewerView = ({ description }) => {
   return description
@@ -43,7 +29,8 @@ const ViewerView = ({ description }) => {
 const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const dispatch = useDispatch()
   const AllComments = useSelector(state => state.commentIssuesById)
-  const IssueInfo = useSelector(state => state.issueByKey)
+  const issueData = useSelector(state => state.issueByKey)
+  const [issueInfo] = issueData
   const { jiraAccountId } = useSelector(state => state.user)
   const [comentarios, setComentarios] = useState([])
   const [item, setItem] = useState(null)
@@ -54,7 +41,6 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const [openImage, setOpenImage] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [imageView, setImageView] = useState('')
-  const [modalDeleteIssue, setModalDeleteIssue] = useState(false)
   const [file, setFile] = useState([]);
   const [worklogShow, setWorklogShow] = useState(false)
   const [allAttachment, setAllAttachment] = useState([])
@@ -79,8 +65,8 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   useEffect(() => {
     dispatch(getCommentIssues(itemSelect.key))
     AllComments.length > 0 && setComentarios(AllComments.reverse())
-    Object.keys(IssueInfo).length > 0 && setAllAttachment(IssueInfo.fields.attachment)
-  }, [dispatch, IssueInfo.length, file.length])
+    Object.keys(issueInfo || {}).length > 0 && setAllAttachment(issueInfo.fields.attachment)
+  }, [dispatch, issueData.length, file.length])
 
   /**
    * Crear una funcion que formatee lo que devuelve el editor a un formato que jira entienda.
@@ -101,26 +87,23 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     await getIssueByKey(item.key)(dispatch)
     setFile([])
     setLoading(false)
-    Object.keys(IssueInfo).length > 0 && setAllAttachment(IssueInfo.fields.attachment)
+    Object.keys(issueInfo || {}).length > 0 && setAllAttachment(issueInfo.fields.attachment)
   }
 
   const deleteAttachmentsView = (key, id) => {
-    dispatch(deleteAttachments(key, id))
-    setAllAttachment(allAttachment.filter(at => at.id !== id))
+    Swal.fire({
+      title: "Seguro deseá eliminar este adjunto?",
+      showDenyButton: true,
+      confirmButtonText: "ACEPTAR",
+      denyButtonText: `CANCELAR`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteAttachments(key, id))
+        setAllAttachment(allAttachment.filter(at => at.id !== id))
+      }
+    });
   }
 
-  const commentTime = (data) => {
-    let fechaAntigua = new Date(data);
-    let fechaActual = new Date();
-    let diferenciaEnMilisegundos = fechaActual - fechaAntigua;
-    let minutos = Math.floor(diferenciaEnMilisegundos / (1000 * 60));
-    let horas = Math.floor(minutos / 60);
-    let dias = Math.floor(horas / 24);
-    return dias > 0 ? `Hace ${dias} dias` :
-      horas > 0 ? `Hace ${horas} horas` :
-        minutos > 1 ? `Hace ${minutos} minutos` :
-          'Hace 1 minuto'
-  }
 
   const sendNewComment = (key) => {
     setLoading(true)
@@ -130,22 +113,40 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
     editorRef.current.reset()
   }
 
-  const deleteInfoIssue = (key) => {
-    dispatch(deleteIssues(key, jiraAccountId))
-    setModalDeleteIssue(false)
-    setModalShow(false)
+  const ActionDeleteIncident = ({ currentColum, item }) => {
+    const isAllowToEdit = WRITABLE_COLUMS.includes(currentColum.toLowerCase())
+
+    const confirmdelete = () => {
+      Swal.fire({
+        title: "Seguro deseá eliminar esta tarea?",
+        showDenyButton: true,
+        confirmButtonText: "ACEPTAR",
+        denyButtonText: `CANCELAR`
+      }).then((result) => {
+        if (result.isConfirmed) {
+          dispatch(deleteIssues(item.key, jiraAccountId))
+          setModalShow(false)
+        }
+      });
+    }
+    if (isAllowToEdit) {
+      return (
+        <div className='pr-5 flex items-center justify-end'>
+          <button onClick={() => confirmdelete()} className='text-red-500 flex justify-end rounded-full p-1 border-2 border-red-500 hover:text-white hover:bg-red-500'>
+            <TrashIcon />
+          </button>
+        </div>
+      )
+    }
   }
 
-  const clientName = (str) => {
-    return str.substring(1)
-  }
 
   return (
     <div className="z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-10px]  bg-bgModal flex justify-center items-center">
       {worklogShow && <Worklog setWorklogShow={setWorklogShow} itemSelect={itemSelect} />}
       <div className="bg-white h-4/5 w-4/5 rounded-lg p-3">
         {openImage && <ImgModal openImageState={setOpenImage} imageView={imageView} />}
-        {modalDeleteIssue && <ModalDelete setDeleteIssue={setModalDeleteIssue} item={itemSelect} deleteIssue={deleteInfoIssue} />}
+
         <div className='flex justify-end'>
           <button
             className='text-red-500 flex rounded-full p-1 border-2 border-red-500 hover:text-white hover:bg-red-500'
@@ -167,26 +168,25 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
               </div>
               <div className='my-5 max-h-80 w-full pr-3 overflow-auto'>
                 <p>Descripción:</p>
-                {Object.keys(IssueInfo).length > 0 && (
+                {Object.keys(issueInfo || {}).length > 0 && (
                   <>
-                    {WRITABLE_COLUMS.includes(IssueInfo.fields.status.name.toLowerCase()) ?
-                      <>
-                        <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={HandlerAttachfiles}  />
-                        <section
-                          onClick={() => setEditMode(true)}
-                          className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
-                          {editMode ?
-                            <>
-                              <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(IssueInfo.fields.description)} />
+                    {WRITABLE_COLUMS.includes(issueInfo.fields.status.name.toLowerCase()) ?
+                      <section
+                        onClick={() => setEditMode(true)}
+                        className={`w-full p-2 z-50 ${!editMode ? 'hover:bg-slate-200' : ''} rounded-sm cursor-text`}>
+                        {editMode ?
+                          <>
+                            <TuiEditor markdownRef={viewUpdateRef} initialValue={parseTextToMarkdown(issueInfo.fields.description)} />
 
-                            </>
-                            :
-                            <ViewerView description={IssueInfo.fields.description} />
-                          }
-                        </section>
-                      </>
+                          </>
+                          :
+                          <ViewerView description={issueInfo.fields.description} />
+                        }
+                      </section>
                       :
-                      <ViewerView description={IssueInfo.fields.description} />
+                      <section className='w-full p-2'>
+                        <ViewerView description={issueInfo.fields.description} />
+                      </section>
                     }
 
                     {editMode && <div className='flex gap-3 p-4'>
@@ -202,12 +202,15 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                         className='bg-slate-300 z-50 py-2 px-4 mt-4 hover:bg-slate-300/80'>Cancelar
                       </button>
                     </div>}
-                    {IssueInfo.fields.attachment.length > 0 ?
+                    {ATTACHABLE_COLUMNS.includes(issueInfo.fields.status.name.toLowerCase()) &&
+                      <AdjuntarArchivos file={file} setFile={setFile} Attachfiles={HandlerAttachfiles} loading={loading} />
+                    }
+                    {issueInfo.fields.attachment.length > 0 ?
                       <div className='mt-6'>
                         {allAttachment.map((el, i) =>
                           el.mimeType === "image/png" ?
                             <div key={i} className='border-4 relative w-56 m-1'>
-                              <button onClick={() => deleteAttachmentsView(item.key, el.id)} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
+                              <button onClick={() => deleteAttachmentsView(item.key, el.id)} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-6 w-6 p-0.5 rounded-full'><TrashIcon /></button>
                               <button className='border-2 overflow-auto' key={i} onClick={() => { setOpenImage(true), setImageView(el.content) }}>
                                 <img
                                   className="w-56 h-48"
@@ -218,7 +221,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                             </div>
                             :
                             <div key={i} className='border-4 relative w-48 m-1'>
-                              <button onClick={() => deleteAttachmentsView(item.key, el.id)} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-5 w-5 rounded-full'>X</button>
+                              <button onClick={() => deleteAttachmentsView(item.key, el.id)} className='bg-red-500 text-white flex justify-center items-center absolute top-0 right-0 h-6 w-6 p-0.5 rounded-full'><TrashIcon /></button>
                               <a href={el.content} key={i} >
                                 <button className='border-2 overflow-auto w-full flex flex-col items-center m-1'>
                                   <IconFiles />
@@ -266,7 +269,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
                           : <p className='font-bold text-base'>{cm.author.displayName}</p>
                         }
 
-                        <span className='text-fontPlaceholder text-sm'>{commentTime(cm.updated)} </span>
+                        <span className='text-black text-sm'>{commentTime(cm.updated)} </span>
                       </div>
                       {cm?.comment?.length > 1
                         && <Viewer initialValue={parseTextToMarkdown(cm.comment)} />
@@ -363,7 +366,7 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
           </div>
         </>
         )}
-        <ActionDeleteIncident currentColum={itemSelect.fields.status.name} setModalDeleteIssue={setModalDeleteIssue} />
+        <ActionDeleteIncident currentColum={itemSelect.fields.status.name} item={itemSelect} />
       </div>
     </div >
   )

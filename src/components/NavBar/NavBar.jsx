@@ -3,17 +3,33 @@ import { useNavigate } from "react-router-dom";
 import { AlertIcon } from "../Icons";
 import { TextInput } from "@tremor/react";
 import { SearchIcon } from "../Icon";
+import { useDispatch } from "react-redux";
+import { getIssueByKey, clearIssueByKey } from '../../redux/actions'
+import { useContext } from "react";
+import { GlobalContext } from "../../context";
 
 const NavBar = () => {
   const [key, setKey] = useState('')
+  const dispatch = useDispatch()
   const [pathName, setPathName] = useState('')
+  const [searchParam, setSearchParam] = useState('')
   const navigate = useNavigate();
+  const { setIsLoading } = useContext(GlobalContext)
   const redirect = () => {
     navigate('/')
   }
   let logo = 'https://www.grupopenna.com.ar/images/logo-footerBIG.png'
   //let logo ='https://softland.com.ar/wp-content/uploads/2020/09/logo-blanco-1.png'
 
+  const handleSearch = async (event) => {
+    if (event.code === 'Enter') {
+      setIsLoading(true)
+      clearIssueByKey()(dispatch)
+      if (!searchParam.trim()) return
+      await getIssueByKey(searchParam.trim())(dispatch)
+      navigate('/search-issue')
+    }
+  }
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -30,10 +46,10 @@ const NavBar = () => {
       </button>
   
       <div className='flex relative justify-end items-center px-5 pt-1 gap-2'>
-        { pathName !== '/' && <TextInput  icon={SearchIcon} placeholder="CMS-21, FUN-12 ...." className="p-1 h-10 w-56"/>}
-        {/* <div className="w-1/2 flex flex-col gap-y-2 h-24 -bottom-24  bg-white absolute -left-11 rounded-md">
-          <div></div>
-        </div> */}
+        { pathName !== '/' && 
+          <TextInput 
+            onChange={(event) => setSearchParam(event.target.value)}  
+            onKeyUp={handleSearch} icon={SearchIcon} placeholder="CMS-21, FUN-12 ...." className="p-1 h-10 w-56"/>}
         {key === 'CFS' || key  === 'CMS' ? (
            <div className="flex items-center rounded-lg pl-2 py-2 bg-bgIncident">
            <AlertIcon />
