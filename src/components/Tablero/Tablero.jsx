@@ -36,10 +36,6 @@ const Tablero = () => {
     }
 
     const socket = initializeJiraSocket(dispatch, jiraAccountId);
-
-    return () => {
-      socket.disconnect();
-    };
   }, [])
 
   const getList = (list) => {
