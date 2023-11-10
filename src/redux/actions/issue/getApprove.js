@@ -33,7 +33,7 @@ export const getApprove = () => {
       "created",
       "updated"
     ],
-    "jql": `(labels = APROBADO AND (not labels = TOP2 AND not labels = TOP3 AND not labels = TOP4 AND not labels = TOP5)) AND (${sebaId} ${caroId} ${matiId} ${JuliId} ${davidId} ${lucianoId} ${leanId})`
+    "jql": `(labels = APROBADO AND (not TOP = TOP1 AND not TOP = TOP2 AND not TOP = TOP3 AND not TOP = TOP4 AND not TOP = TOP5)) AND (${sebaId} ${caroId} ${matiId} ${JuliId} ${davidId} ${lucianoId} ${leanId})`
   }
   
 
