@@ -17,7 +17,7 @@ function ProtectedRoute() {
     }
     
     (async () => {
-        const response = await fetch(`${BACK_AUTH_URL}/auth/check-url-token`, {
+        const response = await fetch(`${import.meta.env.VITE_BACK_AUTH_URL}/auth/check-url-token`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
