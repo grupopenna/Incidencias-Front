@@ -35,7 +35,7 @@ export const getTopFive = () => {
       "created",
       "updated"
     ],
-    "jql": `(labels = TOP1 OR labels = TOP2 OR labels = TOP3 OR labels = TOP4 OR labels = TOP5) AND (${sebaId} ${caroId} ${matiId} ${JuliId} ${davidId} ${lucianoId} ${leanId})`
+    "jql": `(TOP = TOP1 OR TOP = TOP2 OR TOP = TOP3 OR TOP = TOP4 OR TOP = TOP5) AND (${sebaId} ${caroId} ${matiId} ${JuliId} ${davidId} ${lucianoId} ${leanId})`
   }
   
 
