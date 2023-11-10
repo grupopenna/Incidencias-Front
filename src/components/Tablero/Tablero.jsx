@@ -156,7 +156,7 @@ const Tablero = () => {
 
       <SideBar setReload={setReload} handleNotify={handleNotify} navigate={navigate} pathname={pathname} />
       {incidents?.length > 0 ?
-        <div className="flex gap-x-2 w-[90%] m-auto col-span-5">
+        <div className="flex gap-x-2 w-[90%] col-span-5">
           {keyPathname == "NR" ? (
             transitions.map((transition, i) => (
               <div key={i} className=" bg-bgColumn rounded-lg w-1/3 flex flex-col px-1">
@@ -211,8 +211,8 @@ const Tablero = () => {
               </DragDropContext>)}
         </div>
         :
-        <div className="text-center">
-          <h2 className="text-white">Aún no se informaron incidencias para este modulo</h2>
+        <div className="col-span-4 flex items-center justify-center w-full">
+          <h2 className="text-2xl text-white">Aún no se informaron incidencias para este modulo</h2>
         </div>
       }
     </div>
