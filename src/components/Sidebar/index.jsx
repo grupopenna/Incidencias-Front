@@ -7,9 +7,9 @@ const SideBar = ({
     handleNotify
 }) => {
   return (
-    <aside className="w-full col-span-1 border-r border-r-slate-500 left-0 flex flex-col gap-y-4 h-full items-center  p-2 ">
+    <aside className="w-full h-screen col-span-1 left-0 flex flex-col gap-y-4 items-center  p-4 ">
 
-    <div className="flex w-full justify-center p-2 gap-2">
+    <div className="flex w-full justify-between p-2 gap-2">
         <button onClick={() => { handleNotify() }} className="bg-indigo-600 px-4 py-2 rounded-md text-white">Notificar Incidencias</button>
     
       {pathname?.includes('board') &&

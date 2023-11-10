@@ -3,7 +3,6 @@ import io from 'socket.io-client';
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
-console.log({ socketUrl })
 
 export function initializeJiraSocket(dispatch, jiraAccountId) {
 
