@@ -10,6 +10,7 @@ export const getTopFive = () => {
   const lucianoId = "OR assignee = '712020:0fd1b2ba-3b62-4e80-8e0f-2a26b57eb763'";
   const leanId = "OR assignee = '70121:bc7aed0b-2e5a-4f21-ada2-7ed136dff588'";
   // const datosId = "AND assignee = '712020:d9a3d5ae-1413-4506-b4a7-3ff4f33cb25a'";
+  const alcidesId = "OR assignee = '712020:d9a3d5ae-1413-4506-b4a7-3ff4f33cb25a'"
 
   const bodyData = {
     "expand": [
@@ -35,7 +36,7 @@ export const getTopFive = () => {
       "created",
       "updated"
     ],
-    "jql": `(TOP = TOP1 OR TOP = TOP2 OR TOP = TOP3 OR TOP = TOP4 OR TOP = TOP5) AND (${sebaId} ${caroId} ${matiId} ${JuliId} ${davidId} ${lucianoId} ${leanId})`
+    "jql": `(TOP = TOP1 OR TOP = TOP2 OR TOP = TOP3 OR TOP = TOP4 OR TOP = TOP5) AND (${sebaId} ${caroId} ${matiId} ${JuliId} ${davidId} ${lucianoId} ${leanId} ${alcidesId})`
   }
   
 
