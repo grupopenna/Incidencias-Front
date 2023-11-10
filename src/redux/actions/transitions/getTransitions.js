@@ -1,6 +1,13 @@
 import axios from "axios";
 import { BASE_URL, GET_TRANSITIONS } from "../../action-type";
 
+
+const SCRUM_ORDER = {
+  POR_HACER: 'Tareas por hacer'.toUpperCase(),
+  EN_CURSO: "En curso".toUpperCase(),
+  LISTO: "Finalizada".toUpperCase()
+}
+
 export const getTransitions = (key) => {
   return async (dispatch) => {
     console.log('key', key)
@@ -14,9 +21,9 @@ export const getTransitions = (key) => {
         } else {
 
           return [
-            trans.find((t) => t.to.name.toUpperCase() == "Por hacer".toUpperCase()),
-            trans.find((t) => t.to.name.toUpperCase() == "En curso".toUpperCase()),
-            trans.find((t) => t.to.name.toUpperCase() == "Listo".toUpperCase())
+            trans.find((t) => t.to.name.toUpperCase() == SCRUM_ORDER.EN_CURSO),
+            trans.find((t) => t.to.name.toUpperCase() == SCRUM_ORDER.LISTO),
+            trans.find((t) => t.to.name.toUpperCase() == SCRUM_ORDER.POR_HACER)
           ];
         }
       };
@@ -38,6 +45,7 @@ export const getTransitions = (key) => {
 
       const transitionOrder = response.transitions.length > 3 ? orderKanban(response.transitions) : orderScrum(response.transitions)
 
+      console.log({ transitionOrder })
       dispatch({ type: GET_TRANSITIONS, payload: transitionOrder })
 
     } catch (error) {
