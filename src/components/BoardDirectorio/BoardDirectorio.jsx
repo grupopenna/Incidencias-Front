@@ -11,7 +11,7 @@ const BoardDirectorio = () => {
   // const [itemSelect, setItemSelect] = useState({});
   const top = useSelector(state => state.top)
   const approve = useSelector(state => state.approve)
-  const responsables = ["Carolina", "David", "Luciano", "Matias", "Julian", "Leandro", "Sebastian"];
+  const responsables = ["Carolina", "David", "Luciano", "Matias", "Julian", "Leandro", "Sebastian", "Alcides"];
 
   const dispatch = useDispatch();
   const [isLoading, setIsloding] = useState(true)
