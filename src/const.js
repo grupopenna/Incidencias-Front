@@ -41,3 +41,12 @@ export const STATU_COLOR = {
     [STATUS.VALIDAR]: 'slate',
 }
 
+export const WORKERS = [
+    "Sebastian Almiron",
+    "Carolina Garzon",
+    "Luciano Gimenez",
+    "David Forastieri",
+    "Leandro",
+    "Matias Gomez",
+    "Julian Lopez"
+]

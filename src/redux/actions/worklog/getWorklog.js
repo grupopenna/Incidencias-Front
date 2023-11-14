@@ -29,8 +29,6 @@ export const getWorklog = (idUser, fromDate, toDate) => {
     try {
       const response = (await axios.post(`${BASE_URL}/worklog/search/`, bodyData));
 
-      console.log('response', response.data)
-
       const filterWorklogs = response.data?.issues?.map((item) => {
         const response = {
           key: item.key,
@@ -48,14 +46,13 @@ export const getWorklog = (idUser, fromDate, toDate) => {
                     const convertToDate = new Date(splittedDateTo[0], splittedDateTo[1]-1, splittedDateTo[2])
 
 
-                    return worklogIssue >= convertFromDate && worklogIssue <= convertToDate
+                    return worklogIssue >= convertFromDate && worklogIssue <= convertToDate && worklog.author.accountId === idUser
                     })
         }
 
         return response
       })
 
-      console.log({ filterWorklogs })
       const userWorklogs = filterWorklogs.reduce((acc, current) => {
          const worklogs = current?.worklogs.reduce((prev, currentValue) => {
 

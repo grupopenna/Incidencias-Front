@@ -67,10 +67,17 @@ const DailyReport = () => {
     
     setIsLoading(true)
 
-    const userData = JSON.parse(localStorage.getItem('userData')) 
-    const idUser =  userData.user.jiraAccountId
     const fromDate = FormatDateWorklog(date.from)
     const toDate =  FormatDateWorklog(date.to || date.from)
+    let idUser
+
+    if (worker) {
+        idUser = worker
+    } else {
+      const userData = JSON.parse(localStorage.getItem('userData')) 
+      idUser =  userData.user.jiraAccountId
+    }
+
     await getWorklog(idUser, fromDate, toDate)(dispatch)
 
     setIsLoading(false)
@@ -103,6 +110,8 @@ const DailyReport = () => {
   if (isLoading) {
     return <Loader />
   }
+
+  console.log({ users })
 
   const getColorStatusBadge = (status) => STATU_COLOR[status] ? STATU_COLOR[status]: 'gray'
 
