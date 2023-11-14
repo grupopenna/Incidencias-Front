@@ -22,7 +22,8 @@ import {
   GET_WORKLOG,
   GET_ISSUE_BY_KEY,
   CLEAR_ISSUE_BY_KEY,
-  ERROR_GET_ISSUE_BY_KEY
+  ERROR_GET_ISSUE_BY_KEY,
+  GET_USERS_IT
 
 } from "./action-type";
 
@@ -56,7 +57,9 @@ const initialState = {
 
   issueByKey: [],
 
-  issueByKeyError: false
+  issueByKeyError: false,
+
+  users: []
 
 };
 const reducer = (state = initialState, { type, payload }) => {
@@ -108,8 +111,10 @@ const reducer = (state = initialState, { type, payload }) => {
     case ERROR_GET_ISSUE_BY_KEY:
       return { ...state, issueByKeyError: true }
 
-      default:
-      return { ...state, worklogs: payload };
+    case GET_USERS_IT:
+      return { ...state, users: payload }
+    default:
+    return { ...state, worklogs: payload };
   }
 };
 

@@ -17,7 +17,7 @@ import { es } from 'date-fns/locale'
 import {sub, startOfToday} from 'date-fns'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getWorklog } from '../../redux/actions'
+import { getWorklog, getUsersIt } from '../../redux/actions'
 import { FormatDateWorklog, sliceContentLenght } from '../../utils'
 import { Link } from 'react-router-dom'
 import ModalText from '../ModalText'
@@ -55,6 +55,7 @@ const DailyReport = () => {
   const [openModal, setOpenModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const data = useSelector(state => state.worklogs)
+  const users = useSelector(state => state.users)
   const dispatch = useDispatch()
 
   const handleSetDate = async () => {
@@ -83,6 +84,10 @@ const DailyReport = () => {
 
 
   useEffect(() => {
+      getUsersIt()(dispatch)
+  }, [])
+
+  useEffect(() => {
     
     (async () => {
       const userData = JSON.parse(localStorage.getItem('userData')) 
@@ -108,11 +113,11 @@ const DailyReport = () => {
                  <p className='text-xl text-slate-400'>Rango de fechas</p>
                  <div className='flex gap-3'>
                   <Select className='w-4' value={worker} onValueChange={setWorker} placeholder='Responsable'>
-                    <SelectItem>Matias Gomez</SelectItem>
-                    <SelectItem>Matias Gomez</SelectItem>
-                    <SelectItem>Matias Gomez</SelectItem>
-                    <SelectItem>Matias Gomez</SelectItem>
-                    <SelectItem>Matias Gomez</SelectItem>
+                    {users?.map((user) => (
+                      <SelectItem key={user.accountId} value={user.accountId}>
+                        {user.displayName}
+                      </SelectItem>
+                    ))}
                   </Select>
                   <DateRangePicker 
                     value={date}
