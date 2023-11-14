@@ -1,6 +1,6 @@
 import axios from "axios";
 import { BASE_URL, GET_WORKLOG } from '../../action-type';
-import { FormatDateWorklog, formatHours } from "../../../utils";
+import { formatDateWorklog, formatHours } from "../../../utils";
 
 export const getWorklog = (idUser, fromDate, toDate) => {
   let bodyData = {
@@ -37,6 +37,13 @@ export const getWorklog = (idUser, fromDate, toDate) => {
           worklogs: item.versionedRepresentations.worklog[1].worklogs.filter((worklog) => {
                       // Valido que la fecha del worklog este entre la pedida por el usuario
 
+                    if (fromDate === toDate) {
+                      const worklogIssue = new Date(worklog.started)
+                      const formatDate = formatDateWorklog(worklogIssue)
+
+                      return formatDate === fromDate 
+                    }
+
                     const worklogIssue = new Date(worklog.started)
                     const splittedDateFrom = fromDate.split('-')
                     const splittedDateTo = toDate.split('-')
@@ -56,7 +63,7 @@ export const getWorklog = (idUser, fromDate, toDate) => {
       const userWorklogs = filterWorklogs.reduce((acc, current) => {
          const worklogs = current?.worklogs.reduce((prev, currentValue) => {
 
-              const date = FormatDateWorklog(new Date(currentValue.started))
+              const date = formatDateWorklog(new Date(currentValue.started))
               if (prev[date]) {
                 prev[date] = prev[date] + currentValue?.timeSpentSeconds
               } else {

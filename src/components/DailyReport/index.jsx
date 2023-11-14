@@ -1,29 +1,29 @@
-import { 
+ import 
+ { Badge,
+  BarChart,
+  Card,
   DateRangePicker, 
   DateRangePickerItem,
-  BarChart,
+  Select,
+  SelectItem,
   Table,
+  TableBody,
+  TableCell,
   TableHead,
   TableHeaderCell,
   TableRow,
-  TableCell,
-  TableBody,
-  Card,
-  Badge,
-  Select,
-  SelectItem
 } from '@tremor/react'
-import { es } from 'date-fns/locale'
-import {sub, startOfToday} from 'date-fns'
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { getWorklog, getUsersIt } from '../../redux/actions'
-import { FormatDateWorklog, sliceContentLenght } from '../../utils'
-import { Link } from 'react-router-dom'
-import ModalText from '../ModalText'
 import { CrossIcon } from '../Icon'
-import Loader from '../Loader'
+import { es } from 'date-fns/locale'
+import { formatDateWorklog, sliceContentLenght } from '../../utils'
+import { getWorklog, getUsersIt } from '../../redux/actions'
+import { Link } from 'react-router-dom'
 import { STATU_COLOR } from '../../const'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
+import {sub, startOfToday} from 'date-fns'
+import Loader from '../Loader'
+import ModalText from '../ModalText'
 
 
 const customTooltip = ({ payload, active }) => {
@@ -67,8 +67,8 @@ const DailyReport = () => {
     
     setIsLoading(true)
 
-    const fromDate = FormatDateWorklog(date.from)
-    const toDate =  FormatDateWorklog(date.to || date.from)
+    const fromDate = formatDateWorklog(date.from)
+    const toDate =  formatDateWorklog(date.to || date.from)
     let idUser
 
     if (worker) {
@@ -99,8 +99,8 @@ const DailyReport = () => {
     (async () => {
       const userData = JSON.parse(localStorage.getItem('userData')) 
       const idUser =  userData.user.jiraAccountId
-      const fromDate = FormatDateWorklog(date.from)
-      const toDate =  FormatDateWorklog(date.to)
+      const fromDate = formatDateWorklog(date.from)
+      const toDate =  formatDateWorklog(date.to)
       await getWorklog(idUser, fromDate, toDate)(dispatch)
       setIsLoading(false)
     })()
@@ -110,8 +110,6 @@ const DailyReport = () => {
   if (isLoading) {
     return <Loader />
   }
-
-  console.log({ users })
 
   const getColorStatusBadge = (status) => STATU_COLOR[status] ? STATU_COLOR[status]: 'gray'
 
