@@ -13,5 +13,6 @@ export {
 export { putOrder } from './order/index'
 export { getProjects } from './projects/index'
 export { getTransitions, postTransition } from './transitions'
-export { postUser, setUserData } from './user'
+export { postUser, setUserData, getUsersIt } from './user'
 export { deleteAttachments, postAttachments } from './issueAttachment'
+export * from './worklog'

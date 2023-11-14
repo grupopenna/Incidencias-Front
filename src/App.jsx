@@ -19,6 +19,7 @@ const BoardDirectorioLazy = lazy(() => import('./components/BoardDirectorio/Boar
 const SprintTableLazy = lazy(() => import('./components/ProxSprintTable/SprintTable'))
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'))
 const SearchIssue = lazy(() => import('./components/SearchIssue'))
+const DailyReport = lazy(() => import('./components/DailyReport'))
 
 const Loader = () => {
   return <section className='w-full min-h-screen flex bg-background justify-center items-center'>
@@ -39,10 +40,12 @@ const App = () => {
               <Route exact path="/createIssue" element={<NewRequirementsLazy />} />
               <Route exact path="/board/:key" element={<IncidentTableLazy />} />
               <Route exact path="/createIssue/form/:key/" element={<NotifyIncidentFormLazy />} />
-              <Route exac path="/view-all-incidents/:jiraAccountId" element={<ViewAllIndicentLazy />} />
+              <Route exact path="/view-all-incidents/:jiraAccountId" element={<ViewAllIndicentLazy />} />
               <Route exact path="/proxSprint/:key" element={<SprintTableLazy />} />
               <Route exact path="/general-sistemas" element={<BoardDirectorioLazy />} />
-              <Route exac path='/search-issue/' element={<SearchIssue />} />
+              <Route exact path='/search-issue/' element={<SearchIssue />} />
+              <Route exact path='/search-issue/:key' element={<SearchIssue />} />
+              <Route exact path='/daily-report' element={<DailyReport />} />
             </Route>
           </Routes>
         </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AlertIcon } from "../Icons";
 import { TextInput } from "@tremor/react";
 import { SearchIcon } from "../Icon";
@@ -36,7 +36,6 @@ const NavBar = () => {
       setPathName(window.location.pathname)
       setKey(window.location.pathname.split('/').slice(-1)[0])
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.location.pathname])
 
   return (
@@ -45,7 +44,7 @@ const NavBar = () => {
         <img src={logo} className='flex items-start w-56 p-1'></img>
       </button>
   
-      <div className='flex relative justify-end items-center px-5 pt-1 gap-2'>
+      <div className='flex relative justify-end items-center px-5 pt-1 gap-10'>
         { pathName !== '/' && 
           <TextInput 
             onChange={(event) => setSearchParam(event.target.value)}  
@@ -59,6 +58,10 @@ const NavBar = () => {
            </button>
          </div>
         ): null}
+
+        <Link to={'/daily-report'} className="rounded-md bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-2 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
+           Daily report
+        </Link>
 
          {pathName === '/' && <button
           onClick={() => navigate("/view-all-incidents/12")}
