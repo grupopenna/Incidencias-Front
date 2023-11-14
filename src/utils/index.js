@@ -1,14 +1,58 @@
-import { COMMENTS_TYPES, JIRA_MARKS } from "../const"
+import { COMMENTS_TYPES, JIRA_MARKS, ALLOW_CONTENT_LENGHT } from "../const"
+
+/**
+ * 
+ * @param {string} text 
+ * @returns {string}
+ */
+
+export const sliceContentLenght = (text) => {
+
+    if (!text) return ''
+
+    if (text.length > ALLOW_CONTENT_LENGHT) {
+      return text?.slice(0, ALLOW_CONTENT_LENGHT) + '. . .'
+    }
+
+    return text
+  }
+
 
 /**
  * 
  * @param {Date} date 
- * @returns { Date }
+ * @returns { string }
  */
 export const FormatDate = (date) => {
     const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
 
     return `${date.getDate()}/${months[date.getMonth()]}/${date.getFullYear().toString().slice(-2)}`
+}
+
+
+/**
+ * 
+ * @param {Date} date 
+ * @returns { string }
+ */
+export const FormatDateWorklog = (date) => {
+
+    console.log({ date })
+    const year = date.getFullYear()
+    const month = date.getMonth()+1 > 9 ?  date.getMonth()+1 : `0${date.getMonth()+1}`
+    const day = date.getDate() > 9 ?  date.getDate() : `0${date.getDate()}`
+    return `${year}-${month}-${day}`
+}
+
+
+/**
+ * 
+ * @param {number} hour 
+ * @returns {number}
+ */
+export const formatHours = (hour) => {
+    if (hour === 60) return 0.1
+    return  +(hour / 60 / 60).toFixed(2)
 }
 
 
