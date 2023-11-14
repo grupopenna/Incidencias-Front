@@ -49,8 +49,8 @@ export const getWorklog = (idUser, fromDate, toDate) => {
                     const splittedDateTo = toDate.split('-')
 
 
-                    const convertFromDate = new Date(splittedDateFrom[0], splittedDateFrom[1]-1, splittedDateFrom[2])
-                    const convertToDate = new Date(splittedDateTo[0], splittedDateTo[1]-1, splittedDateTo[2])
+                    const convertFromDate = new Date(splittedDateFrom[0], splittedDateFrom[1]-1, splittedDateFrom[2], 6)
+                    const convertToDate = new Date(splittedDateTo[0], splittedDateTo[1]-1, splittedDateTo[2], 23)
 
 
                     return worklogIssue >= convertFromDate && worklogIssue <= convertToDate && worklog.author.accountId === idUser
@@ -115,7 +115,7 @@ export const getWorklog = (idUser, fromDate, toDate) => {
 
 
 
-      if (response.status === 200) dispatch({ type: GET_WORKLOG, payload: {worklog: data?.reverse(), issue} })
+      if (response.status === 200) dispatch({ type: GET_WORKLOG, payload: {worklog: data, issue} })
       return response.data
     } catch (error) {
       console.log(error)
