@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AlertIcon } from "../Icons";
 import { TextInput } from "@tremor/react";
 import { SearchIcon } from "../Icon";
@@ -43,23 +43,27 @@ const NavBar = () => {
       <button onClick={() => { redirect() }}>
         <img src={logo} className='flex items-start w-56 p-1'></img>
       </button>
+  
+      <div className='flex relative justify-end items-center px-5 pt-1 gap-10'>
+        { pathName !== '/' && 
+          <TextInput 
+            onChange={(event) => setSearchParam(event.target.value)}  
+            onKeyUp={handleSearch} icon={SearchIcon} placeholder="CMS-21, FUN-12 ...." className="p-1 h-10 w-56"/>}
+        {key === 'CFS' || key  === 'CMS' ? (
+           <div className="flex items-center rounded-lg pl-2 py-2 bg-bgIncident">
+           <AlertIcon />
+           <span className="text-white">Si su tarjeta no esta revise los mail ó</span>
+           <button onClick={() => navigate(`/proxSprint/${key}`)} className="px-3 py-1">
+             <span className="text-buttonBg hover:underline">Haga click aqui</span>
+           </button>
+         </div>
+        ): null}
 
-      <div className='flex relative justify-end items-center px-5 pt-1 gap-2'>
-        {pathName !== '/' &&
-          <TextInput
-            onChange={(event) => setSearchParam(event.target.value)}
-            onKeyUp={handleSearch} icon={SearchIcon} placeholder="CMS-21, FUN-12 ...." className="p-1 h-10 w-56" />}
-        {key === 'CMS' ? (
-          <div className="flex items-center rounded-lg pl-2 py-2 bg-bgIncident">
-            <AlertIcon />
-            <span className="text-white">Si su tarjeta no esta revise los mail ó</span>
-            <button onClick={() => navigate(`/proxSprint/${key}`)} className="px-3 py-1">
-              <span className="text-buttonBg hover:underline">Haga click aqui</span>
-            </button>
-          </div>
-        ) : null}
+        <Link to={'/daily-report'} className="rounded-md bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-2 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
+           Daily report
+        </Link>
 
-        {pathName === '/' && <button
+         {pathName === '/' && <button
           onClick={() => navigate("/view-all-incidents/12")}
           className="rounded-md bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-2 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
           Ver todas las incidencias

@@ -37,3 +37,6 @@ export const GET_ISSUE_BY_KEY = 'GET_ISSUE_BY_KEY'
 export const CLEAR_ISSUE_BY_KEY = 'CLEAR_ISSUE_BY_KEY'
 
 export const ERROR_GET_ISSUE_BY_KEY = 'ERROR_GET_ISSUE_BY_KEY'
+
+
+export const GET_USERS_IT = 'GET_USERS_IT'
