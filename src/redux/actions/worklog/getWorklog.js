@@ -41,7 +41,7 @@ export const getWorklog = (idUser, fromDate, toDate) => {
                       const worklogIssue = new Date(worklog.started)
                       const formatDate = formatDateWorklog(worklogIssue)
 
-                      return formatDate === fromDate 
+                      return formatDate === fromDate && worklog.author.accountId === idUser
                     }
 
                     const worklogIssue = new Date(worklog.started)
