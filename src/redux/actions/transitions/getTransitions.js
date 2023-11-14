@@ -13,7 +13,7 @@ export const getTransitions = (key) => {
     console.log('key', key)
     try {
       const response = (await axios.get(`${BASE_URL}/transitions/${key}`)).data;
-      console.log('response.transitions', response.transitions)
+      //console.log('response.transitions', response.transitions)
       const orderScrum = (trans) => {
 
         if (key.includes("NR")) {

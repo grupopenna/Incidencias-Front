@@ -36,7 +36,6 @@ const NavBar = () => {
       setPathName(window.location.pathname)
       setKey(window.location.pathname.split('/').slice(-1)[0])
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.location.pathname])
 
   return (
