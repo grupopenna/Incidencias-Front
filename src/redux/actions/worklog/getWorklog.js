@@ -3,6 +3,10 @@ import { BASE_URL, GET_WORKLOG } from '../../action-type';
 import { formatDateWorklog, formatHours } from "../../../utils";
 
 export const getWorklog = (idUser, fromDate, toDate) => {
+  const JQL = fromDate === toDate
+    ? `worklogAuthor = ${idUser} AND timespent != EMPTY AND worklogDate = ${fromDate} ORDER BY timespent DESC`
+    : `worklogAuthor = ${idUser} AND timespent != EMPTY AND worklogDate >= ${fromDate} AND worklogDate <=  ${toDate} ORDER BY timespent DESC`
+
   let bodyData = {
     "expand": [ "operations","versionedRepresentations","editmeta","changelog","renderedFields"],
     "fields": [
@@ -22,7 +26,7 @@ export const getWorklog = (idUser, fromDate, toDate) => {
       "attachment",
       "transitions"
     ],
-    "jql": `worklogAuthor = ${idUser} AND timespent != EMPTY AND worklogDate >=${fromDate} AND worklogDate <= ${toDate} ORDER BY timespent DESC`
+    "jql": JQL
   }
 
   return async (dispatch) => {

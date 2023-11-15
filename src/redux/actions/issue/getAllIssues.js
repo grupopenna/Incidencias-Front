@@ -1,7 +1,9 @@
 import axios from "axios";
 import { BASE_URL, GET_All_ISSUES } from '../../action-type';
 
-export const getAllIssues = (userId) => {
+export const getAllIssues = (userId, showInProcess = false) => {
+
+  const JQL = showInProcess ? `status = 'En Proceso'` : `reporter=${userId} order by created DESC`
 
   const bodyData = {
     "expand": [
@@ -24,9 +26,12 @@ export const getAllIssues = (userId) => {
       "attachment",
       "project",
       "created",
-      "updated"
+      "updated",
+      "customfield_10106",
+      "customfield_10107"
+
     ],
-    "jql": `reporter=${userId} order by created DESC`
+    "jql": JQL
   }
 
   return async (dispatch) => {

@@ -17,6 +17,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Loader from '../Loader'
 import Modal from '../Modal/Modal'
+import InProcess from '../InProcess'
 
 const ORDER_BY = {
     ASC: 'asc',
@@ -35,6 +36,7 @@ function ViewAllIndicent() {
     const [selectedItem, setSelectedItem] = useState()
     const [isLoading, setIsloding] = useState(true)
     const [modalShow, setModalShow] = useState(false)
+    const [viewInProcess, setViewInProcess] = useState(false)
     const [searchByDetail, setSearchByDetail] = useState('')
 
     const dispatch = useDispatch()
@@ -106,23 +108,32 @@ function ViewAllIndicent() {
         <section className="flex justify-center flex-col mx-20 mt-10 items-center">
             {modalShow && <Modal setModalShow={setModalShow} itemSelect={selectedItem} />}
             <header className='w-full flex gap-3 p-2 items-end justify-between'>
-                <div className='p-2 flex flex-col gap-2'>
-                    <label className='text-white '>
-                        Filtrar por projecto
-                    </label>
-                    <Select className='w-1/2' onValueChange={handleSelectChange} value={selectedProject}>
-                        {projects?.map((project) => (
-                            <SelectItem key={project.key} value={project.name}>
-                                {project.name}
-                            </SelectItem>
-                        ))}
-                    </Select>
+                <div className='flex gap-2 items-end justify-center'>
+                    <div className=' flex flex-col gap-x-3'>
+                        <label className='text-white '>
+                            Filtrar por projecto
+                        </label>
+                        <Select disabled={viewInProcess} className='w-1/2' onValueChange={handleSelectChange} value={selectedProject}>
+                            {projects?.map((project) => (
+                                <SelectItem key={project.key} value={project.name}>
+                                    {project.name}
+                                </SelectItem>
+                            ))}
+                        </Select>
+                    </div>
+                    <button 
+                      onClick={() => setViewInProcess(!viewInProcess)}
+                      className='px-2 py-2 rounded-md text-white bg-indigo-700'>
+                        {viewInProcess ? 'Ver todas' : 'Ver en curso'}
+                      </button>
                 </div>
+
                 <div className='w-1/3 flex'>
                     <TextInput onChange={handleSearchByDetail} className='p-1' role='searchbox' icon={SearchIcon} placeholder='Buscar por detalle...' />
                 </div>
             </header>
-            <Table className='w-full'>
+            { viewInProcess && <InProcess />}
+            { !viewInProcess && <Table className='w-full'>
                 <TableHead>
                     <TableRow>
                         <TableHeaderCell className='text-center'>T</TableHeaderCell>
@@ -170,7 +181,8 @@ function ViewAllIndicent() {
                         </TableRow>
                     })}
                 </TableBody>
-            </Table>
+            </Table>}
+
         </section>
     )
 }
