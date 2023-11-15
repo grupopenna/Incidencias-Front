@@ -2,7 +2,7 @@ import axios from "axios";
 import { BASE_URL, GET_WORKLOG } from '../../action-type';
 import { formatDateWorklog, formatHours } from "../../../utils";
 
-export const getWorklog = (idUser, fromDate, toDate) => {
+export const getWorklog = (idUser, fromDate, toDate, selectedArea) => {
   const JQL = fromDate === toDate
     ? `worklogAuthor = ${idUser} AND timespent != EMPTY AND worklogDate = ${fromDate} ORDER BY timespent DESC`
     : `worklogAuthor = ${idUser} AND timespent != EMPTY AND worklogDate >= ${fromDate} AND worklogDate <=  ${toDate} ORDER BY timespent DESC`
@@ -31,7 +31,7 @@ export const getWorklog = (idUser, fromDate, toDate) => {
 
   return async (dispatch) => {
     try {
-      const response = (await axios.post(`${BASE_URL}/worklog/search/`, bodyData));
+      const response = (await axios.post(`${BASE_URL}/worklog/search/?area=${selectedArea}`, bodyData));
 
       const filterWorklogs = response.data?.issues?.map((item) => {
         const response = {

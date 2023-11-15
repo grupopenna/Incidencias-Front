@@ -28,7 +28,7 @@ const BoardDirectorio = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await getTopFive(responsables)(dispatch);
+      await getTopFive(selectedArea)(dispatch);
       await getApprove()(dispatch);
       setIsloding(false);
     };
@@ -42,10 +42,18 @@ const BoardDirectorio = () => {
 
     // Limpiar el intervalo al desmontar el componente
     return () => clearInterval(intervalId);
-  }, [dispatch]);
+
+  }, []);
 
   if (isLoading) {
     return <Loader />;
+  }
+
+  const handleChangeArea = async () => {
+      setIsloding(true)
+      await getTopFive(selectedArea)(dispatch)
+      await getApprove(selectedArea)(dispatch)
+      setIsloding(false)
   }
 
   const processNames = (value) => {
@@ -56,13 +64,18 @@ const BoardDirectorio = () => {
 
   return (
     <div className="w-full flex flex-col h-full justify-center pt-1 p-5">
-      <Select className='w-8 h-8'>
-        {Object.keys(AREAS).map((key, index) => (
-          <SelectItem  key={index} value={AREAS[key]}>
-            {AREAS[key]?.replace(AREAS[key][0], AREAS[key][0].toUpperCase())}
-          </SelectItem>
-        ))}
-      </Select>
+       <div className='w-8 h-8 flex gap-x-4 items-center'>
+        <Select  value={selectedArea} onValueChange={setSelectedArea}>
+          {Object.keys(AREAS).map((key, index) => (
+            <SelectItem  key={index} value={AREAS[key]}>
+              {AREAS[key]?.replace(AREAS[key][0], AREAS[key][0].toUpperCase())}
+            </SelectItem>
+          ))}
+        </Select>
+        <button 
+          onClick={handleChangeArea}
+          className='bg-indigo-600 px-4 py-2  rounded-md text-white font-semibold hover:bg-indigo-600/80'>Cambiar</button>
+       </div>
       {/* {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} />} */}
         <div className={`gap-x-2 w-full mt-5 grid grid-cols-${responsables?.length}`}>
             {responsables?.map((transition, i) => (

@@ -55,5 +55,5 @@ export const WORKERS = [
 
 export const AREAS = {
     SISTEMAS: 'sistemas',
-    ADM: 'administración'
+    ADM: 'administracion'
 }

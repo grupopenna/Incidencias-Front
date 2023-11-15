@@ -1,7 +1,7 @@
 import axios from "axios";
 import { BASE_URL, GET_TOP } from '../../action-type';
 
-export const getTopFive = () => {
+export const getTopFive = (area) => {
   const bodyData = {
     "expand": [
       "names",
@@ -32,7 +32,7 @@ export const getTopFive = () => {
 
   return async (dispatch) => {
     try {
-      const response = (await axios.post(`${BASE_URL}/incident/getTop`, bodyData)).data;
+      const response = (await axios.post(`${BASE_URL}/incident/getTop/?area=${area}`, bodyData)).data;
       console.log('response', response)
 
       dispatch({ type: GET_TOP, payload: response })
