@@ -2,7 +2,7 @@ import { WORKERS } from '../../../const'
 import { BASE_URL, GET_USERS_IT } from '../../action-type'
 import axios from 'axios'
 
-export const getUsersIt = () => {
+export const getUsers = () => {
     return async (dispatch) => {
         try {
             const { data: response } = await axios(`${BASE_URL}/users/getItUsers`)
