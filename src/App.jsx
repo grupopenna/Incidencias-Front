@@ -42,7 +42,7 @@ const App = () => {
               <Route exact path="/createIssue/form/:key/" element={<NotifyIncidentFormLazy />} />
               <Route exact path="/view-all-incidents/:jiraAccountId" element={<ViewAllIndicentLazy />} />
               <Route exact path="/proxSprint/:key" element={<SprintTableLazy />} />
-              <Route exact path="/general-sistemas" element={<BoardDirectorioLazy />} />
+              <Route exact path="/control-general" element={<BoardDirectorioLazy />} />
               <Route exact path='/search-issue/' element={<SearchIssue />} />
               <Route exact path='/search-issue/:key' element={<SearchIssue />} />
               <Route exact path='/daily-report' element={<DailyReport />} />

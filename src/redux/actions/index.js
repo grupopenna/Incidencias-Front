@@ -8,11 +8,13 @@ export {
     editDescription, 
     getIssueByUser,
     getIssueByKey,
-    clearIssueByKey
+    clearIssueByKey,
+    getApprove,
+    getTopFive
 } from './issue/index'
 export { putOrder } from './order/index'
 export { getProjects } from './projects/index'
 export { getTransitions, postTransition } from './transitions'
-export { postUser, setUserData, getUsersIt } from './user'
+export { postUser, setUserData, getUsers } from './user'
 export { deleteAttachments, postAttachments } from './issueAttachment'
 export * from './worklog'
