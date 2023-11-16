@@ -1,7 +1,7 @@
 import axios from "axios";
 import { BASE_URL, GET_APPROVE } from '../../action-type';
 
-export const getApprove = () => {
+export const getApprove = (area) => {
 
   const bodyData = {
     "expand": [
@@ -31,7 +31,7 @@ export const getApprove = () => {
 
   return async (dispatch) => {
     try {
-      const response = (await axios.post(`${BASE_URL}/incident/getTop`, bodyData)).data;
+      const response = (await axios.post(`${BASE_URL}/incident/getTop/?area=${area}`, bodyData)).data;
       console.log('response', response)
 
       dispatch({ type: GET_APPROVE, payload: response })

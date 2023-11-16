@@ -15,16 +15,14 @@ const BoardDirectorio = () => {
   const approve = useSelector(state => state.approve)
   const responsables = useSelector(state => state.users)
 
-  // const responsables = ["Carolina", "David", "Luciano", "Matias", "Julian", "Leandro", "Sebastian", "Alcides"];
-
   const dispatch = useDispatch();
   const [isLoading, setIsloding] = useState(true)
 
   useEffect(() => {
     (async () => {
-      await getUsers()(dispatch)
+      await getUsers(selectedArea)(dispatch)
     })()
-  } ,[])
+  } ,[selectedArea])
 
   useEffect(() => {
     const fetchData = async () => {

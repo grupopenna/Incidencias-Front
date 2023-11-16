@@ -8,23 +8,13 @@ export const getWorklog = (idUser, fromDate, toDate, selectedArea) => {
     : `worklogAuthor = ${idUser} AND timespent != EMPTY AND worklogDate >= ${fromDate} AND worklogDate <=  ${toDate} ORDER BY timespent DESC`
 
   let bodyData = {
-    "expand": [ "operations","versionedRepresentations","editmeta","changelog","renderedFields"],
     "fields": [
       "id",
-      "description",
       "issuetype",
-      "summary",
       "status",
+      "summary",
       "assignee",
-      "accountId",
-      "timetracking",
-      "timeoriginalestimate",
-      "aggregatetimeestimate",
-      "aggregatetimespent",
-      "customfield_10019",
-      "worklog",
-      "attachment",
-      "transitions"
+      "description"
     ],
     "jql": JQL
   }
@@ -32,39 +22,36 @@ export const getWorklog = (idUser, fromDate, toDate, selectedArea) => {
   return async (dispatch) => {
     try {
       const response = (await axios.post(`${BASE_URL}/worklog/search/?area=${selectedArea}`, bodyData));
-
-      const filterWorklogs = response.data?.issues?.map((item) => {
-        const response = {
-          key: item.key,
-          summary: item.versionedRepresentations.summary[1],
-          status: item.versionedRepresentations.status[1].name,
-          worklogs: item.versionedRepresentations.worklog[1].worklogs.filter((worklog) => {
-                      // Valido que la fecha del worklog este entre la pedida por el usuario
-
-                    if (fromDate === toDate) {
-                      const worklogIssue = new Date(worklog.started)
-                      const formatDate = formatDateWorklog(worklogIssue)
-
-                      return formatDate === fromDate && worklog.author.accountId === idUser
-                    }
-
-                    const worklogIssue = new Date(worklog.started)
-                    const splittedDateFrom = fromDate.split('-')
-                    const splittedDateTo = toDate.split('-')
+      const { worklogs: data } = response.data
 
 
-                    const convertFromDate = new Date(splittedDateFrom[0], splittedDateFrom[1]-1, splittedDateFrom[2], 6)
-                    const convertToDate = new Date(splittedDateTo[0], splittedDateTo[1]-1, splittedDateTo[2], 23)
+      data?.map((item) => {
 
-
-                    return worklogIssue >= convertFromDate && worklogIssue <= convertToDate && worklog.author.accountId === idUser
-                    })
-        }
-
-        return response
+          item.worklogs = item.worklogs?.filter((worklog) => {
+  
+            let worklogDateStarted = worklog.started
+  
+            if (fromDate === toDate) {
+            const worklogIssue = new Date(worklogDateStarted)
+            const formatDate = formatDateWorklog(worklogIssue)
+  
+            return formatDate === fromDate && worklog.author.accountId === idUser
+          }
+  
+          const worklogIssue = new Date(worklogDateStarted)
+          const splittedDateFrom = fromDate.split('-')
+          const splittedDateTo = toDate.split('-')
+  
+  
+          const convertFromDate = new Date(splittedDateFrom[0], splittedDateFrom[1]-1, splittedDateFrom[2], 6)
+          const convertToDate = new Date(splittedDateTo[0], splittedDateTo[1]-1, splittedDateTo[2], 23)
+  
+            return worklogIssue >= convertFromDate && worklogIssue <= convertToDate && worklog.author.accountId === idUser  
+        }) 
       })
 
-      const userWorklogs = filterWorklogs.reduce((acc, current) => {
+
+      const userWorklogs = data.reduce((acc, current) => {
          const worklogs = current?.worklogs.reduce((prev, currentValue) => {
 
               const date = formatDateWorklog(new Date(currentValue.started))
@@ -84,7 +71,7 @@ export const getWorklog = (idUser, fromDate, toDate, selectedArea) => {
 
 
 
-      let data = userWorklogs?.reduce((acc, current) => {
+      let dataBarChart = userWorklogs?.reduce((acc, current) => {
            Object.keys(current).map(key => {
             if (acc[key]) {
               acc[key] = acc[key] + current[key]
@@ -95,15 +82,16 @@ export const getWorklog = (idUser, fromDate, toDate, selectedArea) => {
 
            return acc
       }, {})
-
-      data = Object.keys(data).map(key => {
+      
+      dataBarChart = Object.keys(dataBarChart).map(key => {
         return {
           date: key,
-          horas: formatHours(data[key])
+          horas: formatHours(dataBarChart[key])
         }
       })
 
-      const issue = filterWorklogs.map((item) => {
+
+      const issue = data.map((item) => {
          const result =  item.worklogs.map((worklog) => {
           return {
             key: item.key,
@@ -118,8 +106,7 @@ export const getWorklog = (idUser, fromDate, toDate, selectedArea) => {
       })?.flat()
 
 
-
-      if (response.status === 200) dispatch({ type: GET_WORKLOG, payload: {worklog: data, issue} })
+      if (response.status === 200) dispatch({ type: GET_WORKLOG, payload: {worklog: dataBarChart, issue} })
       return response.data
     } catch (error) {
       console.log(error)
