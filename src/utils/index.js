@@ -29,6 +29,27 @@ export const FormatDate = (date) => {
     return `${date.getDate()}/${months[date.getMonth()]}/${date.getFullYear().toString().slice(-2)}`
 }
 
+/**
+ * 
+ * @param {Object} worklogs
+ * @returns {string} 
+ */
+
+export const getWorklog = (worklogs) => {
+    if (!worklogs) return
+
+    const totalTime = worklogs.reduce((acc, current) => acc+=current.timeSpentSeconds, 0)
+
+    let hour = Math.floor(totalTime / 3600)
+    hour = (hour < 10) ? `0${hour}` : hour
+
+    let minute = totalTime % 3600
+
+    minute = Math.floor(minute / 60)
+    minute = (minute < 10) ? `0${minute}` : minute
+
+    return `${hour}:${minute}`
+}
 
 /**
  * 

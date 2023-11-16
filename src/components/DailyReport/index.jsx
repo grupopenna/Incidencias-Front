@@ -16,14 +16,21 @@
 import { CrossIcon } from '../Icon'
 import { es } from 'date-fns/locale'
 import { formatDateWorklog, sliceContentLenght } from '../../utils'
-import { getWorklog, getUsersIt } from '../../redux/actions'
+import { getWorklog, getUsers } from '../../redux/actions'
 import { Link } from 'react-router-dom'
-import { STATU_COLOR } from '../../const'
+import { AREAS, STATU_COLOR } from '../../const'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import {sub, startOfToday} from 'date-fns'
 import Loader from '../Loader'
 import ModalText from '../ModalText'
+
+
+
+const URL_JIRA = {
+  [AREAS.SISTEMAS]: (key) => `https://gpenna.atlassian.net/jira/software/projects/IDD/boards/21?selectedIssue=${key}`,
+  [AREAS.ADM]: (key) => `https://gpennaadministracion.atlassian.net/jira/software/projects/KAN/boards/1?selectedIssue=${key}`
+}
 
 
 const customTooltip = ({ payload, active }) => {
@@ -54,6 +61,7 @@ const DailyReport = () => {
   const [selectedText, setSelectedText] = useState('')
   const [openModal, setOpenModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [selectedArea, setSelectedArea] = useState(AREAS.SISTEMAS)
   const data = useSelector(state => state.worklogs)
   const users = useSelector(state => state.users)
   const dispatch = useDispatch()
@@ -78,7 +86,7 @@ const DailyReport = () => {
       idUser =  userData.user.jiraAccountId
     }
 
-    await getWorklog(idUser, fromDate, toDate)(dispatch)
+    await getWorklog(idUser, fromDate, toDate, selectedArea)(dispatch)
 
     setIsLoading(false)
 
@@ -89,9 +97,14 @@ const DailyReport = () => {
       setOpenModal(true)
   }
 
+  const handleGetUsers = async (e) => {
+    setSelectedArea(e)
+    await getUsers(e)(dispatch)
+  }
+
 
   useEffect(() => {
-      getUsersIt()(dispatch)
+      getUsers()(dispatch)
   }, [])
 
   useEffect(() => {
@@ -119,6 +132,12 @@ const DailyReport = () => {
                 <h2 className='text-4xl text-white'>Imputacion diaria</h2>
                  <p className='text-xl text-slate-400'>Rango de fechas</p>
                  <div className='flex gap-3'>
+
+                  <Select className='w-4' placeholder='Area' value={selectedArea} onValueChange={(e) => handleGetUsers(e)}>
+                    <SelectItem value={AREAS.SISTEMAS}>Sistemas</SelectItem>
+                    <SelectItem value={AREAS.ADM}>Administracion</SelectItem>
+                  </Select>
+                  
                   <Select className='w-4' value={worker} onValueChange={setWorker} placeholder='Responsable'>
                     {users?.map((user) => (
                       <SelectItem key={user.accountId} value={user.accountId}>
@@ -204,7 +223,7 @@ const DailyReport = () => {
                               <TableRow key={index}>
                                 <TableCell>{item?.worklogAuthor}</TableCell>
                                 <TableCell>
-                                  <Link target='_blank' to={`https://gpenna.atlassian.net/jira/software/projects/IDD/boards/21?selectedIssue=${item?.key}`} className='underline text-blue-400'>
+                                  <Link target='_blank' to={URL_JIRA[selectedArea](item?.key)} className='underline text-blue-400'>
                                     {item?.key}
                                   </Link>
                                 </TableCell>

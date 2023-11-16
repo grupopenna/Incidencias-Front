@@ -48,5 +48,12 @@ export const WORKERS = [
     "David Forastieri",
     "Leandro",
     "Matias Gomez",
-    "Julian Lopez"
+    "Julian Lopez",
+    "sistemas9"
 ]
+
+
+export const AREAS = {
+    SISTEMAS: 'sistemas',
+    ADM: 'administracion'
+}

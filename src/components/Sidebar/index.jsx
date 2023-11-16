@@ -32,7 +32,7 @@ const SideBar = ({
         
       }
       <div className="w-full flex justify-center rounded-md bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-2 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
-          <button className="w-full" onClick={() => navigate("/general-sistemas")} >
+          <button className="w-full" onClick={() => navigate("/control-general")} >
               Control sistemas
           </button>
       </div>
