@@ -98,7 +98,13 @@ const DailyReport = () => {
   }
 
   const handleGetUsers = async (e) => {
-    setSelectedArea(e)
+
+    if (!e?.trim()) {
+      setSelectedArea(AREAS.SISTEMAS)
+    } else {
+      setSelectedArea(e)
+    }
+
     await getUsers(e)(dispatch)
   }
 
