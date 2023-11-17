@@ -45,9 +45,8 @@ const Tablero = () => {
 
   const onDragEnd = async (result) => {
     const list = getList(result.source.droppableId);
-
-    if ((result.source.droppableId == BOARD_STATUS.SIN_PRIORIZAR || result.source.droppableId == BOARD_STATUS.PRIORIZADO)
-      && (result.destination.droppableId == BOARD_STATUS.SIN_PRIORIZAR || result.destination.droppableId == BOARD_STATUS.PRIORIZADO)) {
+    if ((result.source.droppableId.toLowerCase() === BOARD_STATUS.SIN_PRIORIZAR || result.source.droppableId.toLowerCase() === BOARD_STATUS.PRIORIZADO)
+      && (result.destination.droppableId.toLowerCase() === BOARD_STATUS.SIN_PRIORIZAR || result.destination.droppableId.toLowerCase() === BOARD_STATUS.PRIORIZADO)) {
 
       const idList = list.map((item) => item.key)
 
