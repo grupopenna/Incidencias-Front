@@ -10,6 +10,9 @@ import { DocFiles, ImgFiles } from '../Icons';
 import { Editor as TuiEditor } from '../Editor/index'
 import { parseTextToJiraFormatt } from '../../utils';
 import Swal from 'sweetalert2';
+import { useCallback } from 'react';
+import incidentTemplate from './incident-template.json'
+import { ISSUETYPE_COD } from '../../const';
 
 const NotifyIncidentForm = () => {
 
@@ -88,6 +91,22 @@ const NotifyIncidentForm = () => {
     if (!fl) setfile([...file, event.target.files[0]]);
   };
 
+
+  const Editor = useCallback(() => {
+
+    let template 
+
+    if (!selectedIssue) {
+      template = ''
+    } else if (selectedIssue === ISSUETYPE_COD.ERROR) {
+      template = incidentTemplate.Error.template
+    } else if (selectedIssue === ISSUETYPE_COD.TAREA) {
+      template = incidentTemplate.Tarea.template
+    }
+
+    return <TuiEditor markdownRef={editorRef} initialValue={template}/>
+  }, [selectedIssue])
+
   return (
     <>
       <div className='ml-7 mt-5'>
@@ -118,7 +137,7 @@ const NotifyIncidentForm = () => {
                   <label className='text-white'>
                     Tipo de incidencia*
                     <Select
-                      onValueChange={(value) => setSelectedIssue(value)}
+                      onValueChange={(value) => {setSelectedIssue(value)}}
                       className='z-50 mt-2'
                       value={selectedIssue}>
                       {issuesType?.map((project) => (
@@ -133,7 +152,7 @@ const NotifyIncidentForm = () => {
                       Detalle de Incidencia*
                     </label>
                     <div className="mt-1">
-                      <TuiEditor markdownRef={editorRef} />
+                      <Editor />
                     </div>
                   </div>
                 </div>

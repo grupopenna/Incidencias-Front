@@ -57,3 +57,9 @@ export const AREAS = {
     SISTEMAS: 'sistemas',
     ADM: 'administracion'
 }
+
+
+export const ISSUETYPE_COD = {
+    ERROR: '10135',
+    TAREA: '10049'
+}
