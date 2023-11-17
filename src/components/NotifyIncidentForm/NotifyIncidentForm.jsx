@@ -16,6 +16,15 @@ import Swal from 'sweetalert2';
 
 const COMPANIES = ['Fideicomiso', 'GrupoPenna', 'Unitec', 'Petrocom', 'COMCAM', 'CombustiblesPC']
 
+
+const fireMessage = (icon, title, text) => {
+  Swal.fire({
+    icon,
+    title,
+    text,
+  });
+}
+
 const NotifyIncidentForm = () => {
 
   const editorRef = useRef(null)
@@ -27,7 +36,7 @@ const NotifyIncidentForm = () => {
   const [selectedIssue, setSelectedIssue] = useState('')
   const [selectedCompanies, setSelectedCompanies] = useState([])
   const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState({ titleDesc: '', email: '', descripcion: '' });
+  const [errors, setErrors] = useState({ titleDesc: '', email: '', descripcion: '', companies: '' });
   const location = useLocation()
   const navigate = useNavigate();
   const { pathname } = location;
@@ -47,37 +56,32 @@ const NotifyIncidentForm = () => {
     // Validación de nombre no vacío
     if (!titleDesc.trim()) {
       setErrors({ ...errors, titleDesc: 'El titulo no puede estar vacío' });
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "El titulo no puede estar vacío!!",
-      });
+       fireMessage('error', 'Oops...', 'El titulo no puede estar vacío')
       return;
     }
 
     if (selectedIssue === '') {
       setErrors({ ...errors, descripcion: 'El tipo de incidencia no puede estar vacío' });
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "El tipo de incidencia no puede estar vacío!!",
-      });
+      fireMessage('error', 'Oops...', 'El tipo de incidencia no puede estar vacío!!')
       return;
     }
 
     // Validación de descripción no vacía
     if (descripcion.length < 1) {
       setErrors({ ...errors, descripcion: 'La descripción no puede estar vacía' });
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "La descripción no puede estar vacía!!",
-      });
+      fireMessage('error', 'Oops...', 'La descripción no puede estar vacía!!')
       return;
     }
 
+    if (selectedCompanies.length < 1) {
+      setErrors({ ...errors, companies: 'Se debe seleccionar al menos una empresa' });
+      fireMessage('error', 'Oops...', 'Se debe seleccionar al menos una empresa')
+      return
+
+    }
+
     // Restablece los mensajes de error en caso de éxito
-    setErrors({ titleDesc: '', descripcion: '' });
+    setErrors({ titleDesc: '', email: '', descripcion: '', companies: '' });
     setLoading(true)
     const data = { IssueKey, titleDesc, descripcion, projectId: id, issueId: selectedIssue, file, companies: selectedCompanies }
     dispatch(issuePost(data, jiraAccountId))
@@ -154,7 +158,7 @@ const NotifyIncidentForm = () => {
                     </Select>
                   </label>
                    { IssueKey === 'ERP' && <label className='text-white'>
-                     Empresa
+                     Empresa<span>*</span>
                      <MultiSelect value={selectedCompanies} className='z-40 mt-2' onValueChange={setSelectedCompanies}>
                       {COMPANIES.map((company, index) => (
                         <MultiSelectItem key={index} value={company}>{company}</MultiSelectItem>
