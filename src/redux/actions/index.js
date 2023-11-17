@@ -10,7 +10,8 @@ export {
     getIssueByKey,
     clearIssueByKey,
     getApprove,
-    getTopFive
+    getTopFive,
+    getIssuesInProcess
 } from './issue/index'
 export { putOrder } from './order/index'
 export { getProjects } from './projects/index'

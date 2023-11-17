@@ -23,7 +23,10 @@ import {
   GET_ISSUE_BY_KEY,
   CLEAR_ISSUE_BY_KEY,
   ERROR_GET_ISSUE_BY_KEY,
-  GET_USERS_IT
+  GET_USERS_IT,
+
+  GET_ISSUES_IN_PROCESS,
+  ERROR_GET_ISSUES_IN_PROCESS
 
 } from "./action-type";
 
@@ -31,6 +34,10 @@ const initialState = {
 
   incients: [],
   allIncients: [],
+
+  incidentsInProcess: [],
+  errorIncidentsInProcess: null,
+
   top: [],
   approve: [],
 
@@ -113,6 +120,12 @@ const reducer = (state = initialState, { type, payload }) => {
 
     case GET_USERS_IT:
       return { ...state, users: payload }
+
+    case GET_ISSUES_IN_PROCESS:
+        return { ...state, incidentsInProcess: payload }
+
+    case ERROR_GET_ISSUES_IN_PROCESS:
+        return { ...state, errorIncidentsInProcess: payload }
     default:
     return { ...state, worklogs: payload };
   }
