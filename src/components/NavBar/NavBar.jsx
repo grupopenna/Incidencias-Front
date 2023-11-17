@@ -59,9 +59,10 @@ const NavBar = () => {
          </div>
         ): null}
 
-        <Link to={'/daily-report'} className="rounded-md bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-2 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
+        {!pathName.includes('daily-report')  &&
+          <Link to={'/daily-report'} className="rounded-md bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-2 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
            Daily report
-        </Link>
+        </Link>}
 
          {pathName === '/' && <button
           onClick={() => navigate("/view-all-incidents/12")}

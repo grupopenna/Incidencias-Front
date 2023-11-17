@@ -26,7 +26,7 @@ const ViewerView = ({ description }) => {
     : <p className='text-slate-500'>Editar descripcion</p>
 }
 
-const Modal = ({ setModalShow, itemSelect, worklog }) => {
+const Modal = ({ setModalShow, itemSelect }) => {
   const dispatch = useDispatch()
   const AllComments = useSelector(state => state.commentIssuesById)
   const issueData = useSelector(state => state.issueByKey)
@@ -53,7 +53,6 @@ const Modal = ({ setModalShow, itemSelect, worklog }) => {
   const editorRef = useRef(null)
   const viewUpdateRef = useRef(null)
 
-  console.log(worklog)
 
   useEffect(() => {
     setItem(itemSelect)

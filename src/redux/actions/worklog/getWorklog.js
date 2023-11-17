@@ -86,10 +86,31 @@ export const getWorklog = (idUser, fromDate, toDate, selectedArea) => {
       dataBarChart = Object.keys(dataBarChart).map(key => {
         return {
           date: key,
-          horas: formatHours(dataBarChart[key])
+          horas: formatHours(dataBarChart[key]),
+          originalTime: dataBarChart[key]
         }
       })
 
+      dataBarChart.sort((a, b) => {
+         const yearA = Number(a.date.split('-')[0])
+         const yearB = Number(b.date.split('-')[0])
+
+         if (yearA === yearB) {
+           const monthA = Number(a.date.split('-')[1])
+           const monthB = Number(b.date.split('-')[1])
+
+           if (monthA === monthB) {
+            const dayA = Number(a.date.split('-')[2])
+            const dayB = Number(b.date.split('-')[2])
+
+            return dayA - dayB
+           }
+
+           return monthA - monthB
+         }
+
+         return yearA - yearB
+      })
 
       const issue = data.map((item) => {
          const result =  item.worklogs.map((worklog) => {

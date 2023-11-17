@@ -3,6 +3,16 @@ import { useState } from 'react';
 import { getIssue, getTransitions } from '../../redux/actions'
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom"
+import { Callout, Card } from '@tremor/react';
+
+
+const PROJECT_DESCRIPTION = {
+  CHS: 'Proyecto relacionado a la aplicación de Choferes, notificar posibles mejoras, errores encontrados, etc. ',
+  CMS: 'Projecto relacionado con todo el area de compras, notificar posibles mejoras, errores encontrados, etc.',
+  NR: 'Nueva implementación la cual no existe un tablero en donde poder colocarla',
+  ERP: 'Tareas relacionadas con el area de Softland',
+  SIT: 'Cualquier problema relacionado a infraestructura (Leandro)'
+}
 
 const SelectedIncident = ({ projects }) => {
   const dispatch = useDispatch()
@@ -38,34 +48,44 @@ const SelectedIncident = ({ projects }) => {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center h-[100vh]">
-      <div className="!z-5 relative flex flex-col rounded-[20px] max-w-[300px] bg-white bg-clip-border shadow-3xl shadow-shadow-500  w-full !p-6 3xl:p-![18px] undefined">
-        <div className="w-full relative flex flex-row justify-center">
-          <h4 className="text-xl font-bold text-navy-700 text-black">
+    <main className="flex flex-col justify-center items-center w-full">
+      <article className="flex flex-col items-center mt-4 w-1/2 p-6">
+          <h2 className="text-2xl font-bold text-navy-700 text-white">
             Seleccione módulo
-          </h4>
-        </div>
-        <div className="h-full w-full mt-5 flex flex-col gap-5">
+          </h2>
+        <section className="h-full mt-5  grid grid-cols-3 gap-5">
           {
             projects.map((project) =>
-              <button onClick={() => handleRedirect(project.key)} key={project.key} className="rounded-xl bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-3 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
-                {loading & select === project.key ? (
-                  <main className='bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 flex justify-center items-center'>
-                    <div className='w-6 h-6 border-2 border-white rounded-full animate-spin border-r-transparent' />
-                  </main>
-                )
-                  :
-                  project.name
-                }
-              </button>)
-          }
+              <Card 
+                key={project.key} 
+                decoration='bottom'
+                decorationColor='indigo'
+                className="bg-slate-200 rounded-xl">
+                  <div className='w-full h-full flex flex-col items-center'>
+                    <h4 className='text-xl text-slate-800'>{project.name}</h4>
+                    <Callout
+                    className='mt-4  flex-1' 
+                      title='Descripción '
+                    >
+                      {PROJECT_DESCRIPTION[project?.key]}
+                    </Callout>
 
-          {/* <button onClick={() => handleRedirect("create-new")} className="rounded-xl bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-3 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
-          Crear nuevo desarrollo
-        </button> */}
-        </div>
-      </div>
-    </div>
+
+                    <button 
+                    onClick={() => handleRedirect(project.key)} 
+                    className='bg-indigo-700 text-white px-6 py-2 rounded-md mt-2 hover:bg-indigo-700/80'>
+                      { loading && select === project?.key
+                        ? <div className='w-6 h-6 border-2 border-white rounded-full animate-spin border-r-transparent' />
+                        :  'Ver'
+                      }
+                    </button>
+                  </div>
+                  
+              </Card>)
+          }
+        </section>
+      </article>
+    </main>
   )
 }
 

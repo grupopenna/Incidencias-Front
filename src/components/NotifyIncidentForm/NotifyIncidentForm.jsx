@@ -1,15 +1,29 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import '@toast-ui/editor/dist/toastui-editor.css';
+import { DocFiles, ImgFiles } from '../Icons';
+import { Editor as TuiEditor } from '../Editor/index'
 import { issuePost, getIssueTypes } from "../../redux/actions/";
+import { ISSUETYPE_COD } from '../../const';
+import { parseTextToJiraFormatt } from '../../utils';
+import { Select, SelectItem, MultiSelect, MultiSelectItem } from '@tremor/react'
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Select, SelectItem } from '@tremor/react'
-import { DocFiles, ImgFiles } from '../Icons';
-import { Editor as TuiEditor } from '../Editor/index'
-import { parseTextToJiraFormatt } from '../../utils';
+import incidentTemplate from './incident-template.json'
 import Swal from 'sweetalert2';
+
+const COMPANIES = ['Fideicomiso', 'GrupoPenna', 'Unitec', 'Petrocom', 'COMCAM', 'CombustiblesPC']
+
+
+const fireMessage = (icon, title, text) => {
+  Swal.fire({
+    icon,
+    title,
+    text,
+  });
+}
 
 const NotifyIncidentForm = () => {
 
@@ -20,8 +34,9 @@ const NotifyIncidentForm = () => {
   const [titleDesc, setTitleDesc] = useState('');
   const [file, setfile] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState('')
+  const [selectedCompanies, setSelectedCompanies] = useState([])
   const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState({ titleDesc: '', email: '', descripcion: '' });
+  const [errors, setErrors] = useState({ titleDesc: '', email: '', descripcion: '', companies: '' });
   const location = useLocation()
   const navigate = useNavigate();
   const { pathname } = location;
@@ -41,39 +56,34 @@ const NotifyIncidentForm = () => {
     // Validación de nombre no vacío
     if (!titleDesc.trim()) {
       setErrors({ ...errors, titleDesc: 'El titulo no puede estar vacío' });
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "El titulo no puede estar vacío!!",
-      });
+       fireMessage('error', 'Oops...', 'El titulo no puede estar vacío')
       return;
     }
 
     if (selectedIssue === '') {
       setErrors({ ...errors, descripcion: 'El tipo de incidencia no puede estar vacío' });
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "El tipo de incidencia no puede estar vacío!!",
-      });
+      fireMessage('error', 'Oops...', 'El tipo de incidencia no puede estar vacío!!')
       return;
     }
 
     // Validación de descripción no vacía
     if (descripcion.length < 1) {
       setErrors({ ...errors, descripcion: 'La descripción no puede estar vacía' });
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "La descripción no puede estar vacía!!",
-      });
+      fireMessage('error', 'Oops...', 'La descripción no puede estar vacía!!')
       return;
     }
 
+    if (selectedCompanies.length < 1) {
+      setErrors({ ...errors, companies: 'Se debe seleccionar al menos una empresa' });
+      fireMessage('error', 'Oops...', 'Se debe seleccionar al menos una empresa')
+      return
+
+    }
+
     // Restablece los mensajes de error en caso de éxito
-    setErrors({ titleDesc: '', descripcion: '' });
+    setErrors({ titleDesc: '', email: '', descripcion: '', companies: '' });
     setLoading(true)
-    const data = { IssueKey, titleDesc, descripcion, projectId: id, issueId: selectedIssue, file }
+    const data = { IssueKey, titleDesc, descripcion, projectId: id, issueId: selectedIssue, file, companies: selectedCompanies }
     dispatch(issuePost(data, jiraAccountId))
   }
 
@@ -88,10 +98,29 @@ const NotifyIncidentForm = () => {
     if (!fl) setfile([...file, event.target.files[0]]);
   };
 
+
+  const Editor = useCallback(() => {
+    
+    if (IssueKey !== 'ERP') return <TuiEditor markdownRef={editorRef} />
+
+
+    let template 
+
+    if (!selectedIssue) {
+      template = ''
+    } else if (selectedIssue === ISSUETYPE_COD.ERROR) {
+      template = incidentTemplate.Error.template
+    } else if (selectedIssue === ISSUETYPE_COD.TAREA) {
+      template = incidentTemplate.Tarea.template
+    }
+
+    return <TuiEditor markdownRef={editorRef} initialValue={template}/>
+  }, [selectedIssue])
+
   return (
     <>
       <div className='ml-7 mt-5'>
-        <button onClick={() => navigate(-1)} className='bg-buttonBg px-3 py-2 text-white rounded-lg'>Atras</button>
+        <button onClick={() => navigate(-1)} className='bg-indigo-600 px-3 py-2 text-white rounded-lg'>Atras</button>
       </div>
       <div className='flex justify-center mx-3 lg:px-16'>
         <div className='flex flex-col w-full lg:w-2/4'>
@@ -118,7 +147,7 @@ const NotifyIncidentForm = () => {
                   <label className='text-white'>
                     Tipo de incidencia*
                     <Select
-                      onValueChange={(value) => setSelectedIssue(value)}
+                      onValueChange={(value) => {setSelectedIssue(value)}}
                       className='z-50 mt-2'
                       value={selectedIssue}>
                       {issuesType?.map((project) => (
@@ -128,12 +157,20 @@ const NotifyIncidentForm = () => {
                       ))}
                     </Select>
                   </label>
+                   { IssueKey === 'ERP' && <label className='text-white'>
+                     Empresa<span>*</span>
+                     <MultiSelect value={selectedCompanies} className='z-40 mt-2' onValueChange={setSelectedCompanies}>
+                      {COMPANIES.map((company, index) => (
+                        <MultiSelectItem key={index} value={company}>{company}</MultiSelectItem>
+                      ))}
+                     </MultiSelect>
+                   </label>}
                   <div className='mt-1'>
                     <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-slate-100">
                       Detalle de Incidencia*
                     </label>
                     <div className="mt-1">
-                      <TuiEditor markdownRef={editorRef} />
+                      <Editor />
                     </div>
                   </div>
                 </div>

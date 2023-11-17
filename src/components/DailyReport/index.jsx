@@ -15,7 +15,7 @@
 } from '@tremor/react'
 import { CrossIcon } from '../Icon'
 import { es } from 'date-fns/locale'
-import { formatDateWorklog, sliceContentLenght } from '../../utils'
+import { formatDateWorklog, getTime, sliceContentLenght } from '../../utils'
 import { getWorklog, getUsers } from '../../redux/actions'
 import { Link } from 'react-router-dom'
 import { AREAS, STATU_COLOR } from '../../const'
@@ -222,7 +222,7 @@ const DailyReport = () => {
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>
                                 <TableCell className='text-center'>
-                                    {data?.worklog.reduce((acc, current) => acc+= current?.horas, 0)}
+                                    {getTime(data?.worklog.reduce((acc, current) => acc+= current?.originalTime, 0))}
                                 </TableCell>
                             </TableRow>
                             {data?.issue?.map((item, index) => (

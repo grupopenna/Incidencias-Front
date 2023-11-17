@@ -417,7 +417,7 @@ export  const parseTextToMarkdown = (inputText) => {
 
 
     if (Object.prototype.hasOwnProperty.call(DICTONARY_JIRA, character[0])) {
-        markdownLines.push(`${DICTONARY_JIRA[character[0]]} ${character[1]}`)
+        markdownLines.push(`${DICTONARY_JIRA[character[0]]} ${character.slice(1).join(' ')}`)
         continue
 
     }
