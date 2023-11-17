@@ -4,9 +4,9 @@ import { getIssue } from "./getIssue";
 import { postAttachments } from "../issueAttachment/postAttachments";
 import Swal from "sweetalert2";
 
-export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file, companies }, userId) => {
-
-  const bodyData = {
+export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file, companies, isERP }, userId) => {
+  
+  const queryToErp = {
     "fields": {
       "project": {
         "id": `${projectId}`
@@ -26,6 +26,29 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
       "customfield_10108": companies
     }
   }
+
+  const query = {
+    "fields": {
+      "project": {
+        "id": `${projectId}`
+      },
+      "summary": `${titleDesc}`,
+      "description": {
+        "type": "doc",
+        "version": 1,
+        "content": descripcion
+      },
+      "reporter": {
+        "id": `${userId}`
+      },
+      "issuetype": {
+        "id": `${issueId}`
+      }
+    }
+  }
+
+  const bodyData = isERP ? queryToErp : query
+  
   return async (dispatch) => {
     try {
       const response = await axios.post(`${BASE_URL}/incident/api/notify-incident`, bodyData)

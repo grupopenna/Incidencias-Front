@@ -72,18 +72,19 @@ const NotifyIncidentForm = () => {
       fireMessage('error', 'Oops...', 'La descripción no puede estar vacía!!')
       return;
     }
-
-    if (selectedCompanies.length < 1) {
-      setErrors({ ...errors, companies: 'Se debe seleccionar al menos una empresa' });
-      fireMessage('error', 'Oops...', 'Se debe seleccionar al menos una empresa')
-      return
-
+    if (IssueKey === 'ERP') {
+      if (selectedCompanies.length < 1) {
+        setErrors({ ...errors, companies: 'Se debe seleccionar al menos una empresa' });
+        fireMessage('error', 'Oops...', 'Se debe seleccionar al menos una empresa')
+        return
+  
+      }
     }
 
     // Restablece los mensajes de error en caso de éxito
     setErrors({ titleDesc: '', email: '', descripcion: '', companies: '' });
     setLoading(true)
-    const data = { IssueKey, titleDesc, descripcion, projectId: id, issueId: selectedIssue, file, companies: selectedCompanies }
+    const data = { IssueKey, titleDesc, descripcion, projectId: id, issueId: selectedIssue, file, companies: selectedCompanies, isERP: IssueKey === 'ERP' }
     dispatch(issuePost(data, jiraAccountId))
   }
 
