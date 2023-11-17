@@ -1,6 +1,6 @@
 import axios from "axios";
 import { BASE_URL, GET_WORKLOG } from '../../action-type';
-import { formatDateWorklog, formatHours } from "../../../utils";
+import { formatDateWorklog, formatHours, getTime } from "../../../utils";
 
 export const getWorklog = (idUser, fromDate, toDate, selectedArea) => {
   const JQL = fromDate === toDate
@@ -98,7 +98,7 @@ export const getWorklog = (idUser, fromDate, toDate, selectedArea) => {
             summary: item.summary,
             status: item.status,
             worklogAuthor: worklog.author.displayName,
-            worklogTime: formatHours(worklog.timeSpentSeconds),
+            worklogTime: getTime(worklog.timeSpentSeconds),
             comment: worklog.comment
           }
          })
