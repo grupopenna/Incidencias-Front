@@ -9,16 +9,27 @@ import {
 } from '@tremor/react'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAllIssues } from '../../redux/actions'
+import { getIssuesInProcess } from '../../redux/actions'
 import { FormatDate, getWorklog } from '../../utils'
+import { useMemo } from 'react'
 
-const InProcess = () => {
+const InProcess = ({ searchByDetail }) => {
   const dispatch = useDispatch()
-  const issues = useSelector(state => state.allIncients)
+  const issuesInProcess = useSelector(state => state.incidentsInProcess)
+
+
+
+  const issues = useMemo(() => {
+
+      if (!searchByDetail) return issuesInProcess
+
+      return issuesInProcess.filter((issue) => issue?.fields.summary?.toLowerCase().includes(searchByDetail?.toLowerCase()))
+  }, [searchByDetail, issuesInProcess])
+
 
   useEffect(() => {
     (async () => {
-      await getAllIssues(null, true)(dispatch)
+      await getIssuesInProcess()(dispatch)
     })()
   } ,[])
 

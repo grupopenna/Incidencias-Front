@@ -90,6 +90,11 @@ function ViewAllIndicent() {
         setSelectedProject(value)
     }
 
+    const handlerChangeView = () => {
+        setViewInProcess(!viewInProcess)
+        setSearchByDetail('')
+    }
+
     useEffect(() => {
 
         (async () => {
@@ -122,7 +127,7 @@ function ViewAllIndicent() {
                         </Select>
                     </div>
                     <button 
-                      onClick={() => setViewInProcess(!viewInProcess)}
+                      onClick={handlerChangeView}
                       className='px-2 py-2 rounded-md text-white bg-indigo-700'>
                         {viewInProcess ? 'Ver todas' : 'Ver en curso'}
                       </button>
@@ -132,7 +137,7 @@ function ViewAllIndicent() {
                     <TextInput onChange={handleSearchByDetail} className='p-1' role='searchbox' icon={SearchIcon} placeholder='Buscar por detalle...' />
                 </div>
             </header>
-            { viewInProcess && <InProcess />}
+            { viewInProcess && <InProcess searchByDetail={searchByDetail}/>}
             { !viewInProcess && <Table className='w-full'>
                 <TableHead>
                     <TableRow>

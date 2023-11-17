@@ -31,6 +31,24 @@ export const FormatDate = (date) => {
 
 /**
  * 
+ * @param {number} time 
+ * @returns {string}
+ */
+export const getTime = (time) => {
+
+    let hour = Math.floor(time / 3600)
+    hour = (hour < 10) ? `0${hour}` : hour
+
+    let minute = time % 3600
+
+    minute = Math.floor(minute / 60)
+    minute = (minute < 10) ? `0${minute}` : minute
+
+    return `${hour}:${minute}`
+}
+
+/**
+ * 
  * @param {Object} worklogs
  * @returns {string} 
  */
@@ -40,15 +58,8 @@ export const getWorklog = (worklogs) => {
 
     const totalTime = worklogs.reduce((acc, current) => acc+=current.timeSpentSeconds, 0)
 
-    let hour = Math.floor(totalTime / 3600)
-    hour = (hour < 10) ? `0${hour}` : hour
 
-    let minute = totalTime % 3600
-
-    minute = Math.floor(minute / 60)
-    minute = (minute < 10) ? `0${minute}` : minute
-
-    return `${hour}:${minute}`
+    return getTime(totalTime)
 }
 
 /**
