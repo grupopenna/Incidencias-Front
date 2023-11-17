@@ -4,7 +4,7 @@ import { getIssue } from "./getIssue";
 import { postAttachments } from "../issueAttachment/postAttachments";
 import Swal from "sweetalert2";
 
-export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file, }, userId) => {
+export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file, companies }, userId) => {
 
   const bodyData = {
     "fields": {
@@ -22,7 +22,8 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
       },
       "issuetype": {
         "id": `${issueId}`
-      }
+      },
+      "customfield_10108": companies
     }
   }
   return async (dispatch) => {

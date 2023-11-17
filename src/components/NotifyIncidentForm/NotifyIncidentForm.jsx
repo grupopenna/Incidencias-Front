@@ -1,18 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import '@toast-ui/editor/dist/toastui-editor.css';
+import { DocFiles, ImgFiles } from '../Icons';
+import { Editor as TuiEditor } from '../Editor/index'
 import { issuePost, getIssueTypes } from "../../redux/actions/";
+import { ISSUETYPE_COD } from '../../const';
+import { parseTextToJiraFormatt } from '../../utils';
+import { Select, SelectItem, MultiSelect, MultiSelectItem } from '@tremor/react'
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Select, SelectItem } from '@tremor/react'
-import { DocFiles, ImgFiles } from '../Icons';
-import { Editor as TuiEditor } from '../Editor/index'
-import { parseTextToJiraFormatt } from '../../utils';
-import Swal from 'sweetalert2';
-import { useCallback } from 'react';
 import incidentTemplate from './incident-template.json'
-import { ISSUETYPE_COD } from '../../const';
+import Swal from 'sweetalert2';
+
+const COMPANIES = ['Fideicomiso', 'GrupoPenna', 'Unitec', 'Petrocom', 'COMCAM', 'CombustiblesPC']
 
 const NotifyIncidentForm = () => {
 
@@ -23,6 +25,7 @@ const NotifyIncidentForm = () => {
   const [titleDesc, setTitleDesc] = useState('');
   const [file, setfile] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState('')
+  const [selectedCompanies, setSelectedCompanies] = useState([])
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState({ titleDesc: '', email: '', descripcion: '' });
   const location = useLocation()
@@ -76,7 +79,7 @@ const NotifyIncidentForm = () => {
     // Restablece los mensajes de error en caso de éxito
     setErrors({ titleDesc: '', descripcion: '' });
     setLoading(true)
-    const data = { IssueKey, titleDesc, descripcion, projectId: id, issueId: selectedIssue, file }
+    const data = { IssueKey, titleDesc, descripcion, projectId: id, issueId: selectedIssue, file, companies: selectedCompanies }
     dispatch(issuePost(data, jiraAccountId))
   }
 
@@ -94,9 +97,7 @@ const NotifyIncidentForm = () => {
 
   const Editor = useCallback(() => {
     
-    const key = window.location.pathname
-    
-    if (!key.includes('ERP')) return <TuiEditor markdownRef={editorRef} />
+    if (IssueKey !== 'ERP') return <TuiEditor markdownRef={editorRef} />
 
 
     let template 
@@ -152,6 +153,14 @@ const NotifyIncidentForm = () => {
                       ))}
                     </Select>
                   </label>
+                   { IssueKey === 'ERP' && <label className='text-white'>
+                     Empresa
+                     <MultiSelect value={selectedCompanies} className='z-40 mt-2' onValueChange={setSelectedCompanies}>
+                      {COMPANIES.map((company, index) => (
+                        <MultiSelectItem key={index} value={company}>{company}</MultiSelectItem>
+                      ))}
+                     </MultiSelect>
+                   </label>}
                   <div className='mt-1'>
                     <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-slate-100">
                       Detalle de Incidencia*
