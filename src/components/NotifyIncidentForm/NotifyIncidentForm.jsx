@@ -93,6 +93,11 @@ const NotifyIncidentForm = () => {
 
 
   const Editor = useCallback(() => {
+    
+    const key = window.location.pathname
+    
+    if (!key.includes('ERP')) return <TuiEditor markdownRef={editorRef} />
+
 
     let template 
 
@@ -110,7 +115,7 @@ const NotifyIncidentForm = () => {
   return (
     <>
       <div className='ml-7 mt-5'>
-        <button onClick={() => navigate(-1)} className='bg-buttonBg px-3 py-2 text-white rounded-lg'>Atras</button>
+        <button onClick={() => navigate(-1)} className='bg-indigo-600 px-3 py-2 text-white rounded-lg'>Atras</button>
       </div>
       <div className='flex justify-center mx-3 lg:px-16'>
         <div className='flex flex-col w-full lg:w-2/4'>
