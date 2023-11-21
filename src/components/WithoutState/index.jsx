@@ -99,7 +99,7 @@ const WithoutState = () => {
     <section className="w-full h-full flex flex-col items-center justify-center">
          {modalShow && <Modal setModalShow={setModalShow} itemSelect={selectedItem} />}
          <header className='w-11/12 m-auto p-4 flex'>
-            <nav className='w-full flex gap-x-4 p-2 items-center justify-center'>
+            <div className='w-full flex gap-x-4 p-2 items-center justify-center'>
                 
                 <label className='text-white'>Filtrar por: 
                         </label>
@@ -114,7 +114,7 @@ const WithoutState = () => {
                         <SelectItem key={index} value={status}>{status}</SelectItem>
                     ))}
                 </Select>
-            </nav>
+            </div>
          </header>
          <main className='w-11/12 flex flex-col items-center justify-center'>
             {isLoading && <Loader />}
