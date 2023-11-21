@@ -1,6 +1,6 @@
 {
     "Error": {
-        "template": " ### Descripcion de la falla: \n ### Nombre del link/reporte(descripcion exacta): \n ### Ejemplo resultado esperado:"
+        "template": " ### Descripcion de la falla: \n ### Nombre del link/reporte(descripcion exacta 'USR_XXX'}): \n ### Ejemplo resultado esperado:"
     },
     "Tarea": {
         "template": " ### Requerimiento: \n ### Ejemplo resultado esperado:"
