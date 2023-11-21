@@ -63,3 +63,8 @@ export const ISSUETYPE_COD = {
     ERROR: '10135',
     TAREA: '10049'
 }
+
+export const ORDER_BY = {
+    ASC: 'asc',
+    DESC: 'desc'
+}

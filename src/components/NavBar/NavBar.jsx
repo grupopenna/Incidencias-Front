@@ -39,16 +39,22 @@ const NavBar = () => {
   }, [window.location.pathname])
 
   return (
-    <div className='flex justify-between  mx-2 mt-2 p-3'>
+    <header className='flex justify-between  mx-2 mt-2 p-3'>
       <button onClick={() => { redirect() }}>
         <img src={logo} className='flex items-start w-56 p-1'></img>
       </button>
   
-      <div className='flex relative justify-end items-center px-5 pt-1 gap-10'>
+      <nav className='flex relative justify-end items-center px-5 pt-1 gap-10'>
         { pathName !== '/' && 
           <TextInput 
             onChange={(event) => setSearchParam(event.target.value)}  
             onKeyUp={handleSearch} icon={SearchIcon} placeholder="CMS-21, FUN-12 ...." className="p-1 h-10 w-56"/>}
+        
+        { !pathName.includes('sin-comenzar') && <Link to={'/sin-comenzar'} className="rounded-md bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-2 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
+          Incidencias sin comenzar
+        </Link>}
+
+
         {key === 'CFS' || key  === 'CMS' ? (
            <div className="flex items-center rounded-lg pl-2 py-2 bg-bgIncident">
            <AlertIcon />
@@ -69,8 +75,8 @@ const NavBar = () => {
           className="rounded-md bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-2 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
           Ver todas las incidencias
         </button>}
-      </div>
-    </div>
+      </nav>
+    </header>
   )
 }
 

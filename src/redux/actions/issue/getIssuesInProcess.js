@@ -5,7 +5,7 @@ import {
   ERROR_GET_ISSUES_IN_PROCESS 
 } from '../../action-type'
 
-export const getIssuesInProcess = () => {
+export const getIssuesInProcess = (JQL = `status = 'En Proceso'`) => {
     const bodyData = {
         "expand": [
           "names"
@@ -32,7 +32,7 @@ export const getIssuesInProcess = () => {
           "customfield_10107"
     
         ],
-        "jql": `status = 'En Proceso'`
+        "jql": JQL
       }
     return async (dispatch) => {
         try {

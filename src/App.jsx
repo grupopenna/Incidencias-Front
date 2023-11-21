@@ -20,6 +20,7 @@ const SprintTableLazy = lazy(() => import('./components/ProxSprintTable/SprintTa
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'))
 const SearchIssue = lazy(() => import('./components/SearchIssue'))
 const DailyReport = lazy(() => import('./components/DailyReport'))
+const WithoutState = lazy(() => import('./components/WithoutState'))
 
 const Loader = () => {
   return <section className='w-full min-h-screen flex bg-background justify-center items-center'>
@@ -46,6 +47,7 @@ const App = () => {
               <Route exact path='/search-issue/' element={<SearchIssue />} />
               <Route exact path='/search-issue/:key' element={<SearchIssue />} />
               <Route exact path='/daily-report' element={<DailyReport />} />
+              <Route exact path='/sin-comenzar' element={<WithoutState />} />
             </Route>
           </Routes>
         </div>
