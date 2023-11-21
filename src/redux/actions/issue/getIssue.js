@@ -2,8 +2,6 @@ import axios from "axios";
 import { BASE_URL, GET_ISSUES } from '../../action-type';
 
 export const getIssue = (key, userId) => {
-
-  if (key === '') return 
   
   return async (dispatch) => {
     try {
