@@ -18,11 +18,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import Loader from '../Loader'
 import Modal from '../Modal/Modal'
 import InProcess from '../InProcess'
+import { ORDER_BY } from '../../const'
 
-const ORDER_BY = {
-    ASC: 'asc',
-    DESC: 'desc'
-}
 
 const colorState = {
     'green': '#19f750',       //listo
@@ -69,6 +66,7 @@ function ViewAllIndicent() {
         return mutateData
 
     }, [order, allIncients, selectedProject, searchByDetail])
+    
     const handleSearchByDetail = (event) => {
         setSearchByDetail(event.target.value)
     }
