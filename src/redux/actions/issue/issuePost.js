@@ -3,9 +3,12 @@ import { BASE_URL } from '../../action-type';
 import { getIssue } from "./getIssue";
 import { postAttachments } from "../issueAttachment/postAttachments";
 import Swal from "sweetalert2";
+import { ISSUETYPE_COD } from "../../../const";
 
-export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file, companies, isERP }, userId) => {
+export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file, companies, selectedIssue, isERP }, userId) => {
   
+  const customField = selectedIssue === ISSUETYPE_COD.ERROR ? "customfield_10124" : "customfield_10108"
+
   const queryToErp = {
     "fields": {
       "project": {
@@ -23,10 +26,12 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
       "issuetype": {
         "id": `${issueId}`
       },
-      "customfield_10108": companies
+      [customField]: companies
     }
   }
 
+
+  console.log({ queryToErp })
   const query = {
     "fields": {
       "project": {

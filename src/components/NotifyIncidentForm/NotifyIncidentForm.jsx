@@ -84,7 +84,17 @@ const NotifyIncidentForm = () => {
     // Restablece los mensajes de error en caso de éxito
     setErrors({ titleDesc: '', email: '', descripcion: '', companies: '' });
     setLoading(true)
-    const data = { IssueKey, titleDesc, descripcion, projectId: id, issueId: selectedIssue, file, companies: selectedCompanies, isERP: IssueKey === 'ERP' }
+    const data = { 
+        IssueKey, 
+        titleDesc, 
+        descripcion, 
+        projectId: id, 
+        issueId: selectedIssue, 
+        file, 
+        companies: selectedCompanies,
+        selectedIssue,
+        isERP: IssueKey === 'ERP' 
+      }
     dispatch(issuePost(data, jiraAccountId))
   }
 
