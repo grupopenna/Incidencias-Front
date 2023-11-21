@@ -57,7 +57,6 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
     try {
       const response = await axios.post(`${BASE_URL}/incident/api/notify-incident`, bodyData)
       if (response.status === 200) {
-        console.log({ response })
         let key = response.data.key
         try {
           if (file.length > 0) await postAttachments(file, key)(dispatch)
