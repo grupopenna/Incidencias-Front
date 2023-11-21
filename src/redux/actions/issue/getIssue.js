@@ -2,9 +2,6 @@ import axios from "axios";
 import { BASE_URL, GET_ISSUES } from '../../action-type';
 
 export const getIssue = (key, userId) => {
-
-  console.log({ key })
-  if (key?.trim() === '') return 
   
   return async (dispatch) => {
     try {
