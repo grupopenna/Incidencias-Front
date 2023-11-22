@@ -8,10 +8,11 @@ import { Callout, Card } from '@tremor/react';
 
 const PROJECT_DESCRIPTION = {
   CHS: 'Proyecto relacionado a la aplicación de Choferes, notificar posibles mejoras, errores encontrados, etc. ',
-  CMS: 'Projecto relacionado con todo el area de compras, notificar posibles mejoras, errores encontrados, etc.',
+  CMS: 'Proyecto relacionado con todo el area de compras, notificar posibles mejoras, errores encontrados, etc.',
   NR: 'Nueva implementación la cual no existe un tablero en donde poder colocarla',
   ERP: 'Tareas relacionadas con el area de Softland',
-  SIT: 'Cualquier problema relacionado a infraestructura (Leandro)'
+  SIT: 'Cualquier problema relacionado a infraestructura (Leandro)',
+  DEBO: 'Tareas o errores relacionas con DEBO'
 }
 
 const SelectedIncident = ({ projects }) => {
