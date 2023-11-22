@@ -76,7 +76,7 @@ const SprintTable = () => {
           </div>
         )
         :
-        <main className='bgIncident flex justify-center items-center'>
+        <main className='bgIncident flex justify-center items-center mt-20 h-52'>
           <div className='w-10 h-10 border-2 border-white rounded-full animate-spin border-r-transparent' />
         </main>
       }
