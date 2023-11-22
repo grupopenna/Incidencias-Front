@@ -49,7 +49,7 @@ export const WORKERS = [
     "Leandro",
     "Matias Gomez",
     "Julian Lopez",
-    "sistemas9"
+    "Alcides"
 ]
 
 

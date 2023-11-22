@@ -55,8 +55,6 @@ const BoardDirectorio = () => {
   }
 
   const processNames = (value) => {
-      if (value === 'sistemas9') return 'Alcides'
-
       return value?.split(' ')[0]
   }
 
