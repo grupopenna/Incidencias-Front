@@ -1,41 +1,36 @@
-import { ReloadIcon } from "../Icons"
+import { useEffect, useState } from "react"
+import { AlertIcon } from "../Icons"
 
 const SideBar = ({
-    pathname,
     navigate,
-    setReload,
     handleNotify
 }) => {
+  const [key, setKey] = useState('')
+
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setKey(window.location.pathname.split('/').slice(-1)[0])
+    }
+  }, [window.location.pathname])
+
   return (
     <aside className="w-full h-screen col-span-1 left-0 flex flex-col gap-y-4 items-center  p-4 ">
 
-    <div className="flex w-full justify-between p-2 gap-2">
+    <div className="flex flex-col  w-full justify-between p-2 gap-2">
         <button onClick={() => { handleNotify() }} className="bg-indigo-600 px-4 py-2 rounded-md text-white">Notificar Incidencias</button>
-    
-      {pathname?.includes('board') &&
-        <button
-          onClick={() => setReload(true)}
-          aria-label="reload"
-          className=" bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-2 py-2  rounded-md text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
-          <ReloadIcon />
-        </button>}
+  
+
+        {key === 'CFS' || key  === 'CMS' ? (
+           <div className="flex flex-col items-center rounded-lg pl-2 py-2 bg-bgIncident">
+           <AlertIcon/>
+           <span className="text-white">Si su tarjeta no esta revise los mail ó</span>
+           <button onClick={() => navigate(`/proxSprint/${key}`)} className="px-3 py-1">
+             <span className="text-buttonBg hover:underline">Haga click aqui</span>
+           </button>
+         </div>
+        ): null}
     </div>
-     {!pathname?.includes('view-all-incidents') && 
-      <div className="w-full flex justify-center rounded-md bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-2 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
-      <button
-          onClick={() => navigate("/view-all-incidents/12")}
-          className="w-full"
-          >
-          Ver todas las incidencias
-        </button>
-      </div>
-        
-      }
-      <div className="w-full flex justify-center rounded-md bg-gradient-to-br from-indigo-700 via-indigo-600 to-indigo-500 px-5 py-2 text-base font-medium text-white transition duration-200 hover:shadow-lg hover:shadow-[#6025F5]/50">
-          <button className="w-full" onClick={() => navigate("/control-general")} >
-              Control sistemas
-          </button>
-      </div>
     </aside>
   )
 }

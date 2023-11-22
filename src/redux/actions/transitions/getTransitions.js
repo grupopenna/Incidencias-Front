@@ -2,50 +2,70 @@ import axios from "axios";
 import { BASE_URL, GET_TRANSITIONS } from "../../action-type";
 
 
-const SCRUM_ORDER = {
-  POR_HACER: 'Tareas por hacer'.toUpperCase(),
-  EN_CURSO: "En curso".toUpperCase(),
-  LISTO: "Finalizada".toUpperCase()
+// const SCRUM_ORDER = {
+//   POR_HACER: 'Tareas por hacer'.toUpperCase(),
+//   EN_CURSO: "En curso".toUpperCase(),
+//   LISTO: "Finalizada".toUpperCase()
+// }
+
+const HIDDEN_TRANSITIONS = {
+  RECURRENTES: 'recurrentes',
+  CERRADAS: 'cerrado'
+}
+
+const sortedTransition = (a, b) => {
+  const transitionA = a?.to?.name?.toLowerCase() 
+  const transitionB = b?.to?.name?.toLowerCase()
+
+  if (transitionA === 'validado') return 1
+
+  if (transitionA === 'sin priorizar') return -1
+
+  if (transitionA === 'priorizado') {
+
+    if (transitionB === 'sin priorizar') return 1
+
+    return -1
+  }
+
+  if (transitionA === 'validar') {
+    if (transitionB === 'validado') return -1
+
+    return 1
+  }
+
+  if (transitionA === 'en proceso') {
+    if (transitionB === 'sin priorizar' || transitionB === 'priorizado') return 1
+
+    return -1
+  }
 }
 
 export const getTransitions = (key) => {
   return async (dispatch) => {
-    console.log('key', key)
     try {
       const response = (await axios.get(`${BASE_URL}/transitions/${key}`)).data;
       //console.log('response.transitions', response.transitions)
-      const orderScrum = (trans) => {
+      // const orderScrum = (trans) => {
 
-        if (key.includes("NR")) {
-          return trans
-        } else {
+      //   if (key.includes("NR")) {
+      //     return trans
+      //   } else {
 
-          return [
-            trans.find((t) => t.to.name.toUpperCase() == SCRUM_ORDER.EN_CURSO),
-            trans.find((t) => t.to.name.toUpperCase() == SCRUM_ORDER.LISTO),
-            trans.find((t) => t.to.name.toUpperCase() == SCRUM_ORDER.POR_HACER)
-          ];
-        }
-      };
+      //     return [
+      //       trans.find((t) => t.to.name.toUpperCase() == SCRUM_ORDER.EN_CURSO),
+      //       trans.find((t) => t.to.name.toUpperCase() == SCRUM_ORDER.LISTO),
+      //       trans.find((t) => t.to.name.toUpperCase() == SCRUM_ORDER.POR_HACER)
+      //     ];
+      //   }
+      // };
 
-      const orderKanban = (trans) => {
-        if (key.includes("NR")) {
-          return trans
-        } else {
-          let order = [
-            trans.find((t) => t.to.name.toUpperCase() == "Sin Priorizar".toUpperCase()),
-            trans.find((t) => t.to.name.toUpperCase() == "Priorizado".toUpperCase()),
-            trans.find((t) => t.to.name.toUpperCase() == "En Proceso".toUpperCase()),
-            trans.find((t) => t.to.name.toUpperCase() == "Validar".toUpperCase()),
-            trans.find((t) => t.to.name.toUpperCase() == "Validado".toUpperCase())]
+      const transitionOrder = response.transitions.length > 3 
+        ? response.transitions
+            ?.sort(sortedTransition)
+            .filter(item => item?.to?.name?.toLowerCase() !== HIDDEN_TRANSITIONS.CERRADAS && item?.to?.name?.toLowerCase() !== HIDDEN_TRANSITIONS.RECURRENTES ) 
+        : response.transitions
 
-          return order
-        }
-      }
-
-      const transitionOrder = response.transitions.length > 3 ? orderKanban(response.transitions) : orderScrum(response.transitions)
-
-      console.log({ transitionOrder })
       dispatch({ type: GET_TRANSITIONS, payload: transitionOrder })
 
     } catch (error) {
