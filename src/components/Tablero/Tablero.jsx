@@ -23,7 +23,7 @@ const Tablero = () => {
   const location = useLocation();
   const { pathname } = location;
   const keyPathname = pathname.split('/').slice(-1);
-  const { incidents } = useIncidents(keyPathname[0])
+  const { incidents: { issues } } = useIncidents(keyPathname[0])
   const transitions = useSelector((state) => state.transitions);
   const { jiraAccountId } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -39,7 +39,7 @@ const Tablero = () => {
   }, [])
 
   const getList = (list) => {
-    let filterList = incidents.filter((incident) => incident.fields.status.name == list)
+    let filterList = issues?.filter((incident) => incident.fields.status.name == list)
     return filterList
   }
 
@@ -53,9 +53,9 @@ const Tablero = () => {
       if (result.source.droppableId != result.destination.droppableId) {
 
         const originalDepature = result.source.droppableId
-        const issueIndex = incidents.findIndex((incident) => incident.key === result.draggableId)
+        const issueIndex = issues?.findIndex((incident) => incident.key === result.draggableId)
 
-        incidents[issueIndex].fields.status.name = result.destination.droppableId
+        issues[issueIndex].fields.status.name = result.destination.droppableId
 
         await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then(async (response) => {
           console.log('response', response)
@@ -65,7 +65,7 @@ const Tablero = () => {
           }).catch((error) => { throw error });
         }).catch((error) => {
           console.log('error', error)
-          incidents[issueIndex].fields.status.name = originalDepature
+          issues[issueIndex].fields.status.name = originalDepature
           return
         })
 
@@ -84,16 +84,16 @@ const Tablero = () => {
 
 
       const originalDepature = result.source.droppableId
-      const issueIndex = incidents.findIndex((incident) => incident.key === result.draggableId)
+      const issueIndex = issues?.findIndex((incident) => incident.key === result.draggableId)
 
-      incidents[issueIndex].fields.status.name = result.destination.droppableId
+      issues[issueIndex].fields.status.name = result.destination.droppableId
 
-      incidents[issueIndex].fields.status.name = result.destination.droppableId
+      issues[issueIndex].fields.status.name = result.destination.droppableId
       await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then((response) => {
         console.log('response', response)
       }).catch((error) => {
         console.log('error', error)
-        incidents[issueIndex].fields.status.name = originalDepature
+        issues[issueIndex].fields.status.name = originalDepature
       })
     } else {
       Swal.fire({
@@ -106,7 +106,7 @@ const Tablero = () => {
 
   const move = (list, actualIndex, newIndex) => {
     const keys = new Set(list);
-    const filteredKeys = incidents.filter((incident) => keys.has(incident.key));
+    const filteredKeys = issues?.filter((incident) => keys.has(incident.key));
 
     const [elemento] = filteredKeys.splice(actualIndex, 1);
     const [el] = list.splice(actualIndex, 1)
@@ -116,17 +116,17 @@ const Tablero = () => {
 
     const othersValues = []
 
-    const copyValues = [...incidents]
+    const copyValues = [...issues]
 
     for (let index = 0; index < copyValues.length; index++) {
       if (!keys.has(copyValues[index].key)) {
         othersValues.push(copyValues[index])
       }
 
-      incidents.pop()
+      issues.pop()
     }
 
-    incidents.push(...[...filteredKeys, ...othersValues])
+    issues.push(...[...filteredKeys, ...othersValues])
 
     return list;
   }
@@ -150,7 +150,7 @@ const Tablero = () => {
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} worklog={worklog} />}
 
       <SideBar setReload={setReload} handleNotify={handleNotify} navigate={navigate} pathname={pathname} />
-      {incidents?.length > 0 ?
+      {issues?.length > 0 ?
         <div className="flex gap-x-2 w-[90%] col-span-5">
           {keyPathname == "NR" ? (
             transitions.map((transition, i) => (
