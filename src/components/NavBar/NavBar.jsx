@@ -25,7 +25,9 @@ const NavBar = () => {
       clearIssueByKey()(dispatch)
       if (!searchParam.trim()) return
       await getIssueByKey(searchParam.trim())(dispatch)
-      navigate('/search-issue')
+      navigate('/search-issue', {
+        replace: true
+      })
     }
   }
 
