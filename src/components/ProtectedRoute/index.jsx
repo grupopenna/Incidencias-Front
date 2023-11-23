@@ -9,11 +9,20 @@ function ProtectedRoute() {
 
    useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    const token = params.get('token')
+    let token = params.get('token')
 
     if (!token) {
-        window.location.href = import.meta.env.VITE_REDIRECT_URL
-        return 
+
+        const savedToken = localStorage.getItem('urlToken')
+
+        if (!savedToken) {
+            window.location.href = import.meta.env.VITE_REDIRECT_URL
+            return 
+        }
+
+        token = savedToken
+    } else {
+        localStorage.setItem('urlToken', token)
     }
     
     (async () => {
