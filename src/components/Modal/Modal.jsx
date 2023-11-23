@@ -61,6 +61,11 @@ const Modal = ({ setModalShow, itemSelect }) => {
     setTimeout(() => { setLoading(false), setDescriptionLoadin(false) }, 2000)
   }, [item, AllComments.length])
 
+
+  useEffect(() => {
+    
+  }, [])
+
   useEffect(() => {
     dispatch(getCommentIssues(itemSelect.key))
     AllComments.length > 0 && setComentarios(AllComments)
@@ -308,12 +313,12 @@ const Modal = ({ setModalShow, itemSelect }) => {
                 <p className='font-bold'>{item.fields.status.name}</p>
               </div>
 
-              {item.fields.timetracking.timeSpent ?
+              {item.fields.timeSpent ?
                 <div className='mb-5'>
                   <p>Seguimiento de tiempo:</p>
                   <div className='w-96 h-1 bg-buttonBg'></div>
                   <p className='font-bold text-buttonBg'>
-                    <span className='text-fontPlaceholder'>Registrado:</span>{item.fields.timetracking.timeSpent}
+                    <span className='text-fontPlaceholder'>Registrado:</span>{item.fields.timeSpent}
                   </p>
                 </div>
                 : null
@@ -326,7 +331,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
                 </button>
               } */}
               <div className='max-h-96'>
-                <p>Registro de trabajo:</p>
+                {/* <p>Registro de trabajo:</p>
 
                 <div className='h-full overflow-auto'>
                   {item.fields.worklog.worklogs.length > 0 ?
@@ -359,7 +364,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
                       </>
                     : <span className='text-fontPlaceholder text-xs'>Todavía no se ha hecho ningún registro</span>
                   }
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

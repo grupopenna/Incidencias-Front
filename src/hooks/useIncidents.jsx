@@ -20,7 +20,7 @@ export const useIncidents = () => {
                 const key = window.location.pathname.split('/').slice(-1)
                 setIsLoading(true)
                 await getIssue(key[0], jiraAccountId)(dispatch).then(async res => {
-                    res.length < 1 ? [] : await getTransitions(res[0].key)(dispatch)
+                    res.length < 1 ? [] : await getTransitions(res?.issues[0].key)(dispatch)
                 })
                 setIsLoading(false)
                 setReload(false)
