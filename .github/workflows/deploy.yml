@@ -3,7 +3,7 @@ name: Deploy 🚀
 on:
   push:
     branches:
-      - test
+      - test/production
 jobs:
   FTP-DEPLOY-ACTION:
     name: Deploy
@@ -33,7 +33,10 @@ jobs:
       - name: Build Application
         run: |
           touch .env.production
+          echo VITE_BASE_URL=${{ secrets.BASE_URL }} >> .env.production
+          echo VITE_BACK_AUTH_URL=${{ secrets.BACK_AUTH_URL }} >> .env.production
           echo VITE_REDIRECT_URL=${{ secrets.REDIRECT_URL }} >> .env.production
+          echo VITE_SOCKET_URL=${{ secrets.SOCKET_URL }} >> .env.production
           npm run build
 
       - name: Prepare folder to deploy
