@@ -149,7 +149,6 @@ const Tablero = () => {
     return <Loader />
   }
 
-  console.log({  issues })
   return (
     <div className="grid grid-cols-6 w-full justify-center">
       {modalShow && <Modal setModalShow={setModalShow} itemSelect={itemSelect} worklog={worklog} />}
