@@ -69,7 +69,7 @@ const DailyReport = () => {
 
   const filteredIssue = useMemo(() => {
 
-    if (!selectedDate) return data.issue
+    if (!selectedDate) return data?.issue
     
     return data?.issue?.filter((issue) => issue.date === selectedDate.date)
   }, [selectedDate, data])
