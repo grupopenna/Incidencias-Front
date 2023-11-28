@@ -20,7 +20,7 @@ import { getWorklog, getUsers } from '../../redux/actions'
 import { Link } from 'react-router-dom'
 import { AREAS, STATU_COLOR } from '../../const'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {sub, startOfToday} from 'date-fns'
 import Loader from '../Loader'
 import ModalText from '../ModalText'
@@ -28,7 +28,7 @@ import ModalText from '../ModalText'
 
 
 const URL_JIRA = {
-  [AREAS.SISTEMAS]: (key) => `https://gpenna.atlassian.net/jira/software/projects/IDD/boards/21?selectedIssue=${key}`,
+  [AREAS.SISTEMAS]: (key) => `https://gpenna.atlassian.net/browse/${key}`,
   [AREAS.ADM]: (key) => `https://gpennaadministracion.atlassian.net/jira/software/projects/KAN/boards/1?selectedIssue=${key}`
 }
 
@@ -61,10 +61,18 @@ const DailyReport = () => {
   const [selectedText, setSelectedText] = useState('')
   const [openModal, setOpenModal] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [ selectedDate, setSelectedDate ] = useState(null)
   const [selectedArea, setSelectedArea] = useState(AREAS.SISTEMAS)
   const data = useSelector(state => state.worklogs)
   const users = useSelector(state => state.users)
   const dispatch = useDispatch()
+
+  const filteredIssue = useMemo(() => {
+
+    if (!selectedDate) return data?.issue
+    
+    return data?.issue?.filter((issue) => issue.date === selectedDate.date)
+  }, [selectedDate, data])
 
   const handleSetDate = async () => {
 
@@ -178,6 +186,7 @@ const DailyReport = () => {
                     showAnimation
                     index='horas'
                     yAxisWidth={48}
+                    onValueChange={(v) => setSelectedDate(v)}
                     customTooltip={customTooltip}
                   />
                  </section>
@@ -225,7 +234,7 @@ const DailyReport = () => {
                                     {getTime(data?.worklog.reduce((acc, current) => acc+= current?.originalTime, 0))}
                                 </TableCell>
                             </TableRow>
-                            {data?.issue?.map((item, index) => (
+                            {filteredIssue?.map((item, index) => (
                               <TableRow key={index}>
                                 <TableCell>{item?.worklogAuthor}</TableCell>
                                 <TableCell>

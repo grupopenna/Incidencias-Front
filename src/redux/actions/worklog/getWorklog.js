@@ -120,7 +120,8 @@ export const getWorklog = (idUser, fromDate, toDate, selectedArea) => {
             status: item.status,
             worklogAuthor: worklog.author.displayName,
             worklogTime: getTime(worklog.timeSpentSeconds),
-            comment: worklog.comment
+            comment: worklog.comment,
+            date: formatDateWorklog(new Date(worklog.started))
           }
          })
         return result
