@@ -42,6 +42,7 @@ const NotifyIncidentForm = () => {
   const { pathname } = location;
   const [IssueKey] = pathname.split('/').slice(-2)
 
+
   useEffect(() => {
     (async () => {
       const [projectName] = pathname.split('/').slice(-2)
@@ -50,28 +51,94 @@ const NotifyIncidentForm = () => {
   }, [])
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const descripcion = parseTextToJiraFormatt(editorRef.current.getMarkdown())
+    e.preventDefault()
+    setLoading(true)
+
+    const markdown = editorRef.current.getMarkdown()
+    const lines = markdown.split('\n')
+
+    const imageLines = lines.filter(item => /^!/ig.test(item) )
+    let allImages = []
+    let base64Images = []
+    
+    if (imageLines.length > 0) {
+       
+       imageLines.forEach((image) => {
+          const separatedImage = image.split(')')
+
+          if (separatedImage.length >= 3) {
+
+             separatedImage.pop()
+             allImages = allImages.concat(separatedImage)
+
+          } else {
+             allImages = allImages.concat(separatedImage[0])
+          }
+       })
+
+       allImages.forEach((image) => {
+          const fileName = image.split('[')[1].split(']')[0]?.trim()
+          const base64Data = image.split('(')[1]
+          const filetype = base64Data.split(':')[1].split(';')[0]
+          const indexStartToDelete = base64Data.indexOf('base64,')
+
+                
+          let base64Image
+
+          if (indexStartToDelete !== 1) { 
+            base64Image = base64Data.slice(indexStartToDelete + 7) 
+          }
+
+
+          const binaryString = atob(base64Image)
+          const bytes = new Uint8Array(binaryString.length)
+
+          for(let i = 0; i < binaryString.length ; i++ ) {
+            bytes[i] = binaryString.charCodeAt(i)
+          }
+
+
+          const blob = new Blob([bytes.buffer])
+          
+          const newFile = new File([blob], fileName || 'imagen', { type: filetype })
+
+
+          base64Images.push(newFile)
+
+       })
+
+    }
+
+
+    base64Images = base64Images.concat(file)
+
+
+    const contentWithoutImages = lines.filter((item) => !/^!/ig.test(item)).join('\n')
+    const descripcion = parseTextToJiraFormatt(contentWithoutImages)
 
     // Validación de nombre no vacío
     if (!titleDesc.trim()) {
       setErrors({ ...errors, titleDesc: 'El titulo no puede estar vacío' });
        fireMessage('error', 'Oops...', 'El titulo no puede estar vacío')
+       setLoading(false)
       return;
     }
 
     if (selectedIssue === '') {
       setErrors({ ...errors, descripcion: 'El tipo de incidencia no puede estar vacío' });
       fireMessage('error', 'Oops...', 'El tipo de incidencia no puede estar vacío!!')
+      setLoading(false)
       return;
     }
 
     // Validación de descripción no vacía
-    if (descripcion.length < 1) {
+    if (descripcion.length < 1 && base64Images.length < 1) {
       setErrors({ ...errors, descripcion: 'La descripción no puede estar vacía' });
       fireMessage('error', 'Oops...', 'La descripción no puede estar vacía!!')
+      setLoading(false)
       return;
     }
+
     if (IssueKey === 'ERP') {
       if (selectedCompanies.length < 1) {
         setErrors({ ...errors, companies: 'Se debe seleccionar al menos una empresa' });
@@ -83,19 +150,28 @@ const NotifyIncidentForm = () => {
 
     // Restablece los mensajes de error en caso de éxito
     setErrors({ titleDesc: '', email: '', descripcion: '', companies: '' });
-    setLoading(true)
     const data = { 
         IssueKey, 
         titleDesc, 
         descripcion, 
         projectId: id, 
         issueId: selectedIssue, 
-        file, 
+        file: base64Images, 
         companies: selectedCompanies,
         selectedIssue,
         isERP: IssueKey === 'ERP' 
       }
-    dispatch(issuePost(data, jiraAccountId))
+        
+        issuePost(data, jiraAccountId)(dispatch)
+          .catch(() => {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Ocurrió un error, inténtelo mas tarde",
+            });
+          })
+          .finally(() => setLoading(false))
+
   }
 
   const deleteItemFile = (name) => {

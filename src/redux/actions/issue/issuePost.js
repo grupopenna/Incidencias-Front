@@ -6,42 +6,14 @@ import Swal from "sweetalert2";
 import { ISSUETYPE_COD } from "../../../const";
 
 export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file, companies, selectedIssue, isERP }, userId) => {
-  
   const customField = selectedIssue === ISSUETYPE_COD.ERROR ? "customfield_10124" : "customfield_10108"
-
-  const queryToErp = {
+  const baseQuery = {
     "fields": {
+    
       "project": {
         "id": `${projectId}`
       },
       "summary": `${titleDesc}`,
-      "description": {
-        "type": "doc",
-        "version": 1,
-        "content": descripcion
-      },
-      "reporter": {
-        "id": `${userId}`
-      },
-      "issuetype": {
-        "id": `${issueId}`
-      },
-      [customField]: companies
-    }
-  }
-
-
-  const query = {
-    "fields": {
-      "project": {
-        "id": `${projectId}`
-      },
-      "summary": `${titleDesc}`,
-      "description": {
-        "type": "doc",
-        "version": 1,
-        "content": descripcion
-      },
       "reporter": {
         "id": `${userId}`
       },
@@ -51,7 +23,26 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
     }
   }
 
-  const bodyData = isERP ? queryToErp : query
+  const queryToErp = {
+    "fields": {
+      ...baseQuery.fields,
+      [customField]: companies
+    }
+  }
+
+  
+  const bodyData = isERP ? queryToErp : baseQuery
+
+  if (Array.isArray(descripcion)) {
+    
+    if (descripcion.length > 0 ) {
+       bodyData.fields.description = {
+        "type": "doc",
+        "version": 1,
+        "content": descripcion
+       }
+    }
+  }
   
   return async (dispatch) => {
     try {
@@ -77,7 +68,7 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
 
     } catch (error) {
       console.error('Error al realizar la solicitud:', error);
-
+      throw new Error('Error al realizar la solicitud')
     }
   };
 }
