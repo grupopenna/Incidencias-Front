@@ -6,9 +6,7 @@ import Swal from "sweetalert2";
 import { ISSUETYPE_COD } from "../../../const";
 
 export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file, companies, selectedIssue, isERP }, userId) => {
-  
   const customField = selectedIssue === ISSUETYPE_COD.ERROR ? "customfield_10124" : "customfield_10108"
-
   const queryToErp = {
     "fields": {
       "project": {
@@ -50,7 +48,6 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
       }
     }
   }
-
   const bodyData = isERP ? queryToErp : query
   
   return async (dispatch) => {
@@ -77,7 +74,7 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
 
     } catch (error) {
       console.error('Error al realizar la solicitud:', error);
-
+      throw new Error('Error al realizar la solicitud')
     }
   };
 }
