@@ -180,9 +180,7 @@ const NotifyIncidentForm = () => {
   }
 
   const handleFileChange = (event) => {
-    let fl = file.some(fi => fi.name === event.target.files[0].name)
-
-    if (!fl) setfile([...file, event.target.files[0]]);
+    setfile([...file, ...event.target.files]);
   };
 
 
