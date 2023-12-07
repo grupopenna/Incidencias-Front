@@ -54,7 +54,6 @@ const NotifyIncidentForm = () => {
     e.preventDefault()
     setLoading(true)
 
-
     const markdown = editorRef.current.getMarkdown()
     const lines = markdown.split('\n')
 
@@ -76,7 +75,6 @@ const NotifyIncidentForm = () => {
              allImages = allImages.concat(separatedImage[0])
           }
        })
-
 
        allImages.forEach((image) => {
           const fileName = image.split('[')[1].split(']')[0]?.trim()
@@ -102,7 +100,7 @@ const NotifyIncidentForm = () => {
 
           const blob = new Blob([bytes.buffer])
           
-          const newFile = new File([blob], fileName, { type: filetype })
+          const newFile = new File([blob], fileName || 'imagen', { type: filetype })
 
 
           base64Images.push(newFile)
@@ -115,7 +113,6 @@ const NotifyIncidentForm = () => {
     base64Images = base64Images.concat(file)
 
 
-
     const contentWithoutImages = lines.filter((item) => !/^!/ig.test(item)).join('\n')
     const descripcion = parseTextToJiraFormatt(contentWithoutImages)
 
@@ -123,19 +120,22 @@ const NotifyIncidentForm = () => {
     if (!titleDesc.trim()) {
       setErrors({ ...errors, titleDesc: 'El titulo no puede estar vacío' });
        fireMessage('error', 'Oops...', 'El titulo no puede estar vacío')
+       setLoading(false)
       return;
     }
 
     if (selectedIssue === '') {
       setErrors({ ...errors, descripcion: 'El tipo de incidencia no puede estar vacío' });
       fireMessage('error', 'Oops...', 'El tipo de incidencia no puede estar vacío!!')
+      setLoading(false)
       return;
     }
 
     // Validación de descripción no vacía
-    if (descripcion.length < 1) {
+    if (descripcion.length < 1 && base64Images.length < 1) {
       setErrors({ ...errors, descripcion: 'La descripción no puede estar vacía' });
       fireMessage('error', 'Oops...', 'La descripción no puede estar vacía!!')
+      setLoading(false)
       return;
     }
 
