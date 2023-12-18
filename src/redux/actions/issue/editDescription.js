@@ -9,7 +9,6 @@ export const editDescription = (key, newValue) => {
     try {
       const response = await axios.put(`${BASE_URL}/incident/edit-desc/${key}`, data)
 
-      console.log(response.data)
       dispatch({ type: EDIT_DESC, payload: response.data })
     } catch (err) {
       console.error('Error al realizar la peticion')

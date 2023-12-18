@@ -62,9 +62,9 @@ const Tablero = () => {
         issues[issueIndex].fields.status.name = result.destination.droppableId
 
         await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then(async (response) => {
-          console.log('response', response)
+          
           await getIssue(keyPathname[0], jiraAccountId)(dispatch).then((response) => {
-            console.log('response', response)
+            
             return console.log('response SelectedIncident getIssue', response);
           }).catch((error) => { throw error });
         }).catch((error) => {
