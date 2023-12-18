@@ -5,7 +5,6 @@ export const putOrder = (orderData) => {
 
   return async () => {
 
-    console.log('orderData', orderData)
     try {
       const response = await axios.put(`${BASE_URL}/order`, orderData);
 

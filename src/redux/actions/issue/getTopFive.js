@@ -33,7 +33,6 @@ export const getTopFive = (area) => {
   return async (dispatch) => {
     try {
       const response = (await axios.post(`${BASE_URL}/incident/getTop/?area=${area}`, bodyData)).data;
-      console.log('response', response)
 
       dispatch({ type: GET_TOP, payload: response })
 

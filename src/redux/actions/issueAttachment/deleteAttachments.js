@@ -10,7 +10,6 @@ export const deleteAttachments = (key, attachmentId) => {
       if (response.status === 204) {
         await getIssueByKey(key)(dispatch)
       }
-      console.log('RED', response)
     } catch (error) {
       console.log('Error al realizar la solicitud deleteAttachments');
 
