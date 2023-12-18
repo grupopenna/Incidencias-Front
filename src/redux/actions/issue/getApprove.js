@@ -25,16 +25,16 @@ export const getApprove = (area) => {
       "created",
       "updated"
     ],
-    "jql": `(labels = APROBADO AND (not TOP = TOP1 AND not TOP = TOP2 AND not TOP = TOP3 AND not TOP = TOP4 AND not TOP = TOP5)) AND (@ids)`
+    "jql": `labels = APROBADO AND TOP = NULL`
   }
   
 
   return async (dispatch) => {
     try {
       const response = (await axios.post(`${BASE_URL}/incident/getTop/?area=${area}`, bodyData)).data;
-      console.log('response', response)
+      console.log('response', response);
 
-      dispatch({ type: GET_APPROVE, payload: response })
+      dispatch({ type: GET_APPROVE, payload: response });
 
       return response
     } catch (error) {
