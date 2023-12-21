@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useDispatch } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 import { setUserData } from '../../redux/actions'
