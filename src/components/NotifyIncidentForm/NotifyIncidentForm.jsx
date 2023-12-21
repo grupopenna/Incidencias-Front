@@ -30,7 +30,7 @@ const NotifyIncidentForm = () => {
   const editorRef = useRef(null)
   const dispatch = useDispatch()
   const { issuesType, id } = useSelector(state => state.issuesTypes)
-  const { jiraAccountId } = useSelector(state => state.user)
+  const { jiraAccountId, area } = useSelector(state => state.user)
   const [titleDesc, setTitleDesc] = useState('');
   const [file, setfile] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState('')
@@ -41,7 +41,7 @@ const NotifyIncidentForm = () => {
   const navigate = useNavigate();
   const { pathname } = location;
   const [IssueKey] = pathname.split('/').slice(-2)
-
+  console.log('jiraAccountId', jiraAccountId)
 
   useEffect(() => {
     (async () => {
@@ -162,7 +162,7 @@ const NotifyIncidentForm = () => {
         isERP: IssueKey === 'ERP' 
       }
         
-        issuePost(data, jiraAccountId)(dispatch)
+        issuePost(data, jiraAccountId, area)(dispatch)
           .catch(() => {
             Swal.fire({
               icon: "error",
