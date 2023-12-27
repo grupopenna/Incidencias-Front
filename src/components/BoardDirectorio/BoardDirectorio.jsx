@@ -3,9 +3,17 @@ import { useEffect, useState } from 'react';
 // import Modal from '../Modal/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { getApprove, getTopFive, getUsers } from '../../redux/actions/';
-import { Select, SelectItem } from '@tremor/react'
+import { Badge, Select, SelectItem } from '@tremor/react'
 import Loader from '../Loader';
 import { AREAS } from '../../const';
+
+
+const colorStatusIssue = {
+  'Validar': 'red',
+  'En Proceso': 'orange',
+  'Priorizado': 'yellow',
+  'Validado': 'blue'
+}
 
 const BoardDirectorio = () => {
   // const [modalShow, setModalShow] = useState(false);
@@ -95,7 +103,11 @@ const BoardDirectorio = () => {
                                         <img src={item.fields.issuetype?.iconUrl} alt="Imagen del icono del proyecto de jira" className="w-4 h-4" />
                                         <a target="_blank" rel="noreferrer" href={`https://gpenna.atlassian.net/browse/${item.key}`} className="text-gray-400 text-sm flex">{item.key}</a>
                                       </div>
-                                      <p className="text-gray-400 text-sm flex">{item.fields.status.name}</p>
+                                      <Badge 
+                                        color={colorStatusIssue[item.fields.status] ?? 'gray'}
+                                        className=" p-1 rounded-md my-4  text-sm flex">
+                                        {item.fields.status}
+                                      </Badge>
                                     </div>
                               </div>
                             </div>
