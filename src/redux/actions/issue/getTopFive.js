@@ -26,7 +26,7 @@ export const getTopFive = (area) => {
       "created",
       "updated"
     ],
-    "jql": `(TOP = TOP1 OR TOP = TOP2 OR TOP = TOP3 OR TOP = TOP4 OR TOP = TOP5) AND (@ids)`
+    "jql": `(TOP = TOP1 OR TOP = TOP2 OR TOP = TOP3 OR TOP = TOP4 OR TOP = TOP5) AND status != Cerrado AND (@ids)`
   }
   
 
