@@ -103,11 +103,13 @@ const BoardDirectorio = () => {
                                         <img src={item.fields.issuetype?.iconUrl} alt="Imagen del icono del proyecto de jira" className="w-4 h-4" />
                                         <a target="_blank" rel="noreferrer" href={`https://gpenna.atlassian.net/browse/${item.key}`} className="text-gray-400 text-sm flex">{item.key}</a>
                                       </div>
-                                      <Badge 
-                                        color={colorStatusIssue[item.fields.status] ?? 'gray'}
-                                        className=" p-1 rounded-md my-4  text-sm flex">
-                                        {item.fields.status}
-                                      </Badge>
+                                      {item.fields.status === 'Priorizado' ? '' : 
+                                        <Badge 
+                                          color={colorStatusIssue[item.fields.status] ?? 'gray'}
+                                          className=" p-1 rounded-md my-4  text-sm flex">
+                                          {item.fields.status}
+                                        </Badge>
+                                      }
                                     </div>
                               </div>
                             </div>
