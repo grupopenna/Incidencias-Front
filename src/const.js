@@ -19,9 +19,7 @@ export const JIRA_MARKS = {
     STRIKE: 'strike'
 }
 
-
 export const ALLOW_CONTENT_LENGHT = 60
-
 
 export const STATUS = {
     ...BOARD_STATUS,
@@ -30,7 +28,6 @@ export const STATUS = {
     EN_CURSO: 'en curso',
     EN_PROCESO: 'en proceso'
 }
-
 
 export const STATU_COLOR = {
     [STATUS.EN_CURSO]: 'green',
@@ -52,12 +49,25 @@ export const WORKERS = [
     "Alcides"
 ]
 
-
 export const AREAS = {
     SISTEMAS: 'sistemas',
     ADM: 'administracion'
 }
 
+export const A2REAS = {
+    ADM: "Administración",
+    AGRB: "Agro Brandsen",
+    AGRT: "Agro Tandil",
+    COM: "Compras",
+    CONT: "Contable",
+    DIR: "Dirección",
+    EESS: "Estación Varela",
+    IT: "Sistemas",
+    LOGI: "Logística",
+    RRHH: "Recursos Humanos",
+    TALL: "Taller",
+    TESO: "Tesorería"
+}
 
 export const ISSUETYPE_COD = {
     ERROR: '10135',

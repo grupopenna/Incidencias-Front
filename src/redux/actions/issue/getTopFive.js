@@ -37,18 +37,18 @@ export const getTopFive = (area) => {
       dispatch({ type: GET_TOP, payload: response })
 
       Object.keys(response).forEach((key) => {
-         response[key]?.sort((issueA, issueB) => {
-             const statusIssueA = issueA.fields.status 
-             const statusIssueB = issueB.fields.status 
+          response[key]?.sort((issueA, issueB) => {
+              const statusIssueA = issueA.fields.status 
+              const statusIssueB = issueB.fields.status 
 
-             if ( statusIssueA === 'Validar' && statusIssueB !== 'Validar' ) return -1
-             if ( statusIssueA !== 'Validar' && statusIssueB === 'Validar')  return 1
+              if ( statusIssueA === 'Validar' && statusIssueB !== 'Validar' ) return -1
+              if ( statusIssueA !== 'Validar' && statusIssueB === 'Validar')  return 1
 
-             if ( statusIssueA === 'Priorizado' && (statusIssueB === 'Validar' || statusIssueB === 'En Proceso') ) return 1
-             if ( (statusIssueA === 'Validar' || statusIssueA === 'En Proceso') && statusIssueB === 'Priorizado' ) return -1
+              if ( statusIssueA === 'Priorizado' && (statusIssueB === 'Validar' || statusIssueB === 'En Proceso') ) return 1
+              if ( (statusIssueA === 'Validar' || statusIssueA === 'En Proceso') && statusIssueB === 'Priorizado' ) return -1
 
-             return 0
-         })
+              return 0
+          })
       })
 
       return response
