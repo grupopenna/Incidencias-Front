@@ -46,7 +46,6 @@ const BoardArea = () => {
   if (isLoading) {
     return <Loader />;
   }
-
   // const handleChangeArea = async () => {
   //     setIsloding(true)
   //     await getTopFive(selectedArea)(dispatch)
