@@ -56,8 +56,23 @@ const NotifyIncidentForm = () => {
 
     const markdown = editorRef.current.getMarkdown()
     const lines = markdown.split('\n')
-
     const imageLines = lines.filter(item => /^!/ig.test(item) )
+
+
+    for (let index = 0; index < lines.length; index++) {
+        
+        if (!/^!/ig.test(lines[index]) && lines[index].startsWith('###')) {
+          const separateData = lines[index].split(':')
+
+          if (separateData[1].startsWith('![')) {
+            imageLines.push(separateData[1]+':'+separateData[2])
+          }
+
+          lines[index] = separateData[0] + ':'
+        }
+
+    }
+
     let allImages = []
     let base64Images = []
     
@@ -143,6 +158,7 @@ const NotifyIncidentForm = () => {
       if (selectedCompanies.length < 1) {
         setErrors({ ...errors, companies: 'Se debe seleccionar al menos una empresa' });
         fireMessage('error', 'Oops...', 'Se debe seleccionar al menos una empresa')
+        setLoading(false)
         return
   
       }
