@@ -8,6 +8,7 @@ export const GET_ISSUES = "GET_ISSUES";
 export const GET_All_ISSUES = "GET_All_ISSUES";
 export const GET_TOP = "GET_TOP";
 export const GET_APPROVE = "GET_APPROVE";
+export const GET_PRIORIZADOSXAREA_ISSUES = "GET_PRIORIZADOSXAREA_ISSUES";
 
 export const GET_ISSUETYPE = 'GET_ISSUETYPE'
 

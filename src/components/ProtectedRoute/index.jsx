@@ -8,7 +8,7 @@ function ProtectedRoute() {
     const dispatch = useDispatch()
     const [isLoading, setIsLoading] = useState(true)
 
-   useEffect(() => {
+    useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     let token = params.get('token')
 
@@ -25,14 +25,14 @@ function ProtectedRoute() {
     } else {
         localStorage.setItem('urlToken', token)
     }
-    
+
     (async () => {
         const response = await fetch(`${import.meta.env.VITE_BACK_AUTH_URL}/auth/check-url-token`, {
             headers: {
                 authorization: `Bearer ${token}`
             }
         })
-        
+
         if (!response.ok) {
             window.location.href = import.meta.env.VITE_REDIRECT_URL
             return 
@@ -46,11 +46,11 @@ function ProtectedRoute() {
 
     })()
 
-   }, [])
+    }, [])
 
-   if (isLoading) {
-    return <div className='w-6 h-6 rounded-full  m-auto border-2 border-white border-l-transparent animate-spin '/>
-   }
+    if (isLoading) {
+        return <div className='w-6 h-6 rounded-full  m-auto border-2 border-white border-l-transparent animate-spin '/>
+    }
 
 
     return <Outlet />
