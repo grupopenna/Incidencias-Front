@@ -16,6 +16,7 @@ const NewRequirementsLazy = lazy(() => import('./view/IncidentTable/IncidentTabl
 const IncidentTableLazy = lazy(() => import('./view/IncidentTable/IncidentTable'))
 const ViewAllIndicentLazy = lazy(() => import('./components/ViewAllIndicent/index'))
 const BoardDirectorioLazy = lazy(() => import('./components/BoardDirectorio/BoardDirectorio'))
+const BoardAreaLazy = lazy(() => import('./components/BoardArea/BoardArea'))
 const SprintTableLazy = lazy(() => import('./components/ProxSprintTable/SprintTable'))
 const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'))
 const SearchIssue = lazy(() => import('./components/SearchIssue'))
@@ -44,6 +45,7 @@ const App = () => {
               <Route exact path="/view-all-incidents/:jiraAccountId" element={<ViewAllIndicentLazy />} />
               <Route exact path="/proxSprint/:key" element={<SprintTableLazy />} />
               <Route exact path="/control-general" element={<BoardDirectorioLazy />} />
+              <Route exact path="/control-areas" element={<BoardAreaLazy />} />
               <Route exact path='/search-issue/' element={<SearchIssue />} />
               <Route exact path='/search-issue/:key' element={<SearchIssue />} />
               <Route exact path='/daily-report' element={<DailyReport />} />
