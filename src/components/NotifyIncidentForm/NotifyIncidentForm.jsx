@@ -30,7 +30,7 @@ const NotifyIncidentForm = () => {
   const editorRef = useRef(null)
   const dispatch = useDispatch()
   const { issuesType, id } = useSelector(state => state.issuesTypes)
-  const { jiraAccountId } = useSelector(state => state.user)
+  const { jiraAccountId, area } = useSelector(state => state.user)
   const [titleDesc, setTitleDesc] = useState('');
   const [file, setfile] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState('')
@@ -41,7 +41,7 @@ const NotifyIncidentForm = () => {
   const navigate = useNavigate();
   const { pathname } = location;
   const [IssueKey] = pathname.split('/').slice(-2)
-
+  console.log('jiraAccountId', jiraAccountId)
 
   useEffect(() => {
     (async () => {
@@ -56,8 +56,23 @@ const NotifyIncidentForm = () => {
 
     const markdown = editorRef.current.getMarkdown()
     const lines = markdown.split('\n')
-
     const imageLines = lines.filter(item => /^!/ig.test(item) )
+
+
+    for (let index = 0; index < lines.length; index++) {
+        
+        if (!/^!/ig.test(lines[index]) && lines[index].startsWith('###')) {
+          const separateData = lines[index].split(':')
+
+          if (separateData[1].startsWith('![')) {
+            imageLines.push(separateData[1]+':'+separateData[2])
+          }
+
+          lines[index] = separateData[0] + ':'
+        }
+
+    }
+
     let allImages = []
     let base64Images = []
     
@@ -143,6 +158,7 @@ const NotifyIncidentForm = () => {
       if (selectedCompanies.length < 1) {
         setErrors({ ...errors, companies: 'Se debe seleccionar al menos una empresa' });
         fireMessage('error', 'Oops...', 'Se debe seleccionar al menos una empresa')
+        setLoading(false)
         return
   
       }
@@ -162,7 +178,7 @@ const NotifyIncidentForm = () => {
         isERP: IssueKey === 'ERP' 
       }
         
-        issuePost(data, jiraAccountId)(dispatch)
+        issuePost(data, jiraAccountId, area)(dispatch)
           .catch(() => {
             Swal.fire({
               icon: "error",

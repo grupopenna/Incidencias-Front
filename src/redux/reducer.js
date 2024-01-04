@@ -5,6 +5,7 @@ import {
   GET_All_ISSUES,
   GET_TOP,
   GET_APPROVE,
+  GET_PRIORIZADOSXAREA_ISSUES,
 
   GET_PROJECTS,
 
@@ -42,6 +43,7 @@ const initialState = {
 
   top: [],
   approve: [],
+  areas: [],
 
   projects: [],
 
@@ -77,6 +79,8 @@ const reducer = (state = initialState, { type, payload }) => {
       return { ...state, top: payload };
     case GET_APPROVE:
       return { ...state, approve: payload }
+    case GET_PRIORIZADOSXAREA_ISSUES:
+      return { ...state, areas: payload }
 
     case GET_PROJECTS:
       return { ...state, projects: payload }

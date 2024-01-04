@@ -33,10 +33,10 @@ jobs:
       - name: Build Application
         run: |
           touch .env.production
-          echo VITE_BASE_URL=${{ secrets.BASE_URL }} >> .env.production
-          echo VITE_BACK_AUTH_URL=${{ secrets.BACK_AUTH_URL }} >> .env.production
+          echo VITE_BASE_URL=http://52.3.9.10:3002/api2 >> .env.production
+          echo VITE_BACK_AUTH_URL=http://52.3.9.10:3001/api1 >> .env.production
           echo VITE_REDIRECT_URL=${{ secrets.REDIRECT_URL_STAGED}} >> .env.production
-          echo VITE_SOCKET_URL=${{ secrets.SOCKET_URL }} >> .env.production
+          echo VITE_SOCKET_URL=http://52.3.9.10:3002/api2 >> .env.production
           npm run build
 
       - name: Prepare folder to deploy

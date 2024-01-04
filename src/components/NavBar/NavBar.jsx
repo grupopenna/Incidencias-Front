@@ -50,6 +50,7 @@ const NavBar = () => {
           <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('daily-report') ? 'bg-slate-500/20': ''}`} to={'/daily-report'}>Daily report</Link></li>
           <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('view-all-incidents/12') ? 'bg-slate-500/20': ''}`} to={'/view-all-incidents/12'}>Ver todas las incidencias</Link></li>
           <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('control-general') ? 'bg-slate-500/20': ''}`} to={'/control-general'}>Top 5</Link></li>
+          <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('control-areas') ? 'bg-slate-500/20': ''}`} to={'/control-areas'}>Top por Areas</Link></li>
         </ul> 
 
           <TextInput 
