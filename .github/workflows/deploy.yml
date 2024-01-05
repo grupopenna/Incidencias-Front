@@ -36,7 +36,7 @@ jobs:
           echo VITE_BASE_URL=http://52.3.9.10:3002/api2 >> .env.production
           echo VITE_BACK_AUTH_URL=http://52.3.9.10:3001/api1 >> .env.production
           echo VITE_REDIRECT_URL=${{ secrets.REDIRECT_URL }} >> .env.production
-          echo VITE_SOCKET_URL=http://52.3.9.10:3002/api2 >> .env.production
+          echo VITE_SOCKET_URL=http://52.3.9.10:3002 >> .env.production
           npm run build
 
       - name: Prepare folder to deploy
