@@ -23,6 +23,8 @@ import {
   GET_WORKLOG,
   GET_ISSUE_BY_KEY,
   CLEAR_ISSUE_BY_KEY,
+  SET_USER_DATA,
+
   ERROR_GET_ISSUE_BY_KEY,
   GET_USERS_IT,
 
@@ -47,14 +49,7 @@ const initialState = {
 
   board: [],
 
-  user: {
-    fullName: "Sebastian Almiron",
-    email: "sistemas4@penna.com.ar",
-    company: "",
-    area: "",
-    rol: "",
-    jiraAccountId: "712020:75da847b-f656-4020-a3fd-84d8811cd76f"
-  },
+  user: {},
 
   transitions: [],
 
@@ -118,6 +113,8 @@ const reducer = (state = initialState, { type, payload }) => {
     case CLEAR_ISSUE_BY_KEY:
       return { ...state, issueByKey: [], issueByKeyError: false }
 
+    case SET_USER_DATA:
+      return { ...state, user: payload }
     
     case ERROR_GET_ISSUE_BY_KEY:
       return { ...state, issueByKeyError: true }
