@@ -64,7 +64,7 @@ const NotifyIncidentForm = () => {
         if (!/^!/ig.test(lines[index]) && lines[index].startsWith('###')) {
           const separateData = lines[index].split(':')
 
-          if (separateData[1].startsWith('![')) {
+          if (separateData[1]?.startsWith('![')) {
             imageLines.push(separateData[1]+':'+separateData[2])
           }
 
