@@ -55,7 +55,7 @@ const NavBar = () => {
   
       <nav className='flex relative justify-end items-center px-5 pt-1 gap-10'>
 
-        <ul className={`${pathName === '/' ? 'opacity-0': ''} w-full flex gap-x-4 p-2 [&>li>a]:text-white`}>
+        <ul className={`w-full flex gap-x-4 p-2 [&>li>a]:text-white`}>
           <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('sin-comenzar') ? 'bg-slate-500/20': ''}`} to={'/sin-comenzar'}>Incidencias sin comenzar</Link></li>
           <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('daily-report') ? 'bg-slate-500/20': ''}`} to={'/daily-report'}>Daily report</Link></li>
           <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('view-all-incidents/12') ? 'bg-slate-500/20': ''}`} to={'/view-all-incidents/12'}>Ver todas las incidencias</Link></li>
@@ -63,7 +63,7 @@ const NavBar = () => {
           <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('control-areas') ? 'bg-slate-500/20': ''}`} to={'/control-areas'}>Top por Areas</Link></li>
         </ul> 
         <div className="flex gap-2">
-          <button className="bg-indigo-700 text-white p-2 rounded-lg hover:bg-indigo-700/80"
+          <button className={`${pathName === '/' ? 'opacity-0': ''} bg-indigo-700 text-white p-2 rounded-lg hover:bg-indigo-700/80`}
             onClick={handleSearchButton}
           >
             <SearchIcon />
