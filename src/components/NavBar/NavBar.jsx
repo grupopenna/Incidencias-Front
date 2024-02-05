@@ -63,7 +63,7 @@ const NavBar = () => {
           <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('control-areas') ? 'bg-slate-500/20': ''}`} to={'/control-areas'}>Top por Areas</Link></li>
         </ul> 
         <div className="flex gap-2">
-          <button className="bg-indigo-700 text-white p-2 rounded-lg  hover:bg-indigo-700/80"
+          <button className="bg-indigo-700 text-white p-2 rounded-lg hover:bg-indigo-700/80"
             onClick={handleSearchButton}
           >
             <SearchIcon />
