@@ -75,6 +75,7 @@ const BoardArea = () => {
                               <div key={item.key} className="w-full p-1 my-1 mx-1 rounded-md bg-bgIncident flex flex-col text-gray-200" >
                                     <p className="text-gray-400 font-bold text-sm flex">{item.fields.summary}</p>
                                     <p className="text-gray-400 text-sm">{item.fields.timetracking?.timeSpent}</p>
+                                    <p className="text-gray-400 text-sm">{item.fields.created}</p>
                                     <div className="flex justify-between">
                                       <div className="flex items-center gap-1">
                                         <img src={item.fields.issuetype?.iconUrl} alt="Imagen del icono del proyecto de jira" className="w-4 h-4" />

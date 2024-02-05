@@ -25,7 +25,6 @@ const BoardDirectorio = () => {
 
   const dispatch = useDispatch();
   const [isLoading, setIsloding] = useState(true)
-  console.log('top', top)
 
   useEffect(() => {
     (async () => {
