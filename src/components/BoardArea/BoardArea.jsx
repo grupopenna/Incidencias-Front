@@ -1,9 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
-// import Modal from '../Modal/Modal';
 import { useDispatch, useSelector } from 'react-redux';
-// import { getApprove, getTopFive, getUsers } from '../../redux/actions';
-// import { Select, SelectItem } from '@tremor/react';
 import Loader from '../Loader';
 import { A2REAS } from '../../const';
 import { getAreaPriorizado } from '../../redux/actions/issue/getAreaPriorizado';
@@ -13,22 +10,19 @@ const BoardArea = () => {
   // const [itemSelect, setItemSelect] = useState({});
   // const [selectedArea, setSelectedArea] = useState(AREAS.SISTEMAS)
   const priorizados = useSelector(state => state.areas)
-  // const approve = useSelector(state => state.approve)
-  // const responsables = useSelector(state => state.users)
 
   const dispatch = useDispatch();
   const [isLoading, setIsloding] = useState(false)
 
-  // useEffect(() => {
-  //   (async () => {
-  //     await getAreaPriorizado()(dispatch)
-  //   })()
-  // } ,[selectedArea])
-
   useEffect(() => {
     const fetchData = async () => {
-      await getAreaPriorizado()(dispatch);
-      setIsloding(false);
+      setIsloding(true);
+      await getAreaPriorizado()(dispatch).then(()=>{
+        setIsloding(false);
+      }).catch((err)=> {
+        console.log('err', err)
+        setIsloding(false)
+      })
     };
 
     fetchData(); // Llamada inicial al cargar el componente
@@ -46,17 +40,7 @@ const BoardArea = () => {
   if (isLoading) {
     return <Loader />;
   }
-  // const handleChangeArea = async () => {
-  //     setIsloding(true)
-  //     await getTopFive(selectedArea)(dispatch)
-  //     await getApprove(selectedArea)(dispatch)
-  //     setIsloding(false)
-  // }
-
-  // const processNames = (value) => {
-  //     return value?.split(' ')[0]
-  // }
-
+  
   return (
     <div className="w-full flex flex-col h-full justify-center pt-1 p-5">
         <div className={`gap-x-2 w-full mt-5 grid grid-cols-${Object.values(A2REAS)?.length}`}>
