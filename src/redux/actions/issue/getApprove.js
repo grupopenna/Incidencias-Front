@@ -25,7 +25,7 @@ export const getApprove = (area) => {
       "created",
       "updated"
     ],
-    "jql": `labels = APROBADO AND TOP = NULL`
+    "jql": `labels = APROBADO AND status != Cerrado AND TOP = NULL`
   }
   
 
