@@ -6,6 +6,7 @@ import { Badge, Select, SelectItem } from '@tremor/react'
 import Loader from '../Loader';
 import { AREAS } from '../../const';
 import { clearIssueByKey, getIssueByKey } from './../../redux/actions/issue/getIssueByKey';
+import ViewerView from './../ViewerView/index';
 
 
 const colorStatusIssue = {
@@ -74,7 +75,7 @@ const BoardDirectorio = () => {
           <span onClick={() => { setModalShow(false); dispatch(clearIssueByKey()) }} className='bg-red-500 z-50 text-white flex justify-center cursor-pointer items-center absolute top-1 right-1 h-5 w-5 rounded-full'>X</span>
           {
             IssueKey.length > 0
-              ? IssueKey[0].fields.description ? <p>{IssueKey[0].fields.description}</p> : "NO HAY DESCRIPCIÓN"
+              ? IssueKey[0].fields.description ? <ViewerView description={IssueKey[0].fields.description} /> : "NO HAY DESCRIPCIÓN"
               : <div className='h-full'>
                 <main className='w-full h-full rounded-mdpx-3 py-2 text-sm font-semibold text-white shadow-sm flex justify-center items-center'>
                   <div className='w-8 h-8 border-2 border-black rounded-full animate-spin border-r-transparent' />
