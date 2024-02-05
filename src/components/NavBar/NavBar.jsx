@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { TextInput } from "@tremor/react";
@@ -20,7 +21,7 @@ const NavBar = () => {
   //let logo ='https://softland.com.ar/wp-content/uploads/2020/09/logo-blanco-1.png'
 
   const handleSearch = async (event) => {
-    if (event.code === 'Enter') {
+    if (event.code === 'Enter' || event.code === "NumpadEnter") {
       setIsLoading(true)
       clearIssueByKey()(dispatch)
       if (!searchParam.trim()) return
@@ -30,6 +31,15 @@ const NavBar = () => {
       })
     }
   }
+  const handleSearchButton = async () => {
+      setIsLoading(true)
+      clearIssueByKey()(dispatch)
+      if (!searchParam.trim()) return
+      await getIssueByKey(searchParam.trim())(dispatch)
+      navigate('/search-issue', {
+        replace: true
+      })
+    }
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -52,10 +62,16 @@ const NavBar = () => {
           <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('control-general') ? 'bg-slate-500/20': ''}`} to={'/control-general'}>Top 5</Link></li>
           <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('control-areas') ? 'bg-slate-500/20': ''}`} to={'/control-areas'}>Top por Areas</Link></li>
         </ul> 
-
+        <div className="flex gap-2">
+          <button className="bg-indigo-700 text-white p-2 rounded-lg  hover:bg-indigo-700/80"
+            onClick={handleSearchButton}
+          >
+            <SearchIcon />
+          </button>
           <TextInput 
             onChange={(event) => setSearchParam(event.target.value)}  
-            onKeyUp={handleSearch} icon={SearchIcon} placeholder="CMS-21, FUN-12 ...." className={`${pathName === '/' ? 'opacity-0': ''} p-1 h-10 w-56`}/>
+            onKeyUp={handleSearch} placeholder="CMS-21, FUN-12 ...." className={`${pathName === '/' ? 'opacity-0': ''} p-1 h-10 w-56`}/>
+        </div>
       </nav>
     </header>
   )
