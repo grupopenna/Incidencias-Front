@@ -25,7 +25,10 @@ const BoardDirectorio = () => {
 
   const dispatch = useDispatch();
   const [isLoading, setIsloding] = useState(true)
+<<<<<<< HEAD
   const [modalShow, setModalShow] = useState(false)
+=======
+>>>>>>> a49b8bc74b93de732d5a21a37c9434b4d0a87d0e
 
   useEffect(() => {
     (async () => {
