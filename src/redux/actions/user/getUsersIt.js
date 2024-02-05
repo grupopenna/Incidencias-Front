@@ -13,7 +13,7 @@ export const getUsers = (area) => {
             const { data: response } = await axios(`${BASE_URL}/users/getItUsers/?area=${area}`)
 
             const filterUsers = response.data?.filter((user) => WORKERS.includes(user.displayName))
-            console.log('filterUsers', [...filterUsers, alej])
+            // console.log('filterUsers', [...filterUsers, alej])
             dispatch({ type: GET_USERS_IT, payload: [...filterUsers, alej] })
         } catch(error) {
             console.error(error)
