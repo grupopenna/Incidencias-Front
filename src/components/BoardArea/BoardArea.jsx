@@ -4,12 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../Loader';
 import { A2REAS } from '../../const';
 import { getAreaPriorizado } from '../../redux/actions/issue/getAreaPriorizado';
+import { DragDropContext } from "@hello-pangea/dnd";
+import BoardsCard from '../BoardsCard/BoardsCard';
+import { clearIssueByKey } from '../../redux/actions';
+import ViewerView from '../ViewerView';
 
 const BoardArea = () => {
-  // const [modalShow, setModalShow] = useState(false);
-  // const [itemSelect, setItemSelect] = useState({});
-  // const [selectedArea, setSelectedArea] = useState(AREAS.SISTEMAS)
+  const [modalShow, setModalShow] = useState(false);
   const priorizados = useSelector(state => state.areas)
+  const IssueKey = useSelector(state => state.issueByKey)
 
   const dispatch = useDispatch();
   const [isLoading, setIsloding] = useState(false)
@@ -40,9 +43,37 @@ const BoardArea = () => {
   if (isLoading) {
     return <Loader />;
   }
+
+  const onDragEnd = () => {}
+
+  const ModalDescription = () => {
+    return (
+      <div className='z-10 fixed left-[-10px] right-[-10px] bottom-[-10px] top-[-10px] bg-bgModal flex justify-center items-center'>
+        <div className='h-1/2 w-1/2 rounded-lg p-3 bg-slate-100 overflow-auto relative'>
+          <span onClick={() => { setModalShow(false); dispatch(clearIssueByKey()) }} className='bg-red-500 z-50 text-white flex justify-center cursor-pointer items-center absolute top-1 right-1 h-5 w-5 rounded-full'>X</span>
+          {
+            IssueKey.length > 0
+              ? IssueKey[0].fields.description ? <ViewerView description={IssueKey[0].fields.description} /> : "NO HAY DESCRIPCIÓN"
+              : <div className='h-full'>
+                <main className='w-full h-full rounded-mdpx-3 py-2 text-sm font-semibold text-white shadow-sm flex justify-center items-center'>
+                  <div className='w-8 h-8 border-2 border-black rounded-full animate-spin border-r-transparent' />
+                </main>
+              </div>
+          }
+        </div>
+      </div>
+    )
+  }
   
   return (
     <div className="w-full flex flex-col h-full justify-center pt-1 p-5">
+      {modalShow && <ModalDescription setModalShow={setModalShow} />}
+      <DragDropContext onDragEnd={onDragEnd} className="flex">
+        <div className={`gap-x-2 w-full mt-5 grid grid-cols-${Object.values(A2REAS)?.length}`}>
+              {/* {Object.keys(A2REAS)?.map((area, i) => (<h1 key={i} className="px-3 pt-1 font-bold text-font text-center text-2xl">{area}</h1>
+                ))
+              } */}
+        </div>
         <div className={`gap-x-2 w-full mt-5 grid grid-cols-${Object.values(A2REAS)?.length}`}>
             {Object.keys(A2REAS)?.map((area, i) => (
               <div key={i} className=" bg-bgColumn  rounded-lg w-full min-h-screen">
@@ -55,20 +86,11 @@ const BoardArea = () => {
                     <div className="pt-2">
                       {priorizados[area]?.length > 0 ?
                         priorizados[area].map((item) => {
-                            return <div key={item.id}  className="w-full h-fit flex ">
-                              <div key={item.key} className="w-full p-1 my-1 mx-1 rounded-md bg-bgIncident flex flex-col text-gray-200" >
-                                    <p className="text-gray-400 font-bold text-sm flex">{item.fields.summary}</p>
-                                    <p className="text-gray-400 text-sm">{item.fields.timetracking?.timeSpent}</p>
-                                    <p className="text-gray-400 text-sm">{item.fields.created}</p>
-                                    <div className="flex justify-between">
-                                      <div className="flex items-center gap-1">
-                                        <img src={item.fields.issuetype?.iconUrl} alt="Imagen del icono del proyecto de jira" className="w-4 h-4" />
-                                        <a target="_blank" rel="noreferrer" href={`https://gpenna.atlassian.net/browse/${item.key}`} className="text-gray-400 text-sm flex">{item.key}</a>
-                                      </div>
-                                      <p className="text-gray-400 text-sm flex">{item.fields.status.name}</p>
-                                    </div>
-                              </div>
-                            </div>
+                            return <BoardsCard
+                              key={item.id}
+                              item={item}
+                              setModalShow={setModalShow}
+                            />
 
                         })
                         : <div className="text-center pt-4 pb-9">
@@ -81,6 +103,7 @@ const BoardArea = () => {
               </div>
             ))}
         </div>
+      </DragDropContext>
     </div>
   )
 }
