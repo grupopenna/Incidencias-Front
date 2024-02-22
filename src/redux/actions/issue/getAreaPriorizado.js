@@ -25,7 +25,7 @@ export const getAreaPriorizado = () => {
         "created",
         "updated"
       ],
-    "jql": "(@areas) AND status = Priorizado OR status = 'Sin Priorizar'"
+    "jql": "(@areas) AND (status = Priorizado OR status = 'Sin Priorizar')"
   }
 
   return async (dispatch) => {

@@ -2,19 +2,13 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getApprove, getTopFive, getUsers } from '../../redux/actions/';
-import { Badge, Select, SelectItem } from '@tremor/react'
+import { Select, SelectItem } from '@tremor/react'
 import Loader from '../Loader';
 import { AREAS } from '../../const';
-import { clearIssueByKey, getIssueByKey } from './../../redux/actions/issue/getIssueByKey';
+import { clearIssueByKey } from './../../redux/actions/issue/getIssueByKey';
 import ViewerView from './../ViewerView/index';
+import BoardsCard from '../BoardsCard/BoardsCard';
 
-
-const colorStatusIssue = {
-  'Validar': 'red',
-  'En Proceso': 'orange',
-  'Priorizado': 'yellow',
-  'Validado': 'blue'
-}
 
 const BoardDirectorio = () => {
 
@@ -114,28 +108,11 @@ const BoardDirectorio = () => {
                 <div className="pt-2">
                   {top[processNames(transition?.displayName)]?.length > 0 ?
                     top[processNames(transition?.displayName)].map((item) => {
-                      return <div key={item.id} className="w-full h-fit flex ">
-                        <div key={item.key} className="w-full p-1 my-1 mx-1 rounded-md bg-bgIncident flex flex-col text-gray-200" >
-                          <p className="text-gray-400 font-bold text-sm flex">{item.fields.summary}</p>
-                          <p className="text-gray-400 text-sm">{item.fields.timetracking?.timeSpent}</p>
-                          <div className="flex justify-between">
-                            <div className="flex items-center gap-1">
-                              <img src={item.fields.issuetype?.iconUrl} alt="Imagen del icono del proyecto de jira" className="w-4 h-4" />
-                              <a target="_blank" rel="noreferrer" href={`https://gpenna.atlassian.net/browse/${item.key}`} className="text-gray-400 text-sm flex">{item.key}</a>
-                            </div>
-                            {item.fields.status === 'Priorizado' ? '' :
-                              <Badge
-                                color={colorStatusIssue[item.fields.status] ?? 'gray'}
-                                className=" p-1 rounded-md my-4  text-sm flex">
-                                {item.fields.status}
-                              </Badge>
-                            }
-                          </div>
-
-                          <div onClick={() => { setModalShow(true); dispatch(getIssueByKey(item.key)) }} className='text-blue-400 cursor-pointer'>Mas Info...</div>
-
-                        </div>
-                      </div>
+                      return <BoardsCard 
+                      key={item.id}
+                      item={item}
+                      setModalShow={setModalShow}
+                    />
 
                     })
                     : <div className="text-center pt-4 pb-9">
@@ -149,23 +126,11 @@ const BoardDirectorio = () => {
                 <div className="pt-2">
                   {approve[processNames(transition?.displayName)]?.length > 0 ?
                     approve[processNames(transition?.displayName)].map((item) => {
-                      return <div key={item.id} className="w-full h-fit flex ">
-                        <div key={item.key} className="w-full p-1 my-1 mx-1 rounded-md bg-bgIncident flex flex-col text-gray-200" >
-                          <p className="text-gray-400 font-bold text-sm flex">{item.fields.summary}</p>
-                          <p className="text-gray-400 text-sm">{item.fields.timetracking?.timeSpent}</p>
-                          <div className="flex justify-between">
-                            <div className="flex items-center gap-1">
-                              <img src={item.fields.issuetype?.iconUrl} alt="Imagen del icono del proyecto de jira" className="w-4 h-4" />
-                              <a target="_blank" rel="noreferrer" href={`https://gpenna.atlassian.net/browse/${item.key}`} className="text-gray-400 text-sm flex">{item.key}</a>
-                            </div>
-                            <p className="text-gray-400 text-sm flex">{item.fields.status.name}</p>
-                          </div>
-
-                          <div className='text-blue-400 cursor-pointer' onClick={() => { setModalShow(true); dispatch(getIssueByKey(item.key)) }}>Mas Info...</div>
-
-                        </div>
-                      </div>
-
+                      return <BoardsCard 
+                        key={item.id}
+                        item={item}
+                        setModalShow={setModalShow}
+                      />
                     })
                     : <div className="text-center pt-4 pb-9">
                       <h2 className="text-gray-400 font-semibold text-sm flex p-2">No hay siguientes incidencias a realizar</h2>

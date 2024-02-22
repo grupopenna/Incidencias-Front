@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { getIssueByKey, clearIssueByKey } from '../../redux/actions'
 import { useContext } from "react";
 import { GlobalContext } from "../../context";
+import logo from "../../assets/logo-footerBIG.png"
 
 const NavBar = () => {
   const dispatch = useDispatch()
@@ -17,7 +18,7 @@ const NavBar = () => {
   const redirect = () => {
     navigate('/')
   }
-  let logo = 'https://www.grupopenna.com.ar/images/logo-footerBIG.png'
+  // let logo = 'https://www.grupopenna.com.ar/images/logo-footerBIG.png'
   //let logo ='https://softland.com.ar/wp-content/uploads/2020/09/logo-blanco-1.png'
 
   const handleSearch = async (event) => {
