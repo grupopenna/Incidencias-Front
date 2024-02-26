@@ -12,7 +12,9 @@ const loginUser = (data) => {
         localStorage.setItem('token', tokenUser)
         localStorage.setItem('urlToken', res.data.urlToken)
 
-        dispatch({ type: SET_USER_DATA, payload: data })
+        localStorage.setItem('userData', JSON.stringify(res.data.data))
+        
+        dispatch({ type: SET_USER_DATA, payload: res.data.data })
 
         return response
       }

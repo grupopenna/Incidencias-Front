@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { lazy } from 'react';
 import { Suspense } from 'react';
 import {NotFound} from './view/NotFound/NotFound'
-import ProtectedRouteLogin from './components/ProtectedRouteLogin/ProtectedRouteLogin';
+// import ProtectedRoute from './components/ProtectedRoute'
 
 /**
  * 
