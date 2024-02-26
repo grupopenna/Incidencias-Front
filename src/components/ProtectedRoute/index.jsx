@@ -2,6 +2,7 @@ import { useDispatch } from 'react-redux'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { setUserData } from '../../redux/actions'
+import { useEffect, useState } from 'react'
 
 function ProtectedRoute() {
   const dispatch = useDispatch()
@@ -12,6 +13,7 @@ function ProtectedRoute() {
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem('token'))
     const userData = JSON.parse(localStorage.getItem('userData'))
+
 
   if (!token || token == undefined) {
     navigate('/login')
@@ -31,10 +33,8 @@ function ProtectedRoute() {
         })
       try {
         if (res.ok) {
-          const data = await res.json()
-          console.log('data', data)
-          localStorage.setItem('urlToken', "hola")
-          
+          const { data } = await res.json()
+          localStorage.setItem('urlToken', data.urlToken)
           setIsAuthenticated(true)
         }
       } catch (err) {

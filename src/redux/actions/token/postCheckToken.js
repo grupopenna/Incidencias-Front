@@ -1,20 +1,21 @@
-import axios from 'axios';
-import {  SET_USER_DATA } from '../../action-type';
+import axios from "axios";
+import { BACK_AUTH_URL, SET_USER_DATA } from '../../action-type';
 
 export const postCheckToken = (token) => {
   return async (dispatch) => {
+    const bearer = `Bearer ${token}`
     try {
-
-      const response = axios(`${import.meta.env.VITE_BACK_BASE_URL}/auth`,
-      {
+      const response = await axios.get(`${BACK_AUTH_URL}/auth`, {
         headers: {
-          Authorization: `Bearer ${token}`
+          "Authorization": bearer
         }
       })
-      console.log('response', response)
-      let res = await response.data
 
-      console.log('response postCheckToken', res)
+      console.log('response postCheckToken', response)
+
+      if (response.status >= 300) {
+        return response
+      }
 
       dispatch({type: SET_USER_DATA, payload: response})
 
