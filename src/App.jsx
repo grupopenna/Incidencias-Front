@@ -2,8 +2,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { lazy } from 'react';
 import { Suspense } from 'react';
-// import LoginForm from './components/LoginForm/LoginForm';
-// import ProtectedRouteLogin from './components/ProtectedRouteLogin/ProtectedRouteLogin';
+import {NotFound} from './view/NotFound/NotFound'
+import ProtectedRouteLogin from './components/ProtectedRouteLogin/ProtectedRouteLogin';
 
 /**
  * 
@@ -24,7 +24,7 @@ const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'))
 const SearchIssue = lazy(() => import('./components/SearchIssue'))
 const DailyReport = lazy(() => import('./components/DailyReport'))
 const WithoutState = lazy(() => import('./components/WithoutState'))
-// const LoginFormLazy = lazy(() => import('./components/LoginForm/LoginForm'))
+const LoginFormLazy = lazy(() => import('./components/LoginForm/LoginForm'))
 
 const Loader = () => {
   return <section className='w-full min-h-screen flex bg-background justify-center items-center'>
@@ -40,15 +40,9 @@ const App = () => {
         <div className="flex min-h-screen flex-col bg-background">
           <NavBar />
           <Routes>
+            <Route path='/login' element={ <LoginFormLazy /> } />
             <Route element={<ProtectedRoute />}>
               <Route exact path="/" element={<HomeLazy />} />
-              {/* <Route
-                path='/login' element={
-                  <ProtectedRouteLogin>
-                    <LoginFormLazy />
-                  </ProtectedRouteLogin>
-                }
-              /> */}
               <Route exact path="/createIssue" element={<NewRequirementsLazy />} />
               <Route exact path="/board/:key" element={<IncidentTableLazy />} />
               <Route exact path="/createIssue/form/:key/" element={<NotifyIncidentFormLazy />} />
@@ -61,6 +55,8 @@ const App = () => {
               <Route exact path='/daily-report' element={<DailyReport />} />
               <Route exact path='/sin-comenzar' element={<WithoutState />} />
             </Route>
+            <Route path='*' redirectTo='/notFound' element={<NotFound />} />
+            <Route path='notFound' element={<NotFound />} />
           </Routes>
         </div>
       </Suspense>
