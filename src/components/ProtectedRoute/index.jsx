@@ -2,7 +2,6 @@ import { useDispatch } from 'react-redux'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { setUserData } from '../../redux/actions'
-import { useEffect, useState } from 'react'
 
 function ProtectedRoute() {
   const dispatch = useDispatch()
