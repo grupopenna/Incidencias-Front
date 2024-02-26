@@ -1,9 +1,8 @@
 import { useDispatch } from 'react-redux'
 import { Outlet, useNavigate } from 'react-router-dom'
-// import { setUserData } from '../../redux/actions'
 import { useEffect, useState } from 'react'
-// import Swal from 'sweetalert2'
-// import { postCheckToken } from '../../redux/actions/token/postCheckToken'
+import { setUserData } from '../../redux/actions'
+import { useEffect, useState } from 'react'
 
 function ProtectedRoute() {
   const dispatch = useDispatch()
@@ -13,17 +12,23 @@ function ProtectedRoute() {
 
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem('token'))
+    const userData = JSON.parse(localStorage.getItem('userData'))
+
 
   if (!token || token == undefined) {
     navigate('/login')
     return
   }
 
+  if(userData){
+    setUserData(userData)(dispatch)
+  }
+
   (async () => {
-    const res = await fetch(`${import.meta.env.VITE_BACK_BASE_URL}/auth`,
+    const res = await fetch(`${import.meta.env.VITE_BACK_AUTH_URL}/auth`,
         {
           headers: {
-            authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`
           }
         })
       try {
@@ -48,7 +53,6 @@ function ProtectedRoute() {
 
   if (!isAuthenticated) {
     return <Outlet />
-    // return children
   }
 }
 

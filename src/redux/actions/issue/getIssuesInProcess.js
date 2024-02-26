@@ -37,7 +37,8 @@ export const getIssuesInProcess = (JQL = `status = 'En Proceso'`) => {
     return async (dispatch) => {
         try {
             const response = await axios.post(`${BASE_URL}/incident/searchAll`, bodyData)
-            const filteredData = response.data.filter((item) => item?.fields?.project.projectCategory.name === 'notificacionesIncidencias')
+
+            const filteredData = response.data.filter((item) => item?.fields?.project?.projectCategory?.name == 'notificacionesIncidencias')
 
             dispatch({ type: GET_ISSUES_IN_PROCESS, payload: filteredData })
         } catch (error) {

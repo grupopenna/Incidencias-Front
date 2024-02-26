@@ -41,26 +41,30 @@ function ViewAllIndicent() {
     const projects = useSelector(state => state.projects)
     const { jiraAccountId } = useSelector(state => state.user)
 
+    console.log('jiraAccountId', jiraAccountId)
+
+    // let jiraAccountId = ""
+
     const incidentOrdered = useMemo(() => {
         if (!allIncients) return []
 
         let mutateData = allIncients
         if (order === ORDER_BY.DESC) {
             mutateData = allIncients?.toSorted((a, b) => {
-                return new Date(b?.fields.created) - new Date(a?.fields.created)
+                return new Date(b?.fields?.created) - new Date(a?.fields?.created)
             })
         } else {
             mutateData = allIncients.toSorted((a, b) => {
-                return new Date(a?.fields.created) - new Date(b?.fields.created)
+                return new Date(a?.fields?.created) - new Date(b?.fields?.created)
             })
         }
 
         if (selectedProject !== '') {
-            mutateData = mutateData?.filter((item) => item.fields.project.name === selectedProject)
+            mutateData = mutateData?.filter((item) => item?.fields?.project?.name === selectedProject)
         }
 
         if (searchByDetail !== '') {
-            mutateData = mutateData?.filter((item) => item.fields.summary?.toLowerCase().includes(searchByDetail?.toLowerCase()))
+            mutateData = mutateData?.filter((item) => item?.fields?.summary?.toLowerCase().includes(searchByDetail?.toLowerCase()))
         }
 
         return mutateData
@@ -118,8 +122,8 @@ function ViewAllIndicent() {
                         </label>
                         <Select disabled={viewInProcess} className='w-1/2' onValueChange={handleSelectChange} value={selectedProject}>
                             {projects?.map((project) => (
-                                <SelectItem key={project.key} value={project.name}>
-                                    {project.name}
+                                <SelectItem key={project?.key} value={project?.name}>
+                                    {project?.name}
                                 </SelectItem>
                             ))}
                         </Select>
@@ -157,8 +161,8 @@ function ViewAllIndicent() {
                 </TableHead>
                 <TableBody className='text-white'>
                     {incidentOrdered?.map((inciden, index) => {
-                        const formatCreated = FormatDate(new Date(inciden?.fields.created))
-                        const formatUpdated = FormatDate(new Date(inciden?.fields.updated))
+                        const formatCreated = FormatDate(new Date(inciden?.fields?.created))
+                        const formatUpdated = FormatDate(new Date(inciden?.fields?.updated))
 
                         return <TableRow
                             onClick={() => handleShowDetails(index)}
@@ -166,17 +170,17 @@ function ViewAllIndicent() {
                             className='hover:bg-white/30'>
                             <TableCell className='text-cente'>
                                 <div className='flex items-center justify-center m-auto p-2'>
-                                    <img className='w-5 h-6' src={inciden?.fields.issuetype.iconUrl} alt={inciden?.key} />
+                                    <img className='w-5 h-6' src={inciden?.fields?.issuetype.iconUrl} alt={inciden?.key} />
                                 </div>
                             </TableCell>
-                            <TableCell className='text-center'>{inciden?.fields.project.name}</TableCell>
+                            <TableCell className='text-center'>{inciden?.fields?.project?.name}</TableCell>
                             <TableCell className='text-center'>{inciden?.key}</TableCell>
-                            <TableCell className='text-center'>{inciden?.fields.summary}</TableCell>
+                            <TableCell className='text-center'>{inciden?.fields?.summary}</TableCell>
                             <TableCell className='text-center'>{inciden?.fields?.assignee?.displayName || <i>Sin asignar</i>}</TableCell>
                             <TableCell className='text-center'>
                                 <div className='w-28 h-10 m-auto'>
-                                    <p>{inciden?.fields.status.statusCategory.name}</p>
-                                    <div className='h-1 rounded-sm' style={{ backgroundColor: colorState[inciden?.fields.status.statusCategory.colorName] }}></div>
+                                    <p>{inciden?.fields?.status.statusCategory.name}</p>
+                                    <div className='h-1 rounded-sm' style={{ backgroundColor: colorState[inciden?.fields?.status.statusCategory.colorName] }}></div>
                                 </div>
                             </TableCell>
                             <TableCell className='text-center'>{formatCreated}</TableCell>

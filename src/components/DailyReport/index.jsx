@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
  import 
  { Badge,
   BarChart,
@@ -91,7 +92,7 @@ const DailyReport = () => {
         idUser = worker
     } else {
       const userData = JSON.parse(localStorage.getItem('userData')) 
-      idUser =  userData.user.jiraAccountId
+      idUser =  userData.jiraAccountId
     }
 
     await getWorklog(idUser, fromDate, toDate, selectedArea)(dispatch)
@@ -125,7 +126,7 @@ const DailyReport = () => {
     
     (async () => {
       const userData = JSON.parse(localStorage.getItem('userData')) 
-      const idUser =  userData.user.jiraAccountId
+      const idUser =  userData.jiraAccountId
       const fromDate = formatDateWorklog(date.from)
       const toDate =  formatDateWorklog(date.to)
       await getWorklog(idUser, fromDate, toDate)(dispatch)
