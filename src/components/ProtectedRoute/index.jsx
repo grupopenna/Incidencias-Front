@@ -1,59 +1,55 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useDispatch } from 'react-redux'
-import { Outlet } from 'react-router-dom'
-import { setUserData } from '../../redux/actions'
+import { Outlet, useNavigate } from 'react-router-dom'
+// import { setUserData } from '../../redux/actions'
 import { useEffect, useState } from 'react'
+// import Swal from 'sweetalert2'
+// import { postCheckToken } from '../../redux/actions/token/postCheckToken'
 
 function ProtectedRoute() {
-    const dispatch = useDispatch()
-    const [isLoading, setIsLoading] = useState(true)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-    useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    let token = params.get('token')
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem('token'))
 
-    if (!token) {
+  if (!token || token == undefined) {
+    navigate('/login')
+    return
+  }
 
-        const savedToken = localStorage.getItem('urlToken')
-
-        if (!savedToken) {
-            window.location.href = import.meta.env.VITE_REDIRECT_URL
-            return 
-        }
-
-        token = savedToken
-    } else {
-        localStorage.setItem('urlToken', token)
-    }
-
-    (async () => {
-        const response = await fetch(`${import.meta.env.VITE_BACK_AUTH_URL}/auth/check-url-token`, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
+  (async () => {
+    const res = await fetch(`${import.meta.env.VITE_BACK_BASE_URL}/auth`,
+        {
+          headers: {
+            authorization: `Bearer ${token}`
+          }
         })
-
-        if (!response.ok) {
-            window.location.href = import.meta.env.VITE_REDIRECT_URL
-            return 
+      try {
+        if (res.ok) {
+          const { data } = await res.json()
+          localStorage.setItem('urlToken', data.urlToken)
+          setIsAuthenticated(true)
         }
-
-        const { data } = await response.json()
-
-        localStorage.setItem('userData', JSON.stringify({ token: data.token, user: data.user }))
-        setUserData(data.user)(dispatch)
+      } catch (err) {
+        console.error(err)
+      } finally {
         setIsLoading(false)
+      }
 
-    })()
+  })()
 
-    }, [])
+  }, [dispatch, navigate])
 
-    if (isLoading) {
-        return <div className='w-6 h-6 rounded-full  m-auto border-2 border-white border-l-transparent animate-spin '/>
-    }
+  if (isLoading) {
+    return <div className='w-6 h-6 rounded-full m-auto border-2 border-white border-l-transparent animate-spin '/>
+  }
 
-
+  if (!isAuthenticated) {
     return <Outlet />
+    // return children
+  }
 }
 
 export default ProtectedRoute
