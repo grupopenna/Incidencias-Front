@@ -45,7 +45,7 @@ function ProtectedRoute() {
       
       // })()
       
-    }, [dispatch, navigate])
+    }, [dispatch])
     
     if (isLoading) {
       return <div className='w-6 h-6 rounded-full m-auto border-2 border-white border-l-transparent animate-spin '/>
