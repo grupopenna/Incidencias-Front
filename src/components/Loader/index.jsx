@@ -12,21 +12,24 @@ function Loader () {
     if (!userData){
       return navigate('/login')
     }
-    console.log('userData', userData)
+    // console.log('userData', userData)
 
-    fetch(`${import.meta.env.VITE_BACK_BASE_URL}/auth`, {
-      headers: {
-        authorization: `Bearer ${userData?.token}`
-      }
-    })
-      .then(async res => {
-        if (!res.ok) {
-          return navigate('/login')
-        }
-        const { data } = await res.json()
-        localStorage.setItem('urlToken', data.urlToken)
-        navigate('/dashboard')
-      })
+    // fetch(`${import.meta.env.VITE_BACK_BASE_URL}/auth`, {
+    //   headers: {
+    //     authorization: `Bearer ${userData?.token}`
+    //   }
+    // })
+    //   .then(async res => {
+    //     if (!res.ok) {
+    //       return navigate('/login')
+    //     }
+    //     const { data } = await res.json()
+    //     localStorage.setItem('urlToken', data.urlToken)
+    //     navigate('/dashboard')
+    //   }).catch((err) => {
+    //     console.log('navigate')
+    //     if (err) navigate('/dashboard')
+    //   })
   }, [])
 
   return (

@@ -38,7 +38,7 @@ const SelectedIncident = ({ projects }) => {
       return console.log('response SelectedIncident getIssue', response);
     }).catch((error) => { throw error });
 
-    navigate(`board/${key}`)
+    navigate(`/board/${key}`)
 
   }
 
