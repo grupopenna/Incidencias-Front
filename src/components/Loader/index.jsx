@@ -5,9 +5,15 @@ import { useNavigate } from 'react-router-dom'
 function Loader () {
   const navigate = useNavigate()
 
+
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('token'))
+
+    if (!userData){
+      return navigate('/login')
+    }
     console.log('userData', userData)
+
     fetch(`${import.meta.env.VITE_BACK_BASE_URL}/auth`, {
       headers: {
         authorization: `Bearer ${userData?.token}`
