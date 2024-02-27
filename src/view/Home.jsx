@@ -9,13 +9,14 @@ const Home = () => {
   const projects = useSelector((state) => state.projects);
 
   useEffect(() => {
+    console.log('hi')
     issueList()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const issueList = async () => {
     await getProjects()(dispatch).then((response) =>{ 
-      return console.log('response Home getProjects', response)
+      console.log('response Home getProjects', response)
     }).catch((error) => {throw error})
 
   }

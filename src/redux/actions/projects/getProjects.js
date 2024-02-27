@@ -7,6 +7,7 @@ export const getProjects = () => {
       const response = await axios.get(`${BASE_URL}/project/search`);
 
       dispatch({ type: GET_PROJECTS, payload: response.data });
+      console.log('response', response)
 
       return response.data;
     } catch (error) {

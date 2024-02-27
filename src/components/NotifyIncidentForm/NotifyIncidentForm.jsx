@@ -41,7 +41,6 @@ const NotifyIncidentForm = () => {
   const navigate = useNavigate();
   const { pathname } = location;
   const [IssueKey] = pathname.split('/').slice(-2)
-  console.log('jiraAccountId', jiraAccountId)
 
   useEffect(() => {
     (async () => {
