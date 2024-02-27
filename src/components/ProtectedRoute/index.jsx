@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useDispatch } from 'react-redux'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
@@ -45,7 +46,7 @@ function ProtectedRoute() {
       
       // })()
       
-    }, [dispatch])
+    }, [])
     
     if (isLoading) {
       return <div className='w-6 h-6 rounded-full m-auto border-2 border-white border-l-transparent animate-spin '/>
