@@ -3,9 +3,10 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { lazy } from 'react';
 import { Suspense } from 'react';
 import {NotFound} from './view/NotFound/NotFound'
+import Loader from './components/Loader/index'
 
 /**
- * 
+ *
  * Siempre que se agregue un nuevo componente/view, importarlo de forma lazy, como se ve abajo,
  * sino, si se importa el componente de formar normal eso genera que se rompan los estilos del editor. 
  */
@@ -27,25 +28,27 @@ const LoginFormLazy = lazy(() => import('./components/LoginForm/LoginForm'))
 const SendEmail = lazy(() => import('./components/SendEmail/SendEmail'))
 const SendEmailSucces = lazy(() => import('./components/SendEmailSucces/SendEmailSucces'))
 
-const Loader = () => {
-  return <section className='w-full min-h-screen flex bg-background justify-center items-center'>
-    <div className='w-6 h-6 rounded-full border-2 border-white border-l-transparent animate-spin'/>
-  </section>
-}
+// const Loader = () => {
+//   return <section className='w-full min-h-screen flex bg-background justify-center items-center'>
+//     <div className='w-6 h-6 rounded-full border-2 border-white border-l-transparent animate-spin'/>
+//   </section>
+// } https://grupopenna.ar/api1/auth/recovery-password 
+//   https://grupopenna.ar/api1
 
 const App = () => {
 
   return (
     <BrowserRouter>
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={null}>
         <div className="flex min-h-screen flex-col bg-background">
           <NavBar />
           <Routes>
+            <Route exact path="/" element={<Loader />} />
             <Route path='/login' element={ <LoginFormLazy /> } />
             <Route path='/send-email' element={ <SendEmail /> } />
             <Route path='/send-email/success' element={ <SendEmailSucces /> } />
             <Route element={<ProtectedRoute />}>
-              <Route exact path="/" element={<HomeLazy />} />
+              <Route exact path="/dashboard" element={<HomeLazy />} />
               <Route exact path="/createIssue" element={<NewRequirementsLazy />} />
               <Route exact path="/board/:key" element={<IncidentTableLazy />} />
               <Route exact path="/createIssue/form/:key/" element={<NotifyIncidentFormLazy />} />
