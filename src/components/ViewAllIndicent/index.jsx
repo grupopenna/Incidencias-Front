@@ -41,10 +41,6 @@ function ViewAllIndicent() {
     const projects = useSelector(state => state.projects)
     const { jiraAccountId } = useSelector(state => state.user)
 
-    console.log('jiraAccountId', jiraAccountId)
-
-    // let jiraAccountId = ""
-
     const incidentOrdered = useMemo(() => {
         if (!allIncients) return []
 

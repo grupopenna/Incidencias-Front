@@ -46,8 +46,10 @@ const NavBar = () => {
     }
   }, [window.location.pathname])
 
+  const noNav = pathName.includes('login') || pathName.includes('notFound') || pathName.includes('send-email')
+
   return (
-    <header className={`${pathName.includes('login') || pathName.includes('notFound') ? 'hidden': ''} flex justify-between  mx-2 mt-2 p-3`}>
+    <header className={`${noNav ? 'hidden': ''} flex justify-between  mx-2 mt-2 p-3`}>
       <button onClick={() => { redirect() }}>
         <img src={logo} className='flex items-start w-56 p-1'></img>
       </button>
