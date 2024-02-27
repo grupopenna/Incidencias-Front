@@ -1,9 +1,33 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 function Loader () {
-    return (
-        <section className='w-full overflow-hidden min-h-screen flex justify-center items-center'>
-            <div className='w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin overflow-hidden'></div>
-        </section>
-    )
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('token'))
+    console.log('userData', userData)
+    fetch(`${import.meta.env.VITE_BACK_BASE_URL}/auth`, {
+      headers: {
+        authorization: `Bearer ${userData?.token}`
+      }
+    })
+      .then(async res => {
+        if (!res.ok) {
+          return navigate('/login')
+        }
+        const { data } = await res.json()
+        localStorage.setItem('urlToken', data.urlToken)
+        navigate('/dashboard')
+      })
+  }, [])
+
+  return (
+    <main className='w-screen min-h-screen bg-background flex justify-center items-center'>
+      <div className='w-8 h-8 border-2 border-white rounded-full animate-spin border-r-transparent' />
+    </main>
+  )
 }
 
 export default Loader
