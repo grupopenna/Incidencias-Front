@@ -24,6 +24,8 @@ const SearchIssue = lazy(() => import('./components/SearchIssue'))
 const DailyReport = lazy(() => import('./components/DailyReport'))
 const WithoutState = lazy(() => import('./components/WithoutState'))
 const LoginFormLazy = lazy(() => import('./components/LoginForm/LoginForm'))
+const SendEmail = lazy(() => import('./components/SendEmail/SendEmail'))
+const SendEmailSucces = lazy(() => import('./components/SendEmailSucces/SendEmailSucces'))
 
 const Loader = () => {
   return <section className='w-full min-h-screen flex bg-background justify-center items-center'>
@@ -40,6 +42,8 @@ const App = () => {
           <NavBar />
           <Routes>
             <Route path='/login' element={ <LoginFormLazy /> } />
+            <Route path='/send-email' element={ <SendEmail /> } />
+            <Route path='/send-email/success' element={ <SendEmailSucces /> } />
             <Route element={<ProtectedRoute />}>
               <Route exact path="/" element={<HomeLazy />} />
               <Route exact path="/createIssue" element={<NewRequirementsLazy />} />
