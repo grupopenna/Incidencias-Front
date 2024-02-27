@@ -19,7 +19,7 @@ function ProtectedRouteLogin () {
         
         if (response.status <= 300 && response.status >= 200) {
           setIsLoading(false)
-          navigate('/')
+          navigate('/dashboard')
           Swal.fire({
             icon: "error",
             title: response.status,
@@ -63,7 +63,6 @@ function ProtectedRouteLogin () {
 
   return <Outlet />
 
-  // navigate('/')
 }
 
 export default ProtectedRouteLogin
