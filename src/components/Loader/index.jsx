@@ -1,10 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 function Loader () {
   const navigate = useNavigate()
-
+  const location = useLocation()
+  const { pathname } = location
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('token'))
@@ -12,6 +13,13 @@ function Loader () {
     if (!userData){
       return navigate('/login')
     }
+
+    if (pathname.length < 2){
+      return navigate('/dashboard')
+    }
+    // if (userData){
+    //   return navigate('/dashboard')
+    // }
     // console.log('userData', userData)
 
     // fetch(`${import.meta.env.VITE_BACK_BASE_URL}/auth`, {
