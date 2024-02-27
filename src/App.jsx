@@ -61,8 +61,8 @@ const App = () => {
               <Route exact path='/daily-report' element={<DailyReport />} />
               <Route exact path='/sin-comenzar' element={<WithoutState />} />
             </Route>
-            <Route path='*' redirectTo='/notFound' element={<NotFound />} />
-            <Route path='notFound' element={<NotFound />} />
+{/*             <Route path='*' redirectTo='/notFound' element={<NotFound />} />
+            <Route path='notFound' element={<NotFound />} /> */}
           </Routes>
         </div>
       </Suspense>
