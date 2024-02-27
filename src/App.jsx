@@ -2,8 +2,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { lazy } from 'react';
 import { Suspense } from 'react';
-// import {NotFound} from './view/NotFound/NotFound'
-import Loader from './components/Loader/index'
 
 /**
  *
@@ -12,6 +10,7 @@ import Loader from './components/Loader/index'
  */
 
 const NavBar = lazy(() => import('./components/NavBar/NavBar'))
+const Loader = lazy(() => import('./components/Loader/index'))
 const HomeLazy = lazy(() => import('./view/Home'))
 const NotifyIncidentFormLazy = lazy(() => import('./components/NotifyIncidentForm/NotifyIncidentForm'))
 const NewRequirementsLazy = lazy(() => import('./view/IncidentTable/IncidentTable'))

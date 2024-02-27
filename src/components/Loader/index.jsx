@@ -17,6 +17,9 @@ function Loader () {
     if (pathname.length < 2){
       return navigate('/dashboard')
     }
+    if (pathname.includes('token')){
+      return navigate('/dashboard')
+    }
     // if (userData){
     //   return navigate('/dashboard')
     // }
