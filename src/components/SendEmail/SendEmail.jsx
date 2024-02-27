@@ -45,7 +45,7 @@ function SendEmail () {
           setIsLoading(false)
         }
       })
-
+    
     } catch (err) {
       console.log({ err })
       setError('Ocurrio un error')

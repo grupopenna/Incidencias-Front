@@ -16,7 +16,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const { setIsLoading } = useContext(GlobalContext)
   const redirect = () => {
-    navigate('/')
+    navigate('/dashboard')
   }
 
   const handleSearch = async (event) => {

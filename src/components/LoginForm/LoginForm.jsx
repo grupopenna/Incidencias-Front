@@ -47,7 +47,7 @@ const LoginForm = () => {
             showConfirmButton: false,
             timer: 1500
           });
-          navigate('/')
+          navigate('/dashboard')
           return
         } else if (response.status >= 300) {
           Swal.fire({
