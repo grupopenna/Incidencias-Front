@@ -2,11 +2,6 @@ import axios from "axios";
 import { BASE_URL, GET_TRANSITIONS } from "../../action-type";
 
 
-// const SCRUM_ORDER = {
-//   POR_HACER: 'Tareas por hacer'.toUpperCase(),
-//   EN_CURSO: "En curso".toUpperCase(),
-//   LISTO: "Finalizada".toUpperCase()
-// }
 
 const HIDDEN_TRANSITIONS = {
   RECURRENTES: 'recurrentes',
@@ -45,20 +40,6 @@ export const getTransitions = (key) => {
   return async (dispatch) => {
     try {
       const response = (await axios.get(`${BASE_URL}/transitions/${key}`)).data;
-      //console.log('response.transitions', response.transitions)
-      // const orderScrum = (trans) => {
-
-      //   if (key.includes("NR")) {
-      //     return trans
-      //   } else {
-
-      //     return [
-      //       trans.find((t) => t.to.name.toUpperCase() == SCRUM_ORDER.EN_CURSO),
-      //       trans.find((t) => t.to.name.toUpperCase() == SCRUM_ORDER.LISTO),
-      //       trans.find((t) => t.to.name.toUpperCase() == SCRUM_ORDER.POR_HACER)
-      //     ];
-      //   }
-      // };
 
       const transitionOrder = response.transitions.length > 3 
         ? response.transitions

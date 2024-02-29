@@ -1,30 +1,12 @@
 import axios from "axios";
 import { BASE_URL, GET_ISSUES } from '../../action-type';
+import { JIRA_FIELDS, JIRA_EXPAND } from '../../../utils/index'
 
 export const getIssueByUser = (key, idUser) => {
 
   let bodyData = {
-    "expand": [
-      "names",
-      "schema",
-      "operations"
-    ],
-    "fields": [
-      "description",
-      "issuetype",
-      "summary",
-      "status",
-      "assignee",
-      "accountId",
-      "timetracking",
-      "timeoriginalestimate",
-      "aggregatetimeestimate",
-      "aggregatetimespent",
-      "customfield_10019",
-      "worklog",
-      "attachment"
-
-    ],
+    "expand": JIRA_EXPAND,
+    "fields": JIRA_FIELDS,
     "jql": `project=${key} and reporter=${idUser}`
   }
 

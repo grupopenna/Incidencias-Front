@@ -1,31 +1,14 @@
 import axios from "axios";
 import { BASE_URL, GET_PRIORIZADOSXAREA_ISSUES } from '../../action-type';
+import { JIRA_FIELDS, JIRA_EXPAND } from '../../../utils/index'
+import { PRIORIZADOS_POR_AREA } from '../../../utils/jqls'
 
 export const getAreaPriorizado = () => {
 
   const bodyData = {
-    "expand": [
-        "operations", "changelog"
-      ],
-      "fields": [
-        "description",
-        "issuetype",
-        "summary",
-        "status",
-        "assignee",
-        "accountId",
-        "timetracking",
-        "timeoriginalestimate",
-        "aggregatetimeestimate",
-        "aggregatetimespent",
-        "labels",
-        "worklog",
-        "attachment",
-        "project",
-        "created",
-        "updated"
-      ],
-    "jql": "(@areas) AND (status = Priorizado OR status = 'Sin Priorizar')"
+    "expand": JIRA_EXPAND,
+      "fields": JIRA_FIELDS,
+    "jql": PRIORIZADOS_POR_AREA
   }
 
   return async (dispatch) => {

@@ -50,7 +50,7 @@ const SelectedIncident = ({ projects }) => {
 
   return (
     <main className="flex flex-col justify-center items-center w-full">
-      <article className="flex flex-col items-center mt-4 w-1/2 p-6">
+      <article className="flex flex-col items-center mt-4 w-full md:w-4/5 lg:w-8/12 xl:w-1/2 p-6">
           <h2 className="text-2xl font-bold text-navy-700 text-white">
             Seleccione módulo
           </h2>

@@ -1,6 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import validateToken from '../../redux/actions/token/validateToken'
 
 function Loader () {
   const navigate = useNavigate()
@@ -14,34 +14,26 @@ function Loader () {
       return navigate('/login')
     }
 
-    if (pathname.length < 2){
-      return navigate('/dashboard')
-    }
-    if (pathname.includes('token')){
-      return navigate('/dashboard')
-    }
-    // if (userData){
-    //   return navigate('/dashboard')
-    // }
-    // console.log('userData', userData)
+    (async ()=>{
+      await validateToken(userData).then((res) => {
+        if (res.status == 200) {
+          if (pathname.length < 2){
+            return navigate('/dashboard')
+          }
+          if (pathname.includes('token')){
+            return navigate('/dashboard')
+          }
+        }
+        if (res.status >= 300) {
+          localStorage.removeItem("token");
+          navigate('/login')
+        }
+      }).catch((err) => {
+        console.log('err', err)
+      })
+    })()
 
-    // fetch(`${import.meta.env.VITE_BACK_BASE_URL}/auth`, {
-    //   headers: {
-    //     authorization: `Bearer ${userData?.token}`
-    //   }
-    // })
-    //   .then(async res => {
-    //     if (!res.ok) {
-    //       return navigate('/login')
-    //     }
-    //     const { data } = await res.json()
-    //     localStorage.setItem('urlToken', data.urlToken)
-    //     navigate('/dashboard')
-    //   }).catch((err) => {
-    //     console.log('navigate')
-    //     if (err) navigate('/dashboard')
-    //   })
-  }, [])
+  }, [pathname, navigate])
 
   return (
     <main className='w-screen min-h-screen bg-background flex justify-center items-center'>

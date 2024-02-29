@@ -1,32 +1,13 @@
 import axios from "axios";
 import { BASE_URL, GET_TOP } from '../../action-type';
+import { JIRA_EXPAND, JIRA_FIELDS } from '../../../utils/index'
+import { TOP_FIVE } from '../../../utils/jqls'
 
 export const getTopFive = (area) => {
   const bodyData = {
-    "expand": [
-      "names",
-      "schema",
-      "operations", "changelog"
-    ],
-    "fields": [
-      "description",
-      "issuetype",
-      "summary",
-      "status",
-      "assignee",
-      "accountId",
-      "timetracking",
-      "timeoriginalestimate",
-      "aggregatetimeestimate",
-      "aggregatetimespent",
-      "customfield_10019",
-      "worklog",
-      "attachment",
-      "project",
-      "created",
-      "updated"
-    ],
-    "jql": `(TOP = TOP1 OR TOP = TOP2 OR TOP = TOP3 OR TOP = TOP4 OR TOP = TOP5) AND status != Cerrado AND (@ids)`
+    "expand": JIRA_EXPAND,
+    "fields": JIRA_FIELDS,
+    "jql": TOP_FIVE
   }
   
 

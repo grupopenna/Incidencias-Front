@@ -27,13 +27,6 @@ const LoginFormLazy = lazy(() => import('./components/LoginForm/LoginForm'))
 const SendEmail = lazy(() => import('./components/SendEmail/SendEmail'))
 const SendEmailSucces = lazy(() => import('./components/SendEmailSucces/SendEmailSucces'))
 
-// const Loader = () => {
-//   return <section className='w-full min-h-screen flex bg-background justify-center items-center'>
-//     <div className='w-6 h-6 rounded-full border-2 border-white border-l-transparent animate-spin'/>
-//   </section>
-// } https://grupopenna.ar/api1/auth/recovery-password 
-//   https://grupopenna.ar/api1
-
 const App = () => {
 
   return (
