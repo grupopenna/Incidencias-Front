@@ -1,5 +1,7 @@
 export const SIN_COMENZAR = 'status in ("Priorizado", "Sin Priorizar")'
 
+export const WORKLOADS = 'project = ERP AND issuetype != epic AND status != Cerrado'
+
 export const PRIORIZADOS_POR_AREA = "(@areas) AND (status = Priorizado OR status = 'Sin Priorizar')"
 
 export const APROBADOS = `labels = APROBADO AND status != Cerrado AND TOP = NULL`

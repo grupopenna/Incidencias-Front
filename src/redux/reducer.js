@@ -19,6 +19,7 @@ import {
   NEW_COMMENT,
 
   GET_ISSUETYPE,
+  GET_WORKLOADS,
 
   GET_WORKLOG,
   GET_ISSUE_BY_KEY,
@@ -58,6 +59,8 @@ const initialState = {
   issuesTypes: [],
 
   worklogs: [],
+
+  incidentsWorkloads: [],
 
   issueByKey: [],
 
@@ -124,6 +127,9 @@ const reducer = (state = initialState, { type, payload }) => {
 
     case GET_ISSUES_IN_PROCESS:
         return { ...state, incidentsInProcess: payload }
+
+    case GET_WORKLOADS:
+        return { ...state, incidentsWorkloads: payload }
 
     case ERROR_GET_ISSUES_IN_PROCESS:
         return { ...state, errorIncidentsInProcess: payload }

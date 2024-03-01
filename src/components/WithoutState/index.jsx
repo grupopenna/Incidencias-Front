@@ -12,7 +12,6 @@ import {
 import { getIssuesInProcess, getUsers } from '../../redux/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { FormatDate } from '../../utils'
 import { BOARD_STATUS, ORDER_BY } from '../../const'
 import { useState } from 'react'
 import { ArrowDown, ArrowUp } from '../Icon'
@@ -58,7 +57,7 @@ const WithoutState = () => {
         if (selectedAssigne === 'Sin asignar') {
             mutateData = mutateData?.filter((item) => !item?.fields?.assignee?.displayName)
         } else {
-            mutateData = mutateData?.filter((item) => item?.fields?.assignee?.displayName.toLowerCase() === selectedAssigne?.toLowerCase())
+            mutateData = mutateData?.filter((item) => item?.fields?.assignee?.displayName?.toLowerCase() === selectedAssigne?.toLowerCase())
         }
     }
     

@@ -5,6 +5,8 @@ import { ALEJANDRO_JIRA } from '../../../utils/jqls'
 
 export const getUsers = (area) => {
 
+    if (!area) area = "sistemas"
+
     return async (dispatch) => {
         try {
             const { data: response } = await axios(`${BASE_URL}/users/getItUsers/?area=${area}`)

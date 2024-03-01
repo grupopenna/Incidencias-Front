@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ArrowDown, ArrowUp, SearchIcon } from '../Icon'
-// import { FormatDate } from '../../utils'
 import { getAllIssues, getProjects } from '../../redux/actions'
 import {
 		Select,
@@ -165,7 +164,7 @@ function ViewAllIndicent() {
 														className='hover:bg-white/30'>
 														<TableCell className='text-cente'>
 																<div className='flex items-center justify-center p-1'>
-																		<img className='w-5 h-6' src={inciden?.fields?.issuetype.iconUrl} alt={inciden?.key} />
+																		<img className='w-5 h-6' src={inciden?.fields?.issuetype?.iconUrl} alt={inciden?.key} />
 																</div>
 														</TableCell>
 														<TableCell className='text-center'>{inciden?.fields?.project?.name}</TableCell>
@@ -176,7 +175,7 @@ function ViewAllIndicent() {
 														<TableCell className='text-center'>
 																<div className='w-28 h-10 m-auto'>
 																		<p>{inciden?.fields?.statusCategory?.name}</p>
-																		<div className='h-1 rounded-sm' style={{ backgroundColor: colorState[inciden?.fields?.statusCategory.colorName] }}></div>
+																		<div className='h-1 rounded-sm' style={{ backgroundColor: colorState[inciden?.fields?.statusCategory?.colorName] }}></div>
 																</div>
 														</TableCell>
 														<TableCell className='text-center'>{inciden?.fields?.created}</TableCell>

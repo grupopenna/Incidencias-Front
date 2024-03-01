@@ -119,7 +119,7 @@ const DailyReport = () => {
 
 
   useEffect(() => {
-      getUsers()(dispatch)
+      getUsers(selectedArea)(dispatch)
   }, [])
 
   useEffect(() => {
