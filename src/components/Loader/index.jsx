@@ -14,8 +14,6 @@ function Loader () {
       return navigate('/login')
     }
 
-    console.log('userData2', userData)
-
     (async()=>{
       await validateToken(userData).then((res) => {
         if (res.status == 200) {
