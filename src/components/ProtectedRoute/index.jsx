@@ -19,6 +19,8 @@ function ProtectedRoute() {
       navigate('/login')
       return
     }
+
+    console.log('token1', token)
     
     if(userData){
       setUserData(userData)(dispatch)

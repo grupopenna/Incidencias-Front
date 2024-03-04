@@ -107,6 +107,7 @@ export const JIRA_FIELDS = [
     "assignee",
     "accountId",
     "timetracking",
+    "timespent",
     "timeoriginalestimate",
     "aggregatetimeestimate",
     "aggregatetimespent",

@@ -164,7 +164,7 @@ return (
                                    <div className='h-1 rounded-sm' style={{ backgroundColor: colorState[issue?.fields?.statusCategory?.colorName] }}></div>
                                </div>
                            </TableCell>
-                           <TableCell className='text-center'>0</TableCell>
+                           <TableCell className='text-center'>{issue?.fields?.timetracking?.timeSpent}</TableCell>
                            <TableCell className='text-center'>{issue?.fields?.timetracking?.originalEstimate}</TableCell>
                            <TableCell className='text-center'>{!issue?.fields?.empresa ? "si" : <i> Sin asignar </i>} </TableCell>
                            <TableCell className='text-center'>{issue?.fields?.created}</TableCell>
