@@ -12,7 +12,6 @@ import {
 import { getIssuesInProcess, getUsers } from '../../redux/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { FormatDate } from '../../utils'
 import { BOARD_STATUS, ORDER_BY } from '../../const'
 import { useState } from 'react'
 import { ArrowDown, ArrowUp } from '../Icon'
@@ -58,7 +57,7 @@ const WithoutState = () => {
         if (selectedAssigne === 'Sin asignar') {
             mutateData = mutateData?.filter((item) => !item?.fields?.assignee?.displayName)
         } else {
-            mutateData = mutateData?.filter((item) => item?.fields?.assignee?.displayName.toLowerCase() === selectedAssigne?.toLowerCase())
+            mutateData = mutateData?.filter((item) => item?.fields?.assignee?.displayName?.toLowerCase() === selectedAssigne?.toLowerCase())
         }
     }
     
@@ -78,8 +77,7 @@ const WithoutState = () => {
    useEffect(() => {
 
     (async () => {
-        const jql = 'status in ("Priorizado", "Sin Priorizar")'
-        await getIssuesInProcess(jql)(dispatch)
+        await getIssuesInProcess()(dispatch)
         setIsLoading(false)
     })()
     }, [])
@@ -127,6 +125,7 @@ const WithoutState = () => {
                         <TableHeaderCell className='text-center'>Clave</TableHeaderCell>
                         <TableHeaderCell className='text-center'>Resumen</TableHeaderCell>
                         <TableHeaderCell className='text-center'>Responsable</TableHeaderCell>
+                        <TableHeaderCell className='text-center'>Reporter</TableHeaderCell>
                         <TableHeaderCell className='text-center'>Estado</TableHeaderCell>
                         <TableHeaderCell>
                             <div
@@ -140,8 +139,6 @@ const WithoutState = () => {
                 </TableHead>
                 <TableBody>
                     {incidentOrdered?.map((issue, index) => {
-                         const formatCreated = FormatDate(new Date(issue?.fields.created))
-                         const formatUpdated = FormatDate(new Date(issue?.fields.updated))
  
                          return <TableRow
                              onClick={() => handleShowDetails(index)}
@@ -156,14 +153,15 @@ const WithoutState = () => {
                              <TableCell className='text-center'>{issue?.key}</TableCell>
                              <TableCell className='text-center'>{issue?.fields.summary}</TableCell>
                              <TableCell className='text-center'>{issue?.fields?.assignee?.displayName || <i>Sin asignar</i>}</TableCell>
+                             <TableCell className='text-center'>{issue?.fields?.reporter?.displayName || <i>Sin asignar</i>}</TableCell>
                              <TableCell className='text-center'>
                                  <div className='w-28 h-10 m-auto'>
-                                     <p>{issue?.fields.status.statusCategory.name}</p>
-                                     <div className='h-1 rounded-sm' style={{ backgroundColor: colorState[issue?.fields.status.statusCategory.colorName] }}></div>
+                                     <p>{issue?.fields.statusCategory.name}</p>
+                                     <div className='h-1 rounded-sm' style={{ backgroundColor: colorState[issue?.fields?.statusCategory?.colorName] }}></div>
                                  </div>
                              </TableCell>
-                             <TableCell className='text-center'>{formatCreated}</TableCell>
-                             <TableCell className='text-center'>{formatUpdated}</TableCell>
+                             <TableCell className='text-center'>{issue?.fields?.created}</TableCell>
+                             <TableCell className='text-center'>{issue?.fields?.updated}</TableCell>
                          </TableRow>
                 
                     })}

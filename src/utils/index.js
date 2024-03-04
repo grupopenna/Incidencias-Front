@@ -97,6 +97,32 @@ const DICTONARY_JIRA = {
     '\\n\\n': '\n'
 }
 
+export const JIRA_EXPAND = ["names", "schema", "operations", "changelog"]
+
+export const JIRA_FIELDS = [
+    "description",
+    "issuetype",
+    "summary",
+    "status",
+    "assignee",
+    "accountId",
+    "timetracking",
+    "timespent",
+    "timeoriginalestimate",
+    "aggregatetimeestimate",
+    "aggregatetimespent",
+    "reporter",
+    "labels",
+    "worklog",
+    "attachment",
+    "project",
+    "created",
+    "updated",
+    "customfield_10106",
+    "customfield_10107"
+    ]
+
+
 /**
  * 
  * @param {string} input 
