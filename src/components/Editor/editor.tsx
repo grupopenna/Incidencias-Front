@@ -43,6 +43,7 @@ export default function TuiEditor(props: TuiEditorExtendedProps) {
                     el: divRef.current,
                     hideModeSwitch: true,
                     useCommandShortcut: true,
+                    placeholder: "Sea lo mas descriptivo de lo que requiere en su ticket; Para evitar errores no subir solo imagenes, incluir texto",
                     events: getInitEvents(props),
                 });
 

@@ -95,6 +95,12 @@ const CargaHoraria = () => {
       setSelectedItem(incidentOrdered[index])
       setModalShow(true)
   }
+  if (true){
+    return (
+    <div className="w-full h-screen flex flex-col items-center justify-center">
+        <h1 className='text-white font-extrabold text-4xl '>En Proceso</h1>
+    </div>)
+  }
 
 return (
   <section className="w-full h-full flex flex-col items-center justify-center">
@@ -130,7 +136,7 @@ return (
                       <TableHeaderCell className='text-center'>Estado</TableHeaderCell>
                       <TableHeaderCell className='text-center'>Tiempo Trabajado</TableHeaderCell>
                       <TableHeaderCell className='text-center'>Estimación</TableHeaderCell>
-                      <TableHeaderCell className='text-center'>Empresa</TableHeaderCell>
+                      {/* <TableHeaderCell className='text-center'>Empresa</TableHeaderCell> */}
                       <TableHeaderCell>
                           <div
                               onClick={handleOrderTable}
@@ -164,9 +170,9 @@ return (
                                    <div className='h-1 rounded-sm' style={{ backgroundColor: colorState[issue?.fields?.statusCategory?.colorName] }}></div>
                                </div>
                            </TableCell>
-                           <TableCell className='text-center'>{issue?.fields?.timetracking?.timeSpent}</TableCell>
-                           <TableCell className='text-center'>{issue?.fields?.timetracking?.originalEstimate}</TableCell>
-                           <TableCell className='text-center'>{!issue?.fields?.empresa ? "si" : <i> Sin asignar </i>} </TableCell>
+                           <TableCell className='text-center'>{issue?.fields?.timespent}</TableCell>
+                           <TableCell className='text-center'>{issue?.fields?.timeoriginalestimate}</TableCell>
+                           {/* <TableCell className='text-center'>{!issue?.fields?.empresa ? "si" : <i> Sin asignar </i>} </TableCell> */}
                            <TableCell className='text-center'>{issue?.fields?.created}</TableCell>
                            <TableCell className='text-center'>{issue?.fields?.updated}</TableCell>
                        </TableRow>

@@ -167,12 +167,12 @@ const Tablero = () => {
             ))
           )
             : (
-              <DragDropContext onDragEnd={onDragEnd} className="flex">
+              <DragDropContext onDragEnd={onDragEnd} className="flex h-96 overflow-scroll">
                 {transitions.map((transition) => (
-                  <Droppable key={transition.id} droppableId={`${transition.to.name}`} className="min-h-full w-5/6">
+                  <Droppable key={transition.id} droppableId={`${transition.to.name}`} className="min-h-full  w-5/6">
                     {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps} className=" bg-bgColumn rounded-lg w-1/3 flex flex-col px-1">
-                        <h1 className="p-3 font-bold text-font">{transition.to.name}</h1>
+                      <div ref={provided.innerRef} {...provided.droppableProps} className=" bg-bgColumn rounded-lg w-1/3  flex flex-col px-1">
+                        <h1 className="p-3 h-20 flex justify-center items-center text-center font-bold text-font">{transition.to.name}</h1>
                         {getList(transition.to.name).map((item, index) => (
                           <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full flex ">
                             {transition.to.name != "En Proceso" ? (

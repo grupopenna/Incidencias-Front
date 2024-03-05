@@ -75,6 +75,8 @@ const DailyReport = () => {
     return data?.issue?.filter((issue) => issue.date === selectedDate.date)
   }, [selectedDate, data])
 
+  // console.log(filteredIssue[0]);
+
   const handleSetDate = async () => {
 
 
@@ -192,7 +194,6 @@ const DailyReport = () => {
                   />
                  </section>
 
-
                  <article className='w-full p-4 mt-4'>
                   { openModal && <ModalText>
                       <Card className='w-1/2 flex items-center justify-center flex-col p-2 py-4'>
@@ -216,6 +217,7 @@ const DailyReport = () => {
                                 <TableHeaderCell className='text-center'>Clave</TableHeaderCell>
                                 <TableHeaderCell className='text-center'>Titulo</TableHeaderCell>
                                 <TableHeaderCell className='text-center'>Status</TableHeaderCell>
+                                <TableHeaderCell className='text-center'>Empresa</TableHeaderCell>
                                 <TableHeaderCell className='text-center'>Observacion</TableHeaderCell>
                                 <TableHeaderCell className='text-center'>Hs</TableHeaderCell>
                                 </TableRow>
@@ -249,6 +251,7 @@ const DailyReport = () => {
                                     {item?.status}
                                   </Badge>
                                 </TableCell>
+                                <TableCell className='text-center'> {item?.empresa} </TableCell>
                                 <TableCell className='text-center'>
                                   { sliceContentLenght(item?.comment).endsWith('. . .') 
                                   ? <p>{sliceContentLenght(item?.comment)} <span onClick={() => showMore(item?.comment)} className='text-blue-400 cursor-pointer'>ver mas</span></p>

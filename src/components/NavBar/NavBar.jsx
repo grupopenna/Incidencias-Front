@@ -61,6 +61,7 @@ const NavBar = () => {
             <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('view-all-incidents/12') ? 'bg-slate-500/20': ''}`} to={'/view-all-incidents/12'}>Ver todas las incidencias</Link></li>
             <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('control-general') ? 'bg-slate-500/20': ''}`} to={'/control-general'}>Top 5</Link></li>
             <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('control-areas') ? 'bg-slate-500/20': ''}`} to={'/control-areas'}>Top por Areas</Link></li>
+            <li><Link className={`hover:bg-slate-500/20 p-3 rounded-md ${pathName.includes('carga-horaria') ? 'bg-slate-500/20': ''}`} to={'/carga-horaria'}>Carga horaria</Link></li>
           </ul> 
           <div className="flex gap-2">
             <button className={`${pathName === '/' ? 'opacity-0': ''} bg-indigo-700 text-white p-2 rounded-lg hover:bg-indigo-700/80`}

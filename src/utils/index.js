@@ -100,26 +100,26 @@ const DICTONARY_JIRA = {
 export const JIRA_EXPAND = ["names", "schema", "operations", "changelog"]
 
 export const JIRA_FIELDS = [
-    "description",
-    "issuetype",
-    "summary",
-    "status",
-    "assignee",
-    "accountId",
-    "timetracking",
-    "timespent",
-    "timeoriginalestimate",
-    "aggregatetimeestimate",
-    "aggregatetimespent",
-    "reporter",
-    "labels",
-    "worklog",
-    "attachment",
-    "project",
-    "created",
-    "updated",
-    "customfield_10106",
-    "customfield_10107"
+        "id",
+        "description",
+        "issuetype",
+        "summary",
+        "status",
+        "assignee",
+        "accountId",
+        "timetracking",
+        "timeoriginalestimate",
+        "aggregatetimeestimate",
+        "aggregatetimespent",
+        "labels",
+        "worklog",
+        "attachment",
+        "project",
+        "created",
+        "updated",
+        "customfield_10106",
+        "customfield_10107",
+        "customfield_10108"
     ]
 
 
@@ -132,7 +132,7 @@ export const parseTextToJiraFormatt = (input) => {
 
     if (!input) return ''
 
-    const lines = input.split('\n')
+    const lines = input.trim().split('\n')
     const jiraLines = []
 
     for(const line of lines) {
