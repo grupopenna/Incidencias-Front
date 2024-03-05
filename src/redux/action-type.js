@@ -1,4 +1,5 @@
 export const BASE_URL = import.meta.env.VITE_BASE_URL;
+export const BASE_URL_DESARROLLO = import.meta.env.VITE_BASE_URL_DESARROLLO;
 export const BACK_AUTH_URL = import.meta.env.VITE_BACK_AUTH_URL
 
 export const POST_ISSUE = "POST_ISSUE";

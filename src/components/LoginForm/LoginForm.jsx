@@ -39,22 +39,22 @@ const LoginForm = () => {
     }
     try {
       await loginUser(loginData)(dispatch).then((response)=>{
-        if (response.status <= 300 && response.status >= 200) {
+        if (response?.status <= 300 && response?.status >= 200) {
           Swal.fire({
             position: "top-end",
             icon: "success",
-            title: response.message,
+            title: response?.message,
             showConfirmButton: false,
             timer: 1500
           });
           navigate('/dashboard')
           return
-        } else if (response.status >= 300) {
+        } else if (response?.status >= 300) {
           Swal.fire({
             position: "top-end",
             icon: "error",
-            title: response.status,
-            text: response.data?.message ? response.data.message : response.statusText
+            title: response?.status,
+            text: response?.data?.message ? response?.data?.message : response?.statusText
           });
           navigate('/login')
         }

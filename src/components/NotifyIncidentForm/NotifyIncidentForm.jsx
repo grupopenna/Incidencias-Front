@@ -200,22 +200,9 @@ const NotifyIncidentForm = () => {
 
 
   const Editor = useCallback(() => {
-    
-    if (IssueKey !== 'ERP') return <TuiEditor markdownRef={editorRef} />
+    return <TuiEditor markdownRef={editorRef}/>
 
-
-    let template 
-
-    if (!selectedIssue) {
-      template = ''
-    } else if (selectedIssue === ISSUETYPE_COD.ERROR) {
-      template = incidentTemplate.Error.template
-    } else if (selectedIssue === ISSUETYPE_COD.TAREA) {
-      template = incidentTemplate.Tarea.template
-    }
-
-    return <TuiEditor markdownRef={editorRef} initialValue={template}/>
-  }, [selectedIssue])
+  }, [])
 
   return (
     <>
