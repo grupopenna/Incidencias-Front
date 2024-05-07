@@ -25,7 +25,7 @@ const Tablero = () => {
   const keyPathname = pathname.split('/').slice(-1);
   const { incidents: { issues } } = useIncidents(keyPathname[0])
   const transitions = useSelector((state) => state.transitions);
-  const { jiraAccountId } = useSelector((state) => state.user);
+  const { jiraAccountId, area	} = useSelector(state => state.user)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [worklog, setWorklog] = useState(false);
@@ -35,7 +35,7 @@ const Tablero = () => {
       setWorklog(true);
     }
 
-    const socket = initializeJiraSocket(dispatch, jiraAccountId);
+    const socket = initializeJiraSocket(dispatch, area);
   }, [])
 
   const getList = (list) => {
@@ -59,7 +59,7 @@ const Tablero = () => {
 
         await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then(async (response) => {
           
-          await getIssue(keyPathname[0], jiraAccountId)(dispatch).then((response) => {
+          await getIssue(keyPathname[0], area)(dispatch).then((response) => {
             
             return console.log('response SelectedIncident getIssue', response);
           }).catch((error) => { throw error });

@@ -54,7 +54,7 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
         let key = response.data.key
         try {
           if (file.length > 0) await postAttachments(file, key)(dispatch)
-          await getIssue(`${IssueKey}`, userId)(dispatch)
+          await getIssue(`${IssueKey}`, area)(dispatch)
           Swal.fire({
             position: "top-end",
             icon: "success",
