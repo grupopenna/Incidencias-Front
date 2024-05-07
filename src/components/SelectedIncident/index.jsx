@@ -20,14 +20,14 @@ const SelectedIncident = ({ projects }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false)
   const [select, setSelect] = useState('')
-  const { jiraAccountId } = useSelector((state) => state.user)
+  const { area } = useSelector((state) => state.user)
 
   const handleRedirect = async (key) => {
     setLoading(true)
     setSelect(key)
     setTimeout(() => { setLoading(false) }, 2500);
 
-    await getIssue(key, jiraAccountId)(dispatch).then((response) => {
+    await getIssue(key, area)(dispatch).then((response) => {
       if (response) {
         if (response.length > 0) {
           searchTransition(response[0].key);

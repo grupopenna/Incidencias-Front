@@ -2,12 +2,14 @@ import axios from "axios";
 import { BASE_URL, GET_All_ISSUES } from '../../action-type';
 import { JIRA_EXPAND, JIRA_FIELDS } from '../../../utils/index'
 
-export const getAllIssues = (userId) => {
+export const getAllIssues = (userId, area) => {
+
+  console.log(userId);
 
   const bodyData = {
     "expand": JIRA_EXPAND,
     "fields": JIRA_FIELDS,
-    "jql": `reporter=${userId} order by created DESC`
+    "jql": `labels in (${area}) order by created DESC`
   }
 
   return async (dispatch) => {

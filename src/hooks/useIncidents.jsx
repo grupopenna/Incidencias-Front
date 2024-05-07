@@ -9,7 +9,7 @@ export const useIncidents = () => {
     const { setIsLoading, reload, setReload } = useContext(GlobalContext)
     const dispatch = useDispatch()
     const incidents = useSelector(state => state.incients)
-    const { jiraAccountId } = useSelector((state) => state.user)
+    const { jiraAccountId, area } = useSelector((state) => state.user)
 
 
     useEffect(() => {
@@ -19,7 +19,7 @@ export const useIncidents = () => {
             (async () => {
                 const key = window.location.pathname.split('/').slice(-1)
                 setIsLoading(true)
-                await getIssue(key[0], jiraAccountId)(dispatch).then(async res => {
+                await getIssue(key[0], area)(dispatch).then(async res => {
                     res?.issues?.length < 1 ? [] : await getTransitions(res?.issues[0]?.key)(dispatch)
                 })
                 setIsLoading(false)

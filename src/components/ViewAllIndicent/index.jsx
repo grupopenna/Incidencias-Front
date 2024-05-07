@@ -38,7 +38,7 @@ function ViewAllIndicent() {
 		const dispatch = useDispatch()
 		const allIncients = useSelector(state => state.allIncients)
 		const projects = useSelector(state => state.projects)
-		const { jiraAccountId } = useSelector(state => state.user)
+		const { jiraAccountId, area	} = useSelector(state => state.user)
 
 		const incidentOrdered = useMemo(() => {
 				if (!allIncients) return []
@@ -95,7 +95,7 @@ function ViewAllIndicent() {
 		useEffect(() => {
 
 				(async () => {
-						await getAllIssues(jiraAccountId)(dispatch)
+						await getAllIssues(jiraAccountId, area)(dispatch)
 						await getProjects()(dispatch)
 						setIsloding(false)
 				})()

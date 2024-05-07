@@ -8,14 +8,15 @@ function Loader () {
   const { pathname } = location
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('token'))
+    const tokenStored = JSON.parse(localStorage.getItem('token'))
 
-    if (!userData){
+    // console.log(tokenStored);
+    if (!tokenStored){
       return navigate('/login')
     }
 
     (async()=>{
-      await validateToken(userData).then((res) => {
+      await validateToken(tokenStored).then((res) => {
         if (res.status == 200) {
           if (pathname.length < 2){
             return navigate('/dashboard')
