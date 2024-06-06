@@ -71,7 +71,7 @@ export const A2REAS = {
 }
 
 export const ISSUETYPE_COD = {
-    ERROR: '10135',
+    TRABAGESTION: '10135',
     TAREA: '10049'
 }
 
