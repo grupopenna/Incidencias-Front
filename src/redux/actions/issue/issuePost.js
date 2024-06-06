@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import { ISSUETYPE_COD } from "../../../const";
 
 export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file, companies, selectedIssue, isERP }, userId, area) => {
-  const customField = selectedIssue === ISSUETYPE_COD.ERROR ? "customfield_10124" : "customfield_10108"
+  const customField = selectedIssue === ISSUETYPE_COD.TRABAGESTION ? "customfield_10124" : "customfield_10108"
   const baseQuery = {
     "fields": {
     
