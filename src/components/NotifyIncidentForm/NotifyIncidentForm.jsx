@@ -240,11 +240,7 @@ const NotifyIncidentForm = () => {
                       className='z-50 mt-2'
                       value={selectedIssue}>
                       {issuesType?.map((project) => (
-                        project.name == "Error" ?
-                        <SelectItem key={project.id} value={project.id}>
-                          Traba la gestión
-                        </SelectItem>
-                        :
+                        
                         <SelectItem key={project.id} value={project.id}>
                           {project.name}
                         </SelectItem>
