@@ -3,7 +3,7 @@ import {  BASE_URL, GET_ISSUETYPE } from '../../action-type';
 
 const ISSUE_TYPES_USER = {
     TAREA: 'Tarea',
-    TRABAGESTION: 'Error'
+    TRABAGESTION: 'Traba gestion'
 }
 
 const SHOW_ISSUE_TYPES = {
