@@ -3,12 +3,12 @@ import {  BASE_URL, GET_ISSUETYPE } from '../../action-type';
 
 const ISSUE_TYPES_USER = {
     TAREA: 'Tarea',
-    ERROR: 'Error'
+    TRABAGESTION: 'Error'
 }
 
 const SHOW_ISSUE_TYPES = {
-    [ISSUE_TYPES_USER.ERROR]: true,
-    [ISSUE_TYPES_USER.TAREA]: true
+    [ISSUE_TYPES_USER.TRABAGESTION]: true,
+    [ISSUE_TYPES_USER.TAREA]: true,
 }
 
 export const getIssueTypes = (projectId) => {
