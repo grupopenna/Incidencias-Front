@@ -47,7 +47,8 @@ export const WORKERS = [
     "Matias Gomez",
     "Julian Lopez",
     "Federico Ludueña",
-    "Alcides"
+    "Alcides",
+    "Matías De los Santos"
 ]
 
 export const AREAS = {
