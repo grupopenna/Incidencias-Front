@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import { ISSUETYPE_COD } from "../../../const";
 
 export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file, companies, selectedIssue, isERP }, userId, area) => {
+  const userData = JSON.parse(localStorage.getItem('userData')) 
+  const { email, fullName } =  userData
   const customField = selectedIssue === ISSUETYPE_COD.ERROR ? "customfield_10124" : "customfield_10108"
   const baseQuery = {
     "fields": {
@@ -37,6 +39,23 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
   const bodyData = isERP ? queryToErp : baseQuery
 
   if (Array.isArray(descripcion)) {
+    const line1 = {
+      "type": "paragraph",
+      "content": [{
+        text: "<br>",
+        type: "text"
+      }]
+    }
+    descripcion.push(line1)
+
+    const line2 = {   
+      "type": "paragraph",
+      "content": [{
+        text: `Contactarse con: ${email}, ticket realizado por ${fullName}`,
+        type: "text"
+      }]
+    }
+    descripcion.push(line2)
     
     if (descripcion.length > 0 ) {
        bodyData.fields.description = {
