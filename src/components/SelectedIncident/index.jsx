@@ -4,6 +4,7 @@ import { getIssue, getTransitions } from '../../redux/actions'
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom"
 import { Callout, Card } from '@tremor/react';
+import { LogOut } from '../Icon';
 
 
 const PROJECT_DESCRIPTION = {
@@ -42,6 +43,13 @@ const SelectedIncident = ({ projects }) => {
 
   }
 
+  const handleLogOut = async () => {
+      localStorage.removeItem('token')
+      localStorage.removeItem('urlToken')
+      localStorage.removeItem('userData')
+      navigate('/')
+  }
+
   const searchTransition = async (key) => {
     await getTransitions(key)(dispatch).then((response) => {
       console.log('response SelectedIncident getTransitions', response);
@@ -50,6 +58,10 @@ const SelectedIncident = ({ projects }) => {
 
   return (
     <main className="flex flex-col justify-center items-center w-full">
+      <div className='absolute left-10 bottom-10 cursor-pointer' onClick={handleLogOut}>
+        <LogOut /> 
+        <span className='text-red-500'>Cerrar sesión</span>
+      </div>
       <article className="flex flex-col items-center mt-4 w-full md:w-4/5 lg:w-8/12 xl:w-1/2 p-6">
           <h2 className="text-2xl font-bold text-navy-700 text-white">
             Seleccione módulo
