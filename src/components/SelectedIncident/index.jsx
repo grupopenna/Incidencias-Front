@@ -4,6 +4,7 @@ import { getIssue, getTransitions } from '../../redux/actions'
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom"
 import { Callout, Card } from '@tremor/react';
+import { LogOut } from '../Icon';
 
 
 const PROJECT_DESCRIPTION = {
@@ -20,14 +21,14 @@ const SelectedIncident = ({ projects }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false)
   const [select, setSelect] = useState('')
-  const { jiraAccountId } = useSelector((state) => state.user)
+  const { area } = useSelector((state) => state.user)
 
   const handleRedirect = async (key) => {
     setLoading(true)
     setSelect(key)
     setTimeout(() => { setLoading(false) }, 2500);
 
-    await getIssue(key, jiraAccountId)(dispatch).then((response) => {
+    await getIssue(key, area)(dispatch).then((response) => {
       if (response) {
         if (response.length > 0) {
           searchTransition(response[0].key);
@@ -38,8 +39,15 @@ const SelectedIncident = ({ projects }) => {
       return console.log('response SelectedIncident getIssue', response);
     }).catch((error) => { throw error });
 
-    navigate(`board/${key}`)
+    navigate(`/board/${key}`)
 
+  }
+
+  const handleLogOut = async () => {
+      localStorage.removeItem('token')
+      localStorage.removeItem('urlToken')
+      localStorage.removeItem('userData')
+      navigate('/')
   }
 
   const searchTransition = async (key) => {
@@ -50,7 +58,11 @@ const SelectedIncident = ({ projects }) => {
 
   return (
     <main className="flex flex-col justify-center items-center w-full">
-      <article className="flex flex-col items-center mt-4 w-1/2 p-6">
+      <div className='absolute left-10 bottom-10 cursor-pointer' onClick={handleLogOut}>
+        <LogOut /> 
+        <span className='text-red-500'>Cerrar sesión</span>
+      </div>
+      <article className="flex flex-col items-center mt-4 w-full md:w-4/5 lg:w-8/12 xl:w-1/2 p-6">
           <h2 className="text-2xl font-bold text-navy-700 text-white">
             Seleccione módulo
           </h2>

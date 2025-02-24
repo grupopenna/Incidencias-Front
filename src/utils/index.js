@@ -97,6 +97,32 @@ const DICTONARY_JIRA = {
     '\\n\\n': '\n'
 }
 
+export const JIRA_EXPAND = ["names", "schema", "operations", "changelog"]
+
+export const JIRA_FIELDS = [
+        "id",
+        "description",
+        "issuetype",
+        "summary",
+        "status",
+        "assignee",
+        "accountId",
+        "timetracking",
+        "timeoriginalestimate",
+        "aggregatetimeestimate",
+        "aggregatetimespent",
+        "labels",
+        "worklog",
+        "attachment",
+        "project",
+        "created",
+        "updated",
+        "customfield_10106",
+        "customfield_10107",
+        "customfield_10108"
+    ]
+
+
 /**
  * 
  * @param {string} input 
@@ -106,7 +132,7 @@ export const parseTextToJiraFormatt = (input) => {
 
     if (!input) return ''
 
-    const lines = input.split('\n')
+    const lines = input.trim().split('\n')
     const jiraLines = []
 
     for(const line of lines) {

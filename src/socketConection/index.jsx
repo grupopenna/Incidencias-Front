@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
 
-export function initializeJiraSocket(dispatch, jiraAccountId) {
+export function initializeJiraSocket(dispatch, area) {
 
   const socket = io(socketUrl, {
     withCredentials: true,
@@ -12,7 +12,7 @@ export function initializeJiraSocket(dispatch, jiraAccountId) {
 
   socket.on('cambio-en-jira', (data) => {
     const key = window.location.pathname.split('/').slice(-1);
-    dispatch(getIssue(key, jiraAccountId));
+    dispatch(getIssue(key, area));
     if (data.webhookEvent === 'comment_created') {
       let issueKey = data.issue.key;
       dispatch(getCommentIssues(issueKey));

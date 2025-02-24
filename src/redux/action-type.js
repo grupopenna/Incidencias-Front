@@ -1,4 +1,5 @@
 export const BASE_URL = import.meta.env.VITE_BASE_URL;
+export const BASE_URL_DESARROLLO = import.meta.env.VITE_BASE_URL_DESARROLLO;
 export const BACK_AUTH_URL = import.meta.env.VITE_BACK_AUTH_URL
 
 export const POST_ISSUE = "POST_ISSUE";
@@ -29,6 +30,8 @@ export const NEW_COMMENT = "NEW_COMMENT"
 export const EDIT_DESC = 'EDIT_DESC'
 
 export const SET_USER_DATA = 'SET_USER_DATA'
+
+export const GET_WORKLOADS = 'GET_WORKLOADS'
 
 export const GET_WORKLOG = 'GET_WORKLOG'
 

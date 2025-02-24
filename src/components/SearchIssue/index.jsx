@@ -221,6 +221,15 @@ const SearchIssue = () => {
                 }
               </div>
               <div className='mb-5'>
+                <p>Solicitado por:</p>
+                {issue.fields.reporter ? (
+                  <div className='flex justify-between'>
+                    <p className='font-bold'>{issue.fields.reporter.displayName}</p>
+                  </div>) :
+                  <span className='text-fontPlaceholder text-xs'>Todavia nadie se asigno esta tarea</span>
+                }
+              </div>
+              <div className='mb-5'>
                 <p>Status:</p>
                 <p className='font-bold'>{issue.fields.status.name}</p>
               </div>

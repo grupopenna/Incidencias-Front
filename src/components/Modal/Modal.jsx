@@ -31,7 +31,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
   const AllComments = useSelector(state => state.commentIssuesById)
   const issueData = useSelector(state => state.issueByKey)
   const [issueInfo] = issueData
-  const { jiraAccountId } = useSelector(state => state.user)
+  const { jiraAccountId, area } = useSelector(state => state.user)
   const [comentarios, setComentarios] = useState([])
   const [item, setItem] = useState(null)
   const [openEditor, setOpenEditor] = useState(false)
@@ -128,7 +128,7 @@ const Modal = ({ setModalShow, itemSelect }) => {
         denyButtonText: `CANCELAR`
       }).then((result) => {
         if (result.isConfirmed) {
-          dispatch(deleteIssues(item.key, jiraAccountId))
+          dispatch(deleteIssues(item.key, jiraAccountId, area))
           setModalShow(false)
         }
       });
@@ -304,6 +304,15 @@ const Modal = ({ setModalShow, itemSelect }) => {
                         aria-label={`persona asignada ${item?.fields?.assignee?.displayName}`} />
                       : <WithoutPhoto />
                     }
+                  </div>) :
+                  <span className='text-fontPlaceholder text-xs'>Todavia nadie se asigno esta tarea</span>
+                }
+              </div>
+              <div className='mb-5'>
+                <p>Solicitado por:</p>
+                {item.fields.reporter ? (
+                  <div className='flex justify-between'>
+                    <p className='font-bold'>{item.fields.reporter.displayName}</p>
                   </div>) :
                   <span className='text-fontPlaceholder text-xs'>Todavia nadie se asigno esta tarea</span>
                 }

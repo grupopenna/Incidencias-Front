@@ -1,31 +1,14 @@
 import axios from "axios";
 import { BASE_URL, GET_APPROVE } from '../../action-type';
+import { JIRA_EXPAND, JIRA_FIELDS } from '../../../utils/index'
+import { APROBADOS } from '../../../utils/jqls'
 
 export const getApprove = (area) => {
 
   const bodyData = {
-    "expand": [
-      "names", "schema", "operations", "changelog"
-    ],
-    "fields": [
-      "description",
-      "issuetype",
-      "summary",
-      "status",
-      "assignee",
-      "accountId",
-      "timetracking",
-      "timeoriginalestimate",
-      "aggregatetimeestimate",
-      "aggregatetimespent",
-      "customfield_10019",
-      "worklog",
-      "attachment",
-      "project",
-      "created",
-      "updated"
-    ],
-    "jql": `labels = APROBADO AND status != Cerrado AND TOP = NULL`
+    "expand": JIRA_EXPAND,
+    "fields": JIRA_FIELDS,
+    "jql": APROBADOS
   }
   
 

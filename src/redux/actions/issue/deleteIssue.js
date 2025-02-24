@@ -3,7 +3,7 @@ import { BASE_URL } from '../../action-type';
 import { getIssue } from "./getIssue";
 import { getTransitions } from "../transitions";
 
-export const deleteIssues = (key, userId) => {
+export const deleteIssues = (key, userId, area) => {
   const [issueId] = key.split('-')
 
   const bodyData = {
@@ -14,7 +14,7 @@ export const deleteIssues = (key, userId) => {
     try {
       const response = (await axios.delete(`${BASE_URL}/incident/deleteIssue/${key}`, bodyData));
       if (response.status === 204) {
-        await getIssue(`${issueId}`, userId)(dispatch).then(async (response) => {
+        await getIssue(`${issueId}`, area)(dispatch).then(async (response) => {
           if (response !== undefined || response.length > 0) {
             await getTransitions(response[0].key)(dispatch)
           }

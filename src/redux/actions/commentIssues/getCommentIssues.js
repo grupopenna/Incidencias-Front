@@ -1,21 +1,13 @@
 import axios from "axios";
 import { BASE_URL, GET_COMMENT_ISSUES, CLEAR_COMMENT_STATE } from '../../action-type';
 import { formatJiraText } from "../../../utils";
+import { JIRA_FIELDS } from '../../../utils/index'
 
 export const getCommentIssues = (key) => {
-  // const userId = "712020:8a4ac3e0-8800-405a-96a0-a09c82e1a727"
 
   const bodyData = {
     "jql": `issue=${key}`,
-    "fields": [
-      "key",
-      "summary",
-      "comment",
-      "updateAuthor",
-      "author",
-      "created",
-      "updated"
-    ]
+    "fields": JIRA_FIELDS
   }
 
   return async (dispatch) => {

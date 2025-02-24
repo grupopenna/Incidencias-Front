@@ -1,6 +1,6 @@
 import axios from "axios";
 import { BASE_URL, GET_WORKLOG } from '../../action-type';
-import { formatDateWorklog, formatHours, getTime } from "../../../utils";
+import { JIRA_FIELDS, formatDateWorklog, formatHours, getTime } from "../../../utils";
 
 export const getWorklog = (idUser, fromDate, toDate, selectedArea) => {
   const JQL = fromDate === toDate
@@ -8,20 +8,15 @@ export const getWorklog = (idUser, fromDate, toDate, selectedArea) => {
     : `worklogAuthor = ${idUser} AND timespent != EMPTY AND worklogDate >= ${fromDate} AND worklogDate <=  ${toDate} ORDER BY timespent DESC`
 
   let bodyData = {
-    "fields": [
-      "id",
-      "issuetype",
-      "status",
-      "summary",
-      "assignee",
-      "description"
-    ],
+    "fields": JIRA_FIELDS,
     "jql": JQL
   }
 
   return async (dispatch) => {
     try {
       const response = (await axios.post(`${BASE_URL}/worklog/search/?area=${selectedArea}`, bodyData));
+      console.log("res", response.data.worklogs[0].empresas);
+      
       const { worklogs: data } = response.data
 
 
@@ -121,6 +116,7 @@ export const getWorklog = (idUser, fromDate, toDate, selectedArea) => {
             worklogAuthor: worklog.author.displayName,
             worklogTime: getTime(worklog.timeSpentSeconds),
             comment: worklog.comment,
+            empresa: item.empresas,
             date: formatDateWorklog(new Date(worklog.started))
           }
          })

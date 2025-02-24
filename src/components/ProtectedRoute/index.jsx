@@ -1,59 +1,73 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useDispatch } from 'react-redux'
-import { Outlet } from 'react-router-dom'
-import { setUserData } from '../../redux/actions'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { setUserData } from '../../redux/actions'
+import validateToken from '../../redux/actions/token/validateToken'
 
 function ProtectedRoute() {
-    const dispatch = useDispatch()
-    const [isLoading, setIsLoading] = useState(true)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-    useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    let token = params.get('token')
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem('token'))
+    const userData = JSON.parse(localStorage.getItem('userData'))
 
-    if (!token) {
-
-        const savedToken = localStorage.getItem('urlToken')
-
-        if (!savedToken) {
-            window.location.href = import.meta.env.VITE_REDIRECT_URL
-            return 
-        }
-
-        token = savedToken
-    } else {
-        localStorage.setItem('urlToken', token)
+    if (!token || token == undefined) {
+      navigate('/login')
+      return
     }
-
-    (async () => {
-        const response = await fetch(`${import.meta.env.VITE_BACK_AUTH_URL}/auth/check-url-token`, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        })
-
-        if (!response.ok) {
-            window.location.href = import.meta.env.VITE_REDIRECT_URL
-            return 
+    
+    if(userData){
+      setUserData(userData)(dispatch)
+      // setIsAuthenticated(false)
+      setIsLoading(false)
+    }
+    
+    (async ()=>{
+      await validateToken(token).then((res) => {
+        if (res.status == 200) {
+          setIsLoading(false)
+          setIsAuthenticated(false)
         }
-
-        const { data } = await response.json()
-
-        localStorage.setItem('userData', JSON.stringify({ token: data.token, user: data.user }))
-        setUserData(data.user)(dispatch)
-        setIsLoading(false)
-
+        if (res.status >= 300) {
+          localStorage.removeItem("token");
+          setIsLoading(false)
+          navigate('/login')
+        }
+      }).catch((err) => {
+        console.log('err', err)
+      })
     })()
-
+  // (async () => {
+    //   const res = await fetch(`${import.meta.env.VITE_BACK_AUTH_URL}/auth`,
+  //     try {
+    //       if (res.ok) {
+  //         const { data } = await res.json()
+  //         localStorage.setItem('urlToken', data.urlToken)
+  
+  //       }
+  //     } catch (err) {
+    //       console.error(err)
+    //     } finally {
+      //       setIsLoading(false)
+      //     }
+      
+      // })()
+      
     }, [])
-
+    
     if (isLoading) {
-        return <div className='w-6 h-6 rounded-full  m-auto border-2 border-white border-l-transparent animate-spin '/>
+      return <main className='w-screen min-h-screen bg-background flex justify-center items-center'>
+        <div className='w-8 h-8 border-2 border-white rounded-full animate-spin border-r-transparent' />
+      </main>
     }
-
-
+    
+    if (!isAuthenticated) {
     return <Outlet />
+  }
 }
 
 export default ProtectedRoute

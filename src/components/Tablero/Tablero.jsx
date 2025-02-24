@@ -25,7 +25,7 @@ const Tablero = () => {
   const keyPathname = pathname.split('/').slice(-1);
   const { incidents: { issues } } = useIncidents(keyPathname[0])
   const transitions = useSelector((state) => state.transitions);
-  const { jiraAccountId } = useSelector((state) => state.user);
+  const { jiraAccountId, area	} = useSelector(state => state.user)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [worklog, setWorklog] = useState(false);
@@ -35,7 +35,7 @@ const Tablero = () => {
       setWorklog(true);
     }
 
-    const socket = initializeJiraSocket(dispatch, jiraAccountId);
+    const socket = initializeJiraSocket(dispatch, area);
   }, [])
 
   const getList = (list) => {
@@ -59,7 +59,7 @@ const Tablero = () => {
 
         await postTransition(result.destination.droppableId, result.draggableId)(dispatch).then(async (response) => {
           
-          await getIssue(keyPathname[0], jiraAccountId)(dispatch).then((response) => {
+          await getIssue(keyPathname[0], area)(dispatch).then((response) => {
             
             return console.log('response SelectedIncident getIssue', response);
           }).catch((error) => { throw error });
@@ -167,12 +167,12 @@ const Tablero = () => {
             ))
           )
             : (
-              <DragDropContext onDragEnd={onDragEnd} className="flex">
+              <DragDropContext onDragEnd={onDragEnd} className="flex h-96 overflow-scroll">
                 {transitions.map((transition) => (
-                  <Droppable key={transition.id} droppableId={`${transition.to.name}`} className="min-h-full w-5/6">
+                  <Droppable key={transition.id} droppableId={`${transition.to.name}`} className="min-h-full  w-5/6">
                     {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps} className=" bg-bgColumn rounded-lg w-1/3 flex flex-col px-1">
-                        <h1 className="p-3 font-bold text-font">{transition.to.name}</h1>
+                      <div ref={provided.innerRef} {...provided.droppableProps} className=" bg-bgColumn rounded-lg w-1/3  flex flex-col px-1">
+                        <h1 className="p-3 h-20 flex justify-center items-center text-center font-bold text-font">{transition.to.name}</h1>
                         {getList(transition.to.name).map((item, index) => (
                           <button key={item.id} onClick={() => { setModalShow(true), setItemSelect(item) }} className="w-full flex ">
                             {transition.to.name != "En Proceso" ? (

@@ -15,7 +15,7 @@ const Home = () => {
 
   const issueList = async () => {
     await getProjects()(dispatch).then((response) =>{ 
-      return console.log('response Home getProjects', response)
+      if (response) console.log('response Home getProjects')
     }).catch((error) => {throw error})
 
   }

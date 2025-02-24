@@ -14,7 +14,7 @@ import { useState } from "react";
 import incidentTemplate from './incident-template.json'
 import Swal from 'sweetalert2';
 
-const COMPANIES = ['Fideicomiso', 'GrupoPenna', 'Unitec', 'Petrocom', 'COMCAM', 'CombustiblesPC']
+const COMPANIES = ['Fideicomiso', 'GrupoPenna', 'Unitec', 'Petrocom', 'COMCAM', 'CombustiblesPC', 'Via CleSil']
 
 
 const fireMessage = (icon, title, text) => {
@@ -41,7 +41,6 @@ const NotifyIncidentForm = () => {
   const navigate = useNavigate();
   const { pathname } = location;
   const [IssueKey] = pathname.split('/').slice(-2)
-  console.log('jiraAccountId', jiraAccountId)
 
   useEffect(() => {
     (async () => {
@@ -201,22 +200,11 @@ const NotifyIncidentForm = () => {
 
 
   const Editor = useCallback(() => {
-    
-    if (IssueKey !== 'ERP') return <TuiEditor markdownRef={editorRef} />
+    return <TuiEditor markdownRef={editorRef}/>
 
+  }, [])
 
-    let template 
-
-    if (!selectedIssue) {
-      template = ''
-    } else if (selectedIssue === ISSUETYPE_COD.ERROR) {
-      template = incidentTemplate.Error.template
-    } else if (selectedIssue === ISSUETYPE_COD.TAREA) {
-      template = incidentTemplate.Tarea.template
-    }
-
-    return <TuiEditor markdownRef={editorRef} initialValue={template}/>
-  }, [selectedIssue])
+  console.log("issuesType",issuesType);
 
   return (
     <>
@@ -252,6 +240,7 @@ const NotifyIncidentForm = () => {
                       className='z-50 mt-2'
                       value={selectedIssue}>
                       {issuesType?.map((project) => (
+                        
                         <SelectItem key={project.id} value={project.id}>
                           {project.name}
                         </SelectItem>
