@@ -35,12 +35,24 @@ const NotifyIncidentForm = () => {
   const [file, setfile] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState('')
   const [selectedCompanies, setSelectedCompanies] = useState([])
+  const [managementCategoryError, setManagementCategoryError] = useState('')
+  const [selectedTechnicalName, setSelectedTechnicalName] = useState({technicalName: '', params:''})
   const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState({ titleDesc: '', email: '', descripcion: '', companies: '' });
+  const [errors, setErrors] = useState({ titleDesc: '', email: '', descripcion: '', companies: '', categoriesError: '', technicalName: '', params: '' });
   const location = useLocation()
   const navigate = useNavigate();
   const { pathname } = location;
   const [IssueKey] = pathname.split('/').slice(-2)
+  const managementWorkCategories = [
+    "Modificacion_en_Sistema",
+    "Parametrisacion_en_Sistema",
+    "Error_Sistema_NO_Recurrente",
+    "Error_Recurrente_Sistema",
+    "Error_Sistema",
+    "Error_Carga_Usuario",
+    "Falso_Error",
+    "Error_Externo"
+  ]
 
   useEffect(() => {
     (async () => {
@@ -145,22 +157,42 @@ const NotifyIncidentForm = () => {
       return;
     }
 
-    // Validación de descripción no vacía
-    if (descripcion.length < 1 && base64Images.length < 1) {
-      setErrors({ ...errors, descripcion: 'La descripción no puede estar vacía' });
-      fireMessage('error', 'Oops...', 'La descripción no puede estar vacía!!')
-      setLoading(false)
-      return;
-    }
-
     if (IssueKey === 'ERP') {
       if (selectedCompanies.length < 1) {
         setErrors({ ...errors, companies: 'Se debe seleccionar al menos una empresa' });
         fireMessage('error', 'Oops...', 'Se debe seleccionar al menos una empresa')
         setLoading(false)
         return
-  
       }
+
+      if (managementCategoryError === '') {
+        setErrors({ ...errors, categoriesError: 'Se debe seleccionar al menos una categoria' });
+        fireMessage('error', 'Oops...', 'Se debe seleccionar al menos una categoria')
+        setLoading(false)
+        return
+      }
+
+      if (selectedIssue === ISSUETYPE_COD.TRABAGESTION) {
+        if (selectedTechnicalName.technicalName === '') {
+          setErrors({ ...errors, technicalName: 'Debe completar el nombre tecnico / link' });
+          fireMessage('error', 'Oops...', 'Debe completar el nombre tecnico / link')
+          setLoading(false)
+          return
+        }
+        if (selectedTechnicalName.params === '') {
+          setErrors({ ...errors, params: 'Debe agregar un parametro' });
+          fireMessage('error', 'Oops...', 'Debe agregar un parametro')
+          setLoading(false)
+          return
+        }
+      }
+    }
+
+    if (descripcion.length < 1 && base64Images.length < 1) {
+      setErrors({ ...errors, descripcion: 'La descripción no puede estar vacía' });
+      fireMessage('error', 'Oops...', 'La descripción no puede estar vacía!!')
+      setLoading(false)
+      return;
     }
 
     // Restablece los mensajes de error en caso de éxito
@@ -174,7 +206,9 @@ const NotifyIncidentForm = () => {
         file: base64Images, 
         companies: selectedCompanies,
         selectedIssue,
-        isERP: IssueKey === 'ERP' 
+        isERP: IssueKey === 'ERP',
+        categoryError: managementCategoryError,
+        dataTechnical: selectedTechnicalName,
       }
         
         issuePost(data, jiraAccountId, area)(dispatch)
@@ -204,7 +238,12 @@ const NotifyIncidentForm = () => {
 
   }, [])
 
-  console.log("issuesType",issuesType);
+  const handlerChangeTechnicalName = (e) => {
+    setSelectedTechnicalName((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value
+    }))
+  }
 
   return (
     <>
@@ -239,22 +278,65 @@ const NotifyIncidentForm = () => {
                       onValueChange={(value) => {setSelectedIssue(value)}}
                       className='z-50 mt-2'
                       value={selectedIssue}>
-                      {issuesType?.map((project) => (
-                        
+                      {issuesType?.map((project) => (                       
                         <SelectItem key={project.id} value={project.id}>
                           {project.name}
                         </SelectItem>
                       ))}
                     </Select>
                   </label>
+
+                  { (IssueKey === 'ERP' && selectedIssue === ISSUETYPE_COD.TRABAGESTION ) && 
+                  <label className='text-white'>
+                    Categoria*
+                    <Select
+                      onValueChange={(value) => {setManagementCategoryError(value)}}
+                      className='z-40 mt-2'
+                      value={managementCategoryError}>
+                      {managementWorkCategories?.map((categories, index) => (
+                        <SelectItem key={index} value={categories}>
+                          {categories}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </label>}
+
+
                    { IssueKey === 'ERP' && <label className='text-white'>
                      Empresa<span>*</span>
-                     <MultiSelect value={selectedCompanies} className='z-40 mt-2' onValueChange={setSelectedCompanies}>
+                     <MultiSelect value={selectedCompanies} className='z-30 mt-2' onValueChange={setSelectedCompanies}>
                       {COMPANIES.map((company, index) => (
                         <MultiSelectItem key={index} value={company}>{company}</MultiSelectItem>
                       ))}
                      </MultiSelect>
                    </label>}
+
+                  {selectedIssue === ISSUETYPE_COD.TRABAGESTION &&
+                    <>
+                    <label className='text-white'>
+                      Nombre Tecnico del objeto* 
+                      <input
+                        type="text"
+                        name="technicalName"
+                        placeholder="USR...." 
+                        className="pl-2 rounded-md border-0 py-1.5 w-full text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-fontPlaceholder focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        onChange={(e)=> handlerChangeTechnicalName(e)}
+                        />
+                    </label>
+
+                    <label className='text-white'>
+                      Parametros utilizados* 
+                      <input 
+                        type="text" 
+                        name="params"
+                        className="w-full pl-2 rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-fontPlaceholder focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+                        onChange={(e)=> handlerChangeTechnicalName(e)}
+                      />
+                    </label>
+                    </>
+                  }
+
+
                   <div className='mt-1'>
                     <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-slate-100">
                       Detalle de Incidencia*

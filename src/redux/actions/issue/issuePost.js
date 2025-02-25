@@ -5,10 +5,11 @@ import { postAttachments } from "../issueAttachment/postAttachments";
 import Swal from "sweetalert2";
 import { ISSUETYPE_COD } from "../../../const";
 
-export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey, file, companies, selectedIssue, isERP }, userId, area) => {
+export const issuePost = (data, userId, area) => {
+  const { titleDesc, descripcion, projectId, issueId, IssueKey, file, companies, selectedIssue, isERP, categoryError, dataTechnical } = data
   const userData = JSON.parse(localStorage.getItem('userData')) 
   const { email, fullName } =  userData
-  const customField = selectedIssue === ISSUETYPE_COD.ERROR ? "customfield_10124" : "customfield_10108"
+  const customField = selectedIssue === ISSUETYPE_COD.TRABAGESTION ? "customfield_10124" : "customfield_10108"
   const baseQuery = {
     "fields": {
     
@@ -31,7 +32,8 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
   const queryToErp = {
     "fields": {
       ...baseQuery.fields,
-      [customField]: companies
+      [customField]: companies,
+      ["customfield_10143"]: [categoryError]
     }
   }
 
@@ -42,20 +44,39 @@ export const issuePost = ({ titleDesc, descripcion, projectId, issueId, IssueKey
     const line1 = {
       "type": "paragraph",
       "content": [{
-        text: "<br>",
+        text: "",
         type: "text"
       }]
     }
     descripcion.push(line1)
 
-    const line2 = {   
+    if (selectedIssue === ISSUETYPE_COD.TRABAGESTION) {
+      const line2 = {   
+        "type": "paragraph",
+        "content": [{
+          text: `Links: ${dataTechnical.technicalName}`,
+          type: "text"
+        },
+        {
+          type: 'hardBreak'
+        },
+        {
+          text: `Parametros usados: ${dataTechnical.params}`,
+          type: "text"
+        }
+      ]
+      }
+      descripcion.push(line2)
+    }
+
+    const line3 = {   
       "type": "paragraph",
       "content": [{
         text: `Contactarse con: ${email}, ticket realizado por ${fullName}`,
         type: "text"
       }]
     }
-    descripcion.push(line2)
+    descripcion.push(line3)
     
     if (descripcion.length > 0 ) {
        bodyData.fields.description = {
