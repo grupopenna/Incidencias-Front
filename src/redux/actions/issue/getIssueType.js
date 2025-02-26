@@ -4,6 +4,8 @@ import {  BASE_URL, GET_ISSUETYPE } from '../../action-type';
 const ISSUE_TYPES_USER = {
     TAREA: 'Tarea',
     TRABAGESTION: 'Traba gestion',
+    CRITICO: 'Critico',
+    RESOLUCION24: 'Resolucion 24hs',
     NR: 'NuevoRequerimiento'
 }
 
@@ -11,6 +13,8 @@ const SHOW_ISSUE_TYPES = {
     [ISSUE_TYPES_USER.TRABAGESTION]: true,
     [ISSUE_TYPES_USER.TAREA]: true,
     [ISSUE_TYPES_USER.NR]: true,
+    [ISSUE_TYPES_USER.CRITICO]: true,
+    [ISSUE_TYPES_USER.RESOLUCION24]: true
 }
 
 export const getIssueTypes = (projectId) => {

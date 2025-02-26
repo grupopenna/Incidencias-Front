@@ -3,7 +3,7 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import { DocFiles, ImgFiles } from '../Icons';
 import { Editor as TuiEditor } from '../Editor/index'
 import { issuePost, getIssueTypes } from "../../redux/actions/";
-import { ISSUETYPE_COD } from '../../const';
+//import { ISSUETYPE_COD } from '../../const';
 import { parseTextToJiraFormatt } from '../../utils';
 import { Select, SelectItem, MultiSelect, MultiSelectItem } from '@tremor/react'
 import { useCallback } from 'react';
@@ -43,9 +43,10 @@ const NotifyIncidentForm = () => {
   const navigate = useNavigate();
   const { pathname } = location;
   const [IssueKey] = pathname.split('/').slice(-2)
+  const typesTrabaGestion =['10135', '10190', '10191']
   const managementWorkCategories = [
     "Modificacion_en_Sistema",
-    "Parametrisacion_en_Sistema",
+    "Parametrizacion_en_Sistema",
     "Error_Sistema_NO_Recurrente",
     "Error_Recurrente_Sistema",
     "Error_Sistema",
@@ -172,7 +173,7 @@ const NotifyIncidentForm = () => {
         return
       }
 
-      if (selectedIssue === ISSUETYPE_COD.TRABAGESTION) {
+      if (typesTrabaGestion.some(data => data === selectedIssue)) {
         if (selectedTechnicalName.technicalName === '') {
           setErrors({ ...errors, technicalName: 'Debe completar el nombre tecnico / link' });
           fireMessage('error', 'Oops...', 'Debe completar el nombre tecnico / link')
@@ -286,7 +287,7 @@ const NotifyIncidentForm = () => {
                     </Select>
                   </label>
 
-                  { (IssueKey === 'ERP' && selectedIssue === ISSUETYPE_COD.TRABAGESTION ) && 
+                  { (IssueKey === 'ERP' && typesTrabaGestion.some(data => data === selectedIssue)) && 
                   <label className='text-white'>
                     Categoria*
                     <Select
@@ -311,7 +312,7 @@ const NotifyIncidentForm = () => {
                      </MultiSelect>
                    </label>}
 
-                  {selectedIssue === ISSUETYPE_COD.TRABAGESTION &&
+                  {typesTrabaGestion.some(data => data === selectedIssue) &&
                     <>
                     <label className='text-white'>
                       Nombre Tecnico del objeto* 
