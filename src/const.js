@@ -73,6 +73,8 @@ export const A2REAS = {
 
 export const ISSUETYPE_COD = {
     TRABAGESTION: '10135',
+    CRITICO: '10190',
+    RESOLUCION24HS: '10191',
     TAREA: '10049'
 }
 

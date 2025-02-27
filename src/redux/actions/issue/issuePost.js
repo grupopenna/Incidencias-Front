@@ -9,7 +9,7 @@ export const issuePost = (data, userId, area) => {
   const { titleDesc, descripcion, projectId, issueId, IssueKey, file, companies, selectedIssue, isERP, categoryError, dataTechnical } = data
   const userData = JSON.parse(localStorage.getItem('userData')) 
   const { email, fullName } =  userData
-  const customField = selectedIssue === ISSUETYPE_COD.TRABAGESTION ? "customfield_10124" : "customfield_10108"
+  const customField = Object.values(ISSUETYPE_COD).includes(selectedIssue) ? "customfield_10124" : "customfield_10108"
   const baseQuery = {
     "fields": {
     
