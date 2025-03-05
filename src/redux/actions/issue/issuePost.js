@@ -10,6 +10,11 @@ export const issuePost = (data, userId, area) => {
   const userData = JSON.parse(localStorage.getItem('userData')) 
   const { email, fullName } =  userData
   const customField = Object.values(ISSUETYPE_COD).includes(selectedIssue) ? "customfield_10124" : "customfield_10108"
+  /*
+  10124 = trabag -- RESOL24
+
+  10108 = nuevosReq - critic- TAREA
+  */
   const baseQuery = {
     "fields": {
     
