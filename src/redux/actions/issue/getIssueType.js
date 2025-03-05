@@ -13,8 +13,13 @@ const SHOW_ISSUE_TYPES = {
     [ISSUE_TYPES_USER.TRABAGESTION]: true,
     [ISSUE_TYPES_USER.TAREA]: true,
     [ISSUE_TYPES_USER.NR]: true,
+<<<<<<< HEAD
     [ISSUE_TYPES_USER.CRITICO]: true,
     [ISSUE_TYPES_USER.RESOLUCION24]: true
+=======
+    // [ISSUE_TYPES_USER.CRITICO]: true,
+    // [ISSUE_TYPES_USER.RESOLUCION24]: true
+>>>>>>> dab453a708280d53fe7d4a96b04b9954aa0bb48a
 }
 
 export const getIssueTypes = (projectId) => {
