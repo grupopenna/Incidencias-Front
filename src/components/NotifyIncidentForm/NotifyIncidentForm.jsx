@@ -14,7 +14,7 @@ import { useState } from "react";
 import incidentTemplate from './incident-template.json'
 import Swal from 'sweetalert2';
 
-const COMPANIES = ['Fideicomiso', 'GrupoPenna', 'Unitec', 'Petrocom', 'COMCAM', 'CombustiblesPC', 'Via CleSil']
+const COMPANIES = ['Fideicomiso', 'GrupoPenna', 'Unitec', 'Petrocom', 'COMCAM', 'CombustiblesPC', 'ViaCleSil']
 
 
 const fireMessage = (icon, title, text) => {
