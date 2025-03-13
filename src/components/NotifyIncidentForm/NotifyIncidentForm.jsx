@@ -167,12 +167,12 @@ const NotifyIncidentForm = () => {
       }
 
       if (typesTrabaGestion.some(data => data === selectedIssue)) {
-        if (managementCategoryError === '') {
+       /* if (managementCategoryError === '') {
           setErrors({ ...errors, categoriesError: 'Se debe seleccionar al menos una categoria' });
           fireMessage('error', 'Oops...', 'Se debe seleccionar al menos una categoria')
           setLoading(false)
           return
-        }
+        }*/
         
         if (selectedTechnicalName.technicalName === '') {
           setErrors({ ...errors, technicalName: 'Debe completar el nombre tecnico / link' });
