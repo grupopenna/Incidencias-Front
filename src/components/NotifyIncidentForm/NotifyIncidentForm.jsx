@@ -180,12 +180,13 @@ const NotifyIncidentForm = () => {
           setLoading(false)
           return
         }
-        if (selectedTechnicalName.params === '') {
+        
+        /*if (selectedTechnicalName.params === '') {
           setErrors({ ...errors, params: 'Debe agregar un parametro' });
           fireMessage('error', 'Oops...', 'Debe agregar un parametro')
           setLoading(false)
           return
-        }
+        }*/
       }
     }
 
@@ -287,7 +288,7 @@ const NotifyIncidentForm = () => {
                     </Select>
                   </label>
 
-                  { (IssueKey === 'ERP' && typesTrabaGestion.some(data => data === selectedIssue)) && 
+                  {/* (IssueKey === 'ERP' && typesTrabaGestion.some(data => data === selectedIssue)) && 
                   <label className='text-white'>
                     Categoria*
                     <Select
@@ -300,7 +301,7 @@ const NotifyIncidentForm = () => {
                         </SelectItem>
                       ))}
                     </Select>
-                  </label>}
+                  </label>*/}
 
 
                    { IssueKey === 'ERP' && <label className='text-white'>
@@ -326,7 +327,7 @@ const NotifyIncidentForm = () => {
                     </label>
 
                     <label className='text-white'>
-                      Parametros utilizados* 
+                      Parametros utilizados 
                       <input 
                         type="text" 
                         name="params"
