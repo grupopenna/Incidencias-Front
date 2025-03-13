@@ -11,7 +11,7 @@ const ISSUE_TYPES_USER = {
 
 const SHOW_ISSUE_TYPES = {
     [ISSUE_TYPES_USER.TRABAGESTION]: true,
-    [ISSUE_TYPES_USER.TAREA]: true,
+    [ISSUE_TYPES_USER.TAREA]: false, // Switch to true for display the issue type
     [ISSUE_TYPES_USER.NR]: true,
     [ISSUE_TYPES_USER.CRITICO]: true,
     [ISSUE_TYPES_USER.RESOLUCION24]: true
