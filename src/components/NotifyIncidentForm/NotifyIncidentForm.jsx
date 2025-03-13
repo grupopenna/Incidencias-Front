@@ -259,6 +259,8 @@ const NotifyIncidentForm = () => {
               <div className="pb-12">
                 <div className="mt-8 grid grid-cols-1 gap-x-2 gap-y-4">
                   <div className="">
+                  <p className="text-center text-xl text-black mt-4 mb-2">Si necesita habilitar un LINK, le recomendamos consultar la siguiente documentación. <a target="_blank" href="https://wiki.grupopenna.com.ar/books/softland/page/reglas-para-asignacion-de-permisos-en-softland">Documentación</a></p>
+                    
                     <label htmlFor="titleDesc" className="block text-sm font-medium leading-6 text-slate-100">
                       Titulo Descriptivo*
                     </label>
