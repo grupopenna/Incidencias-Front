@@ -248,6 +248,7 @@ const NotifyIncidentForm = () => {
   }
   
 
+
   return (
     <>
       <div className='ml-7 mt-5'>
@@ -346,6 +347,14 @@ const NotifyIncidentForm = () => {
                     { selectedIssue === '10135' && (
                       <div className='w-full py-2 rounded-md my-2 bg-yellow-200'>
                         <p className='text-black text-sm p-2'>Indicar el tiempo o la fecha limite que se necesita tener el tema resuelto</p>
+                      </div>
+                    ) }
+
+                    { selectedIssue === '10156' && (
+                      <div className='w-full py-2 rounded-md my-2 bg-yellow-200'>
+                        <p className='text-black text-sm p-2'>
+                        Este tipo de tarea está destinada a solicitudes de soporte general de Nivel 1 que no están relacionadas con el sistema Softland. Puede incluir consultas sobre hardware, acceso a sistemas, configuración de correo, conectividad de red, problemas con impresoras, software de uso general o cualquier otra incidencia técnica no vinculada a Softland.
+                        </p>
                       </div>
                     ) }
                     <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-slate-100">
